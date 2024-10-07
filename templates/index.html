@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informations Vol</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label, input {
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h3>Renseignez les informations du vol</h3>
+    
+    <!-- Formulaire pour entrer les informations du vol -->
+    <form action="/submit_flight_info" method="POST">
+        <label for="flight_number">N° de vol:</label>
+        <input type="text" id="flight_number" name="flight_number" required>
+
+        <label for="flight_date">Date (YYYY-MM-DD):</label>
+        <input type="date" id="flight_date" name="flight_date" required>
+
+        <label for="flight_time">Heure (HH:mm):</label>
+        <input type="time" id="flight_time" name="flight_time" required>
+
+        <label for="departure_airport">Aéroport départ:</label>
+        <input type="text" id="departure_airport" name="departure_airport" required>
+
+        <label for="arrival_airport">Aéroport arrivée:</label>
+        <input type="text" id="arrival_airport" name="arrival_airport" required>
+
+        <button type="submit">Soumettre</button>
+    </form>
+
+    <h3>Carte des Aéroports</h3>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialiser la carte sur une position par défaut
+        var map = L.map('map').setView([48.8566, 2.3522], 2); // Coordonnées de Paris
+
+        // Charger les tuiles de la carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Récupérer les données d'aéroports depuis le serveur Flask
+        fetch('/airports')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(function(airport) {
+                    // Ajouter un marqueur pour chaque aéroport sur la carte
+                    var marker = L.marker([airport.latitude, airport.longitude]).addTo(map);
+                    marker.bindPopup(`<b>${airport.airport_name}</b><br>${airport.country_name}`);
+                });
+            });
+    </script>
+</body>
+</html>
