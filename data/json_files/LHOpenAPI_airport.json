@@ -1,0 +1,47 @@
+{
+    "AirportResource": {
+        "Airports": {
+            "Airport": {
+                "AirportCode": "FRA",
+                "Position": {
+                    "Coordinate": {
+                        "Latitude": 50.0331,
+                        "Longitude": 8.5706
+                    }
+                },
+                "CityCode": "FRA",
+                "CountryCode": "DE",
+                "LocationType": "Airport",
+                "Names": {
+                    "Name": {
+                        "@LanguageCode": "FR",
+                        "$": "Francfort"
+                    }
+                },
+                "UtcOffset": "+01:00",
+                "TimeZoneId": "Europe/Berlin"
+            }
+        },
+        "Meta": {
+            "@Version": "1.0.0",
+            "Link": [
+                {
+                    "@Href": "https://api.lufthansa.com/v1/mds-references/airports/FRA?lang=FR&limit=20&offset=0&LHoperated=0",
+                    "@Rel": "self"
+                },
+                {
+                    "@Href": "https://api.lufthansa.com/v1/mds-references/cities/FRA",
+                    "@Rel": "related"
+                },
+                {
+                    "@Href": "https://api.lufthansa.com/v1/mds-references/countries/DE",
+                    "@Rel": "related"
+                },
+                {
+                    "@Href": "http://travelguide.lufthansa.com/de/fr/{cityCode}/FRA",
+                    "@Rel": "alternate"
+                }
+            ]
+        }
+    }
+}

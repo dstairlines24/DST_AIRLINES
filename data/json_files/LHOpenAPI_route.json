@@ -1,0 +1,160 @@
+{
+    "FlightInformation": {
+        "Flights": {
+            "Flight": [
+                {
+                    "Departure": {
+                        "AirportCode": "FRA",
+                        "Scheduled": {
+                            "Date": "2024-10-04",
+                            "Time": "10:55"
+                        },
+                        "Actual": {
+                            "Date": "2024-10-04",
+                            "Time": "12:36"
+                        },
+                        "Terminal": {
+                            "Name": "1",
+                            "Gate": "Z17"
+                        },
+                        "Status": {
+                            "Code": "DP",
+                            "Description": "Flight Departed"
+                        }
+                    },
+                    "Arrival": {
+                        "AirportCode": "JFK",
+                        "Scheduled": {
+                            "Date": "2024-10-04",
+                            "Time": "13:25"
+                        },
+                        "Estimated": {
+                            "Date": "2024-10-04",
+                            "Time": "14:30"
+                        },
+                        "Actual": {
+                            "Date": "2024-10-04",
+                            "Time": "14:30"
+                        },
+                        "Terminal": {
+                            "Name": "1",
+                            "Gate": "003"
+                        },
+                        "Status": {
+                            "Code": "DL",
+                            "Description": "Flight Delayed"
+                        }
+                    },
+                    "MarketingCarrierList": {
+                        "MarketingCarrier": [
+                            {
+                                "AirlineID": "UA",
+                                "FlightNumber": "8841"
+                            },
+                            {
+                                "AirlineID": "ET",
+                                "FlightNumber": "1610"
+                            },
+                            {
+                                "AirlineID": "SN",
+                                "FlightNumber": "7230"
+                            },
+                            {
+                                "AirlineID": "TG",
+                                "FlightNumber": "7722"
+                            }
+                        ]
+                    },
+                    "OperatingCarrier": {
+                        "AirlineID": "LH",
+                        "FlightNumber": "400"
+                    },
+                    "Equipment": {
+                        "AircraftCode": "744"
+                    },
+                    "Status": {
+                        "Code": "DL",
+                        "Description": "Flight Delayed"
+                    }
+                },
+                {
+                    "Departure": {
+                        "AirportCode": "FRA",
+                        "Scheduled": {
+                            "Date": "2024-10-04",
+                            "Time": "17:15"
+                        },
+                        "Actual": {
+                            "Date": "2024-10-04",
+                            "Time": "17:35"
+                        },
+                        "Terminal": {
+                            "Name": "1",
+                            "Gate": "Z58"
+                        },
+                        "Status": {
+                            "Code": "DP",
+                            "Description": "Flight Departed"
+                        }
+                    },
+                    "Arrival": {
+                        "AirportCode": "JFK",
+                        "Scheduled": {
+                            "Date": "2024-10-04",
+                            "Time": "20:05"
+                        },
+                        "Actual": {
+                            "Date": "2024-10-04",
+                            "Time": "19:58"
+                        },
+                        "Terminal": {
+                            "Name": "1",
+                            "Gate": "004"
+                        },
+                        "Status": {
+                            "Code": "OT",
+                            "Description": "Flight On Time"
+                        }
+                    },
+                    "MarketingCarrierList": {
+                        "MarketingCarrier": [
+                            {
+                                "AirlineID": "UA",
+                                "FlightNumber": "8843"
+                            },
+                            {
+                                "AirlineID": "SN",
+                                "FlightNumber": "7232"
+                            }
+                        ]
+                    },
+                    "OperatingCarrier": {
+                        "AirlineID": "LH",
+                        "FlightNumber": "404"
+                    },
+                    "Equipment": {
+                        "AircraftCode": "343"
+                    },
+                    "Status": {
+                        "Code": "OT",
+                        "Description": "Flight On Time"
+                    }
+                }
+            ]
+        },
+        "Meta": {
+            "@Version": "1.0.0",
+            "Link": [
+                {
+                    "@Href": "https://api.lufthansa.com/v1/operations/customerflightinformation/route/FRA/JFK/2024-10-04",
+                    "@Rel": "self"
+                },
+                {
+                    "@Href": "https://api.lufthansa.com/v1/mds-references/airports/{airportCode}",
+                    "@Rel": "related"
+                }
+            ],
+            "TotalCount": 2
+        }
+    }
+}
