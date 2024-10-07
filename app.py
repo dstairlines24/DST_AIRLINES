@@ -18,33 +18,52 @@ def get_airports():
 def index():
     return render_template('index.html')
 
-@app.route('/submit_flight_info', methods=['POST'])
-def submit_flight_info():
-    # Récupérer les données du formulaire
+# Route pour soumettre le N° de vol
+@app.route('/submit_flight_number', methods=['POST'])
+def submit_flight_number():
     flight_number = request.form['flight_number']
-    flight_date = request.form['flight_date']
-    flight_time = request.form['flight_time']
-    departure_airport = request.form['departure_airport']
-    arrival_airport = request.form['arrival_airport']
 
-    # Traitement ou affichage des données récupérées
-    print(f"Vol : {flight_number}")
-    print(f"Date : {flight_date}")
-    print(f"Heure : {flight_time}")
-    print(f"Aéroport de départ : {departure_airport}")
-    print(f"Aéroport d'arrivée : {arrival_airport}")
+    # Traitement du N° de vol (par exemple, recherche des infos du vol via une API)
+    print(f"N° de vol soumis : {flight_number}")
 
-    # Retourner une réponse à l'utilisateur
+    # Retourner une réponse simple ou rediriger vers une autre page avec les détails
     return f"""
         <h3>Informations du vol soumises :</h3>
         <p><strong>N° de vol :</strong> {flight_number}</p>
-        <p><strong>Date :</strong> {flight_date}</p>
-        <p><strong>Heure :</strong> {flight_time}</p>
-        <p><strong>Aéroport de départ :</strong> {departure_airport}</p>
-        <p><strong>Aéroport d'arrivée :</strong> {arrival_airport}</p>
         <br>
-        <a href="/">Retour à la carte</a>
+        <a href="/">Retour</a>
     """
+
+# Route pour soumettre les autres informations du vol
+@app.route('/submit_flight_details', methods=['POST'])
+def submit_flight_details():
+    flight_date = request.form['flight_date']
+    flight_time = request.form.get('flight_time', 'Non spécifié')
+    departure_airport = request.form['departure_airport']
+    arrival_airport = request.form['arrival_airport']
+    action = request.form['action']  # Détecter quel bouton a été cliqué
+
+    # Si l'utilisateur a cliqué sur "Afficher la liste des vols"
+    if action == 'list_flights':
+        print(f"Afficher les vols pour le {flight_date} entre {departure_airport} et {arrival_airport}.")
+        # Logique pour afficher la liste des vols
+        return f"""
+            <h3>Liste des vols disponibles :</h3>
+            <p>Recherche de vols pour le {flight_date} entre {departure_airport} et {arrival_airport}.</p>
+            <br>
+            <a href="/">Retour</a>
+        """
+    
+    # Si l'utilisateur a cliqué sur "Simuler mon itinéraire"
+    elif action == 'simulate_itinerary':
+        print(f"Simulation d'itinéraire pour le {flight_date} entre {departure_airport} et {arrival_airport}.")
+        # Logique pour simuler l'itinéraire
+        return f"""
+            <h3>Simulation de votre itinéraire :</h3>
+            <p>Itinéraire simulé pour le vol du {flight_date} ({flight_time}) de {departure_airport} à {arrival_airport}.</p>
+            <br>
+            <a href="/">Retour</a>
+        """
 
 if __name__ == "__main__":
     app.run(debug=True)

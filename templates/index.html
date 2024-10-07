@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informations Vol</title>
+    <title>DST Airlines</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         #map {
@@ -13,34 +13,56 @@
         form {
             margin-bottom: 20px;
         }
-        label, input {
+        label, input, button {
             display: block;
             margin: 5px 0;
+        }
+        .form-section {
+            margin-bottom: 40px;
+        }
+        .divider {
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h3>Renseignez les informations du vol</h3>
-    
-    <!-- Formulaire pour entrer les informations du vol -->
-    <form action="/submit_flight_info" method="POST">
-        <label for="flight_number">N° de vol:</label>
-        <input type="text" id="flight_number" name="flight_number" required>
+    <h1>DST Airlines</h1>  <!-- Titre principal de la page -->
+    <p>Anticipez vos retards grâce à la météo et aux informations en temps réel de votre vol.</p>  <!-- Phrase de présentation -->
 
-        <label for="flight_date">Date (YYYY-MM-DD):</label>
-        <input type="date" id="flight_date" name="flight_date" required>
+    <h3>Choisissez une option :</h3>
 
-        <label for="flight_time">Heure (HH:mm):</label>
-        <input type="time" id="flight_time" name="flight_time" required>
+    <!-- Première partie : Formulaire pour entrer uniquement le N° de vol -->
+    <div class="form-section">
+        <h4>Option 1: Entrer votre N° de vol</h4>
+        <form action="/submit_flight_number" method="POST">
+            <label for="flight_number">N° de vol:</label>
+            <input type="text" id="flight_number" name="flight_number" required>
+            <button type="submit">Soumettre</button>
+        </form>
+    </div>
 
-        <label for="departure_airport">Aéroport départ:</label>
-        <input type="text" id="departure_airport" name="departure_airport" required>
+    <!-- Deuxième partie : Formulaire pour entrer les autres informations -->
+    <div class="form-section">
+        <h4>Option 2: Rechercher un vol ou Simuler votre itinéraire</h4>
+        <form action="/submit_flight_details" method="POST">
+            <label for="flight_date">Date (DD/MM/YYYY):</label>
+            <input type="date" id="flight_date" name="flight_date" required>
 
-        <label for="arrival_airport">Aéroport arrivée:</label>
-        <input type="text" id="arrival_airport" name="arrival_airport" required>
+            <label for="flight_time">Heure (HH:mm) <em>(facultatif)</em>:</label>
+            <input type="time" id="flight_time" name="flight_time">
 
-        <button type="submit">Soumettre</button>
-    </form>
+            <label for="departure_airport">Aéroport départ:</label>
+            <input type="text" id="departure_airport" name="departure_airport" required>
+
+            <label for="arrival_airport">Aéroport arrivée:</label>
+            <input type="text" id="arrival_airport" name="arrival_airport" required>
+
+            <button type="submit" name="action" value="list_flights">Afficher la liste des vols</button>
+            <button type="submit" name="action" value="simulate_itinerary">Simuler mon itinéraire</button>
+        </form>
+    </div>
 
     <h3>Carte des Aéroports</h3>
     <div id="map"></div>
