@@ -28,17 +28,21 @@
     </style>
 </head>
 <body>
-    <h1>DST Airlines</h1>  <!-- Titre principal de la page -->
-    <p>Anticipez vos retards grâce à la météo et aux informations en temps réel de votre vol.</p>  <!-- Phrase de présentation -->
+    <h1>DST Airlines</h1>
+    <p>Anticipez vos retards grâce à la météo et aux informations en temps réel de votre vol.</p>
 
     <h3>Choisissez une option :</h3>
 
-    <!-- Première partie : Formulaire pour entrer uniquement le N° de vol -->
+    <!-- Première partie : Formulaire pour entrer le N° de vol -->
     <div class="form-section">
         <h4>Option 1: Entrer votre N° de vol</h4>
         <form action="/submit_flight_number" method="POST">
             <label for="flight_number">N° de vol:</label>
             <input type="text" id="flight_number" name="flight_number" required>
+            
+            <label for="flight_date">Date (DD/MM/YYYY):</label>
+            <input type="date" id="flight_date" name="flight_date" required>
+
             <button type="submit">Soumettre</button>
         </form>
     </div>
@@ -71,59 +75,13 @@
     <script>
         // Initialiser la carte sur une position par défaut
         var map = L.map('map').setView([48.8566, 2.3522], 2); // Coordonnées de Paris
-    
+
         // Charger les tuiles de la carte
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
-    
-        // Soumettre le formulaire pour récupérer les coordonnées des aéroports
-        document.querySelector('form[action="/submit_flight_number"]').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Récupérer le numéro de vol depuis le formulaire
-            var flightNumber = document.querySelector('#flight_number').value;
-    
-            // Effectuer un appel POST en AJAX pour soumettre le numéro de vol
-            fetch('/submit_flight_number', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    'flight_number': flightNumber
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    // Supprimer les marqueurs précédents (si besoin)
-                    map.eachLayer(function (layer) {
-                        if (layer instanceof L.Marker) {
-                            map.removeLayer(layer);
-                        }
-                    });
-    
-                    // Ajouter un marqueur pour l'aéroport de départ
-                    var departureMarker = L.marker([data.departure.latitude, data.departure.longitude]).addTo(map);
-                    departureMarker.bindPopup(`<b>${data.departure.airport_name}</b><br>${data.departure.airport_iata}`);
-    
-                    // Ajouter un marqueur pour l'aéroport d'arrivée
-                    var arrivalMarker = L.marker([data.arrival.latitude, data.arrival.longitude]).addTo(map);
-                    arrivalMarker.bindPopup(`<b>${data.arrival.airport_name}</b><br>${data.arrival.airport_iata}`);
-    
-                    // Centrer la carte pour afficher les deux aéroports
-                    var bounds = L.latLngBounds([
-                        [data.departure.latitude, data.departure.longitude],
-                        [data.arrival.latitude, data.arrival.longitude]
-                    ]);
-                    map.fitBounds(bounds);
-                }
-            })
-            .catch(error => console.error('Erreur:', error));
-        });
+
+        // Vous pouvez ajouter un code JavaScript ici pour charger les aéroports si besoin
     </script>
 </body>
 </html>

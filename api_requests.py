@@ -4,7 +4,7 @@ class APIRequests:
     def __init__(self):
         self.access_key_AS = "e292961c46cccfb991e67890429bc71b"
         # Token et En-têtes pour API LHOpenAPI
-        self.acces_token_LH = 'e292961c46cccfb991e67890429bc71b'
+        self.acces_token_LH = 'hgw9bcg7a86qhdtkrp88em2p'
         self.headers_LH = {
             "Accept": "application/json",
             "Authorization": f"Bearer {self.acces_token_LH}",
@@ -37,3 +37,6 @@ class APIRequests:
             return response.json()
         else:
             return None
+
+    
+
