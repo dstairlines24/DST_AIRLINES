@@ -71,22 +71,59 @@
     <script>
         // Initialiser la carte sur une position par défaut
         var map = L.map('map').setView([48.8566, 2.3522], 2); // Coordonnées de Paris
-
+    
         // Charger les tuiles de la carte
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
-
-        // Récupérer les données d'aéroports depuis le serveur Flask
-        fetch('/airports')
+    
+        // Soumettre le formulaire pour récupérer les coordonnées des aéroports
+        document.querySelector('form[action="/submit_flight_number"]').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Récupérer le numéro de vol depuis le formulaire
+            var flightNumber = document.querySelector('#flight_number').value;
+    
+            // Effectuer un appel POST en AJAX pour soumettre le numéro de vol
+            fetch('/submit_flight_number', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'flight_number': flightNumber
+                })
+            })
             .then(response => response.json())
             .then(data => {
-                data.forEach(function(airport) {
-                    // Ajouter un marqueur pour chaque aéroport sur la carte
-                    var marker = L.marker([airport.latitude, airport.longitude]).addTo(map);
-                    marker.bindPopup(`<b>${airport.airport_name}</b><br>${airport.country_name}`);
-                });
-            });
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Supprimer les marqueurs précédents (si besoin)
+                    map.eachLayer(function (layer) {
+                        if (layer instanceof L.Marker) {
+                            map.removeLayer(layer);
+                        }
+                    });
+    
+                    // Ajouter un marqueur pour l'aéroport de départ
+                    var departureMarker = L.marker([data.departure.latitude, data.departure.longitude]).addTo(map);
+                    departureMarker.bindPopup(`<b>${data.departure.airport_name}</b><br>${data.departure.airport_iata}`);
+    
+                    // Ajouter un marqueur pour l'aéroport d'arrivée
+                    var arrivalMarker = L.marker([data.arrival.latitude, data.arrival.longitude]).addTo(map);
+                    arrivalMarker.bindPopup(`<b>${data.arrival.airport_name}</b><br>${data.arrival.airport_iata}`);
+    
+                    // Centrer la carte pour afficher les deux aéroports
+                    var bounds = L.latLngBounds([
+                        [data.departure.latitude, data.departure.longitude],
+                        [data.arrival.latitude, data.arrival.longitude]
+                    ]);
+                    map.fitBounds(bounds);
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
     </script>
 </body>
 </html>
