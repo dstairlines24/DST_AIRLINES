@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DST Airlines - Positions des Aéroports</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Positions des Aéroports</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialiser la carte sur une position par défaut
+        var map = L.map('map').setView([48.8566, 2.3522], 2); // Coordonnées de Paris
+
+        // Charger les tuiles de la carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Récupérer les données des aéroports
+        var flight_data = {{ flight_data | tojson }};
+
+        // Ajouter un marqueur pour l'aéroport de départ
+        L.marker([flight_data.departure.latitude, flight_data.departure.longitude])
+            .addTo(map)
+            .bindPopup(`<b>${flight_data.departure.airport} (${flight_data.departure.iata})</b>`);
+
+        // Ajouter un marqueur pour l'aéroport d'arrivée
+        L.marker([flight_data.arrival.latitude, flight_data.arrival.longitude])
+            .addTo(map)
+            .bindPopup(`<b>${flight_data.arrival.airport} (${flight_data.arrival.iata})</b>`);
+
+        // Centrer la carte sur les deux aéroports
+        var latlngs = [
+            [flight_data.departure.latitude, flight_data.departure.longitude],
+            [flight_data.arrival.latitude, flight_data.arrival.longitude]
+        ];
+        var group = L.latLngBounds(latlngs);
+        map.fitBounds(group);
+    </script>
+</body>
+</html>
