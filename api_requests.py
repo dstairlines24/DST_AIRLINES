@@ -3,7 +3,7 @@ from datetime import datetime,timedelta
 
 class APIRequests:
     def __init__(self):
-        self.access_key_AS = "c8af5305b9d8d3367e336086e9835e0a"
+        self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
         self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
         # Token et En-têtes pour API LHOpenAPI
         self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
