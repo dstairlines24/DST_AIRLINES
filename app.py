@@ -44,7 +44,7 @@ def submit_flight_number():
             # print("Données de l'aéroport de départ :", airport_dep)
             # print("Données de l'aéroport d'arrivée :", airport_arr)
 
-            if airport_dep and airport_dep:
+            if airport_dep:
                 #Insertion des Latitude,Longitude dans notre collection
                 db.flight_infos_results.update_many(
                 { "departure.iata": filtered_flights[0]['departure']['iata'] },
@@ -55,25 +55,27 @@ def submit_flight_number():
                     } 
                 }
                 )
-                db.flight_infos_results.update_many(
-                { "departure.iata": filtered_flights[0]['departure']['iata'] },
-                { 
-                    "$set": { 
-                        "arrival.latitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude'], 
-                        "arrival.longitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
-                    } 
-                }
-                )
-
-                # Rediriger vers la route pour afficher la carte avec les positions
-                return redirect(url_for('display_positions'))
-
+                if airport_arr:
+                    db.flight_infos_results.update_many(
+                    { "arrival.iata": filtered_flights[0]['arrival']['iata'] },
+                    { 
+                        "$set": { 
+                            "arrival.latitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude'], 
+                            "arrival.longitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
+                        } 
+                    }
+                    )
+                    # Rediriger vers la route pour afficher la carte avec les positions
+                    return redirect(url_for('display_positions'))
+                else:
+                    return jsonify({"error": "Aucun aeroport trouvé sur l'API LH.", "details":airport_arr})
             else:
-                return jsonify({"error": "Aucun aeroport trouvé sur l'API LH."}), 404
+                return jsonify({"error": "Aucun aeroport trouvé sur l'API LH.", "details":airport_dep})
         else:
             return jsonify({"error": "Aucun vol trouvé pour cette date."}), 404
     else:
-        return jsonify({"error": "Aucun vol trouvé ou problème avec l'API.", "status_code": flight_info.status_code}), 404
+        return jsonify({"error": "Aucun vol trouvé ou problème avec l'API AS", "details":flight_info})
+
 
 @app.route('/map')
 def display_positions():
@@ -110,7 +112,7 @@ def submit_flight_details():
             return redirect(url_for('display_flights_list'))
         
         else:
-            return jsonify({"error": "Aucun vol trouvé ou problème avec l'API.", "status_code": flights_list.status_code}), 404
+            return jsonify({"error": "Aucun vol trouvé ou problème avec l'API LH.", "details":flights_list})
 
     elif action == 'simulate_itinerary':
         print(f"Simulation d'itinéraire pour le {flight_date} entre {departure_airport} et {arrival_airport}.")
@@ -132,3 +134,4 @@ def display_flights_list():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
