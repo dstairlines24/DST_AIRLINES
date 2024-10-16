@@ -44,7 +44,7 @@ def submit_flight_number():
             # print("Données de l'aéroport de départ :", airport_dep)
             # print("Données de l'aéroport d'arrivée :", airport_arr)
 
-            if airport_dep and airport_arr:
+            if airport_dep:
                 #Insertion des Latitude,Longitude dans notre collection
                 db.flight_infos_results.update_many(
                 { "departure.iata": filtered_flights[0]['departure']['iata'] },
@@ -55,19 +55,20 @@ def submit_flight_number():
                     } 
                 }
                 )
-                db.flight_infos_results.update_many(
-                { "arrival.iata": filtered_flights[0]['arrival']['iata'] },
-                { 
-                    "$set": { 
-                        "arrival.latitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude'], 
-                        "arrival.longitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
-                    } 
-                }
-                )
-
-                # Rediriger vers la route pour afficher la carte avec les positions
-                return redirect(url_for('display_positions'))
-
+                if airport_arr:
+                    db.flight_infos_results.update_many(
+                    { "arrival.iata": filtered_flights[0]['arrival']['iata'] },
+                    { 
+                        "$set": { 
+                            "arrival.latitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude'], 
+                            "arrival.longitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
+                        } 
+                    }
+                    )
+                    # Rediriger vers la route pour afficher la carte avec les positions
+                    return redirect(url_for('display_positions'))
+                else:
+                    return jsonify({"error": "Aucun aeroport trouvé sur l'API LH.", "details":airport_arr})
             else:
                 return jsonify({"error": "Aucun aeroport trouvé sur l'API LH.", "details":airport_dep})
         else:
