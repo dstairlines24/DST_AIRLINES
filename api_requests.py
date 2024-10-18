@@ -44,7 +44,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            return None
+            print("Erreur lors de la requête API LH :", response.json())
 
     def get_flight_infos_AS(self, flight_iata):
         api_url_AS = f"https://api.aviationstack.com/v1/flights?access_key={self.access_key_AS}&flight_iata={flight_iata}"
@@ -53,7 +53,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            return None
+            print("Erreur lors de la requête API AS :", response.json())
 
     def get_airport_LH(self, airport_iata):
         api_url_LH = f"https://api.lufthansa.com/v1/mds-references/airports/{airport_iata}?offset=0&LHoperated=0"
@@ -62,7 +62,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            return None
+            print("Erreur lors de la requête API LH airport :", response.json())
 
     
     def get_flights_departure_before_yesterday(self):# souscription payante
@@ -74,7 +74,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            return None
+            print("Erreur lors de la requête API AS before yesterday :", response.json())
 
     def get_flights_landed(self):
         status='landed'
@@ -85,16 +85,16 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            return None            
+            print("Erreur lors de la requête API AS landed :", response.json()) 
 
     def get_meteo(self,latitude,longitude,dateheure):
 
         dateheure = datetime.fromisoformat(dateheure).strftime("%Y-%m-%dT%H:%M:%S")
 
-        api_url=f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude},{longitude}/{dateheure}?key={self.access_key_visualcrossing}&include=current"
+        api_url=f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude},{longitude}/{dateheure}?key={self.access_key_visualcrossing}&include=current&unitGroup=metric"
         response = requests.get(api_url)
         
         if response.status_code == 200:
             return response.json()
         else:
-            return None 
+            print("Erreur lors de la requête API Visualcrossing :", response.json())

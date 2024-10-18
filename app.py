@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from pymongo import MongoClient
 from datetime import datetime
-from api_requests import APIRequests  # Importer la classe API
+from api_requests import APIRequests  # Importer la classe APIRequests
+from functions import FlightProcessor, FlightDataError # Importer les classes FlightProcessor et FlightDataError
 
 app = Flask(__name__)
 
@@ -10,6 +11,7 @@ client = MongoClient(host="localhost", port=27017, username="dstairlines", passw
 db = client.app_data
 
 api_requests = APIRequests()  # Créer une instance de la classe APIRequests
+flightprocessor = FlightProcessor() # Créer une instance de la classe FlightProcessor
 
 @app.route('/')
 def index():
@@ -23,64 +25,36 @@ def submit_flight_number():
     flight_date = request.form['flight_date']
 
     #Supprimer la collection si existante
-    db.flight_infos_results.drop()
+    db.form_flight_infos.drop()
 
     #Requête API pour informations du vol (aviationstack)
     flight_info = api_requests.get_flight_infos_AS(flight_number)
+
     #Récupération du vol à la date spécifiée
     if flight_info and 'data' in flight_info:
         # Filtrer les vols pour ne garder que celui à la date spécifiée (cas où il y a plusieurs vols avec le même n°)
-        filtered_flights = [flight for flight in flight_info['data'] if flight['flight_date'] == flight_date]
+        flight_infos_filtered = [flight for flight in flight_info['data'] if flight['flight_date'] == flight_date]
 
-        if filtered_flights:
-            #Insertion de la réponse dans MongoDB, dans la collection : "flight_infos_results"
-            db.flight_infos_results.insert_many(filtered_flights)
-            message = f"{len(filtered_flights)} résultats de vols insérés dans la base de données."
-            print(message)
+        if flight_infos_filtered:
+            try:
+                flight_infos_processed = flightprocessor.process_flight_AS_list(flight_infos_filtered)
+                db.form_flight_infos.insert_many(flight_infos_processed)
+                message = f"{len(flight_infos_processed)} résultats de vols insérés dans la base de données."
+                print(message)
 
-            #Requête API pour airports (LHOpenAPI)
-            airport_dep = api_requests.get_airport_LH(filtered_flights[0]['departure']['iata'])
-            airport_arr = api_requests.get_airport_LH(filtered_flights[0]['arrival']['iata'])
-            # print("Données de l'aéroport de départ :", airport_dep)
-            # print("Données de l'aéroport d'arrivée :", airport_arr)
-
-            if airport_dep:
-                #Insertion des Latitude,Longitude dans notre collection
-                db.flight_infos_results.update_many(
-                { "departure.iata": filtered_flights[0]['departure']['iata'] },
-                { 
-                    "$set": { 
-                        "departure.latitude": airport_dep['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude'], 
-                        "departure.longitude": airport_dep['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
-                    } 
-                }
-                )
-                if airport_arr:
-                    db.flight_infos_results.update_many(
-                    { "arrival.iata": filtered_flights[0]['arrival']['iata'] },
-                    { 
-                        "$set": { 
-                            "arrival.latitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude'], 
-                            "arrival.longitude": airport_arr['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
-                        } 
-                    }
-                    )
-                    # Rediriger vers la route pour afficher la carte avec les positions
-                    return redirect(url_for('display_positions'))
-                else:
-                    return jsonify({"error": "Aucun aeroport trouvé sur l'API LH.", "details":airport_arr})
-            else:
-                return jsonify({"error": "Aucun aeroport trouvé sur l'API LH.", "details":airport_dep})
+                return redirect(url_for('display_positions'))
+            except FlightDataError as e:
+                return jsonify({"error": e.args[0], "details": e.details}), 400
         else:
             return jsonify({"error": "Aucun vol trouvé pour cette date."}), 404
     else:
-        return jsonify({"error": "Aucun vol trouvé ou problème avec l'API AS", "details":flight_info})
+        return jsonify({"error": "Aucun vol trouvé ou problème API AS", "details":flight_info})
 
 
 @app.route('/map')
 def display_positions():
     # Récupérer le vol depuis MongoDB
-    flight_data = db.flight_infos_results.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
+    flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
 
     if flight_data:
         return render_template('map.html', flight_data=flight_data)
@@ -96,39 +70,105 @@ def submit_flight_details():
     arrival_airport = request.form['arrival_airport']
     action = request.form['action']
 
+    #Si l'utilisateur clique sur "afficher la liste des vols"
     if action == 'list_flights':
         #Supprimer la collection si existante
-        db.flights_list_results.drop()
+        db.form_flights_list.drop()
         # Utiliser la classe API pour obtenir les informations sur les vols
         flights_list = api_requests.get_flights_list_LH(departure_airport, arrival_airport, flight_date)
 
         if flights_list and 'FlightInformation' in flights_list and 'Flights' in flights_list['FlightInformation']:
             flights_list_l = flights_list['FlightInformation']['Flights']['Flight']
-            db.flights_list_results.insert_many(flights_list_l)
+            db.form_flights_list.insert_many(flights_list_l)
             message = f"{len(flights_list_l)} résultats de vols insérés dans la base de données."
             print(message)
 
             # Rediriger vers la route pour afficher les résultats
             return redirect(url_for('display_flights_list'))
-        
         else:
             return jsonify({"error": "Aucun vol trouvé ou problème avec l'API LH.", "details":flights_list})
 
+    #Si l'utilisateur clique sur "simuler mon itinéraire"
     elif action == 'simulate_itinerary':
         print(f"Simulation d'itinéraire pour le {flight_date} entre {departure_airport} et {arrival_airport}.")
-        return f"""
-            <h3>Simulation de votre itinéraire :</h3>
-            <p>Itinéraire simulé pour le vol du {flight_date} ({flight_time}) de {departure_airport} à {arrival_airport}.</p>
-            <br>
-            <a href="/">Retour</a>
-        """
-    
+        # Si aucune heure n'est fournie, on utilise une heure par défaut (00:00:00)
+        if flight_time:
+            # Combiner la date et l'heure
+            combined_datetime_str = f"{flight_date}T{flight_time}:00"  # Ex: "2024-10-18T14:30:00"
+        else:
+            # Si pas d'heure, on utilise minuit comme heure par défaut
+            combined_datetime_str = f"{flight_date}T00:00:00"  # Ex: "2024-10-18T00:00:00"
+
+        # Convertir en objet datetime et formater au format souhaité
+        formatted_datetime = datetime.fromisoformat(combined_datetime_str).strftime("%Y-%m-%dT%H:%M:%S")
+
+        flight_infos_simulated = {
+            'flight_date': flight_date,
+            'flight_status': '',
+            'departure': {
+                'airport': departure_airport,
+                'timezone': '',
+                'iata': departure_airport,
+                'icao': '',
+                'terminal': '',
+                'gate': '',
+                'delay': '',
+                'scheduled': formatted_datetime,
+                'estimated': formatted_datetime,
+                'actual': formatted_datetime,
+                'estimated_runway': formatted_datetime,
+                'actual_runway': formatted_datetime
+            },
+            'arrival': {
+                'airport': arrival_airport,
+                'timezone': '',
+                'iata': arrival_airport,
+                'icao': '',
+                'terminal': '',
+                'gate': '',
+                'delay': '',
+                'scheduled': formatted_datetime,
+                'estimated':formatted_datetime,
+                'actual': formatted_datetime,
+                'estimated_runway': formatted_datetime,
+                'actual_runway': formatted_datetime
+            },
+            'airline': {
+                'name': '',
+                'iata': '',
+                'icao': ''
+            },
+            'flight': {
+                'number': '',
+                'iata': '',
+                'icao': '',
+                'codeshared': ''
+            },
+            'aircraft': {
+                'registration': '',
+                'iata': '',
+                'icao': '',
+                'icao24': ''
+            }
+        }
+
+        db.form_flight_infos.drop()
+        try:
+            flight_infos_processed = flightprocessor.process_flight_AS(flight_infos_simulated)
+            db.form_flight_infos.insert_one(flight_infos_processed)
+            message = f"{len(flight_infos_processed)} résultats de vols insérés dans la base de données."
+            print(message)
+
+            return redirect(url_for('display_positions'))
+        except FlightDataError as e:
+            return jsonify({"error": e.args[0], "details": e.details}), 400
+
     return redirect(url_for('index'))
 
 @app.route('/flights')
 def display_flights_list():
     # Récupérer les données de la collection MongoDB
-    flights = list(db.flights_list_results.find())
+    flights = list(db.form_flights_list.find())
 
     return render_template('flights.html', flights=flights)
 
