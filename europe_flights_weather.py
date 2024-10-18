@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-from flask import jsonify
 from datetime import datetime
 from api_requests import APIRequests 
 from functions import FlightProcessor, FlightDataError # Importer les classes FlightProcessor et FlightDataError
@@ -36,16 +35,16 @@ def today_europe_flights_append():
 				flights_today = list(db.europe_flights_today.find({}, {"_id": 0}))
 				if flights_today:
 					result = db.europe_flights.insert_many(flights_today)
-					return jsonify({"Documents ajoutés" : len(result.inserted_ids)})
+					return {"Documents ajoutés" : len(result.inserted_ids)}
 				else:
-					return jsonify({"error": "Aucun document à ajouter."}), 404
+					return {"error": "Aucun document à ajouter."}, 404
 				
 			except FlightDataError as e:
-				return jsonify({"error": e.args[0], "details": e.details}), 400
+				return {"error": e.args[0], "details": e.details}, 400
 		else:
-			return jsonify({"error": "Aucun vol trouvé en Europe.", "details": europe_flights}), 404
+			return {"error": "Aucun vol trouvé en Europe.", "details": europe_flights}, 404
 	else:
-		return jsonify({"error": "Aucun vol trouvé ou problème API AS", "details": flight_info})
+		return {"error": "Aucun vol trouvé ou problème API AS", "details": flight_info}
 
 
 today_europe_flights_append()

@@ -172,6 +172,31 @@ def display_flights_list():
 
     return render_template('flights.html', flights=flights)
 
+@app.route("/get_data/<db_name>/<col_name>")
+def get_data(db_name, col_name):
+    # Vérifier si la base de données existe
+    if db_name in client.list_database_names():
+        # Accéder à la base de données
+        db_show = client[db_name]
+
+        # Vérifier si la collection existe
+        if col_name in db_show.list_collection_names():
+            # Accéder à la collection
+            collection = db_show[col_name]
+
+            # Récupérer tous les documents dans la collection
+            documents = list(collection.find({}, {"_id": 0}))  # On exclut l'ID MongoDB (_id)
+
+            # Vérifier s'il y a des documents à afficher
+            if documents:
+                return jsonify({"data": documents}), 200  # Retourner les documents en format JSON
+            else:
+                return jsonify({"error": "Aucun document trouvé dans la collection."}), 404
+        else:
+            return jsonify({"error": "Collection introuvable."}), 404
+    else:
+        return jsonify({"error": "Base de données introuvable."}), 404
+
 if __name__ == "__main__":
     app.run(debug=True)
 
