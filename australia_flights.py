@@ -19,8 +19,8 @@ def today_america_flights_append():
 		america_flights = [
 		flight for flight in flight_info['data']
 		if flight.get('departure', {}).get('timezone') and flight.get('arrival', {}).get('timezone') and
-		flight['departure']['timezone'].startswith('America') and 
-		flight['arrival']['timezone'].startswith('America')
+		flight['departure']['timezone'].startswith('Australia') and 
+		flight['arrival']['timezone'].startswith('Australia')
 		]
 
 		if america_flights:

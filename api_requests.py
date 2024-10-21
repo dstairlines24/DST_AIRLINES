@@ -6,8 +6,8 @@ class APIRequests:
         self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
         self.access_key_visualcrossing='7BTWRWM4MYHBJEWF3JWZKKGRG'
         # Token et En-têtes pour API LHOpenAPI
-        self.client_id = '22642rjuu7z74utsdajwa8b9t'
-        self.client_secret = 'U57JwBbEKJ'
+        self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
+        self.client_secret = 'CwUc62danJ'
         self.acces_token_LH = self.get_access_token_LH()
         self.headers_LH = {
             "Accept": "application/json",
