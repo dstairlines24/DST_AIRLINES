@@ -15,6 +15,13 @@ class FlightProcessor:
     def __init__(self):
         self.api_requests = APIRequests()
 
+    # Fonction pour récupérer les vols du jour
+    def get_flights_landed(self):
+        flights_info=self.api_requests.get_flights_landed()
+        if flights_info:
+            return flights_info
+        raise FlightDataError("Problème lié à l'api avionstack")
+
     # Fonction pour récupérer les informations géographiques d'un aéroport
     def get_airport_coordinates(self, iata_code):
         airport_info = self.api_requests.get_airport_LH(iata_code)
