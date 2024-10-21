@@ -13,15 +13,18 @@ flightprocessor = FlightProcessor() # Créer une instance de la classe FlightPro
 def today_europe_flights_append():
 	#Requête API pour récupérer les vols landed (aviationstack) => à exécuter tous les jours ; il faudra peut-être faire un distinct
 	flight_info = api_requests.get_flights_landed()
-	db.europe_flights_today.drop()
+	# db.europe_flights_today.drop()
 
 	#Filtrer les vols avec un départ et une arrivée en Europe
 	if flight_info and 'data' in flight_info:
+		# europe_flights = [
+		# flight for flight in flight_info['data']
+		# if flight.get('departure', {}).get('timezone') and flight.get('arrival', {}).get('timezone') and
+		# flight['departure']['timezone'].startswith('Europe') and 
+		# flight['arrival']['timezone'].startswith('Europe')
+		# ]
 		europe_flights = [
 		flight for flight in flight_info['data']
-		if flight.get('departure', {}).get('timezone') and flight.get('arrival', {}).get('timezone') and
-		flight['departure']['timezone'].startswith('Europe') and 
-		flight['arrival']['timezone'].startswith('Europe')
 		]
 
 		if europe_flights:
