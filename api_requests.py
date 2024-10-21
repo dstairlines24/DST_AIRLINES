@@ -3,11 +3,11 @@ from datetime import datetime,timedelta
 
 class APIRequests:
     def __init__(self):
-        self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
-        self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
+        self.access_key_visualcrossing='7BTWRWM4MYHBJEWF3JWZKKGRG'
         # Token et En-têtes pour API LHOpenAPI
-        self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
-        self.client_secret = 'CwUc62danJ'
+        self.client_id = '22642rjuu7z74utsdajwa8b9t'
+        self.client_secret = 'U57JwBbEKJ'
         self.acces_token_LH = self.get_access_token_LH()
         self.headers_LH = {
             "Accept": "application/json",
