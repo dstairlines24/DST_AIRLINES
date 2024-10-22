@@ -30,7 +30,7 @@ class FlightProcessor:
             latitude = airport_info['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude']
             longitude = airport_info['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
             return latitude, longitude
-        raise FlightDataError("Problème à l'API aiport_LH", details_1=iata_code, details_2=airport_info)
+        raise FlightDataError("Problème à l'API aiport_LH", detail_1=iata_code, detail_2=airport_info)
 
     # Fonction pour calculer la distance orthodromique entre deux points (en km)
     @staticmethod
@@ -75,12 +75,12 @@ class FlightProcessor:
                 "conditions": meteo['currentConditions'].get('conditions'),
                 "icon": meteo['currentConditions'].get('icon')
             }
-        raise FlightDataError("Problème à l'API météo", details_1=lat, details_2=lon, details_3=meteo)
+        raise FlightDataError("Problème à l'API météo", detail_1=lat, detail_2=lon, detail_3=meteo)
 
     # Fonction pour traiter un vol et obtenir les données à insérer sur un seul enregistrement
     def process_flight_AS(self, flight):
         if not flight.get('departure') or not flight.get('arrival'):
-            raise FlightDataError("Problème avec l'objet passé dans process_flight_AS", details_1=flight)
+            raise FlightDataError("Problème avec l'objet passé dans process_flight_AS", detail_1=flight)
 
         # Récupérer les informations de l'aéroport de départ
         try:
