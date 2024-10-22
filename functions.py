@@ -2,6 +2,7 @@ from flask import jsonify
 from api_requests import APIRequests
 import math
 from datetime import datetime, timedelta
+import time
 
 class FlightDataError(Exception):
     def __init__(self, message, details_1=None, details_2=None, details_3=None, details_4=None):
@@ -29,7 +30,7 @@ class FlightProcessor:
             latitude = airport_info['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude']
             longitude = airport_info['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
             return latitude, longitude
-        raise FlightDataError("Problème à l'API aiport_LH", detail_1=iata_code, detail_2=airport_info)
+        raise FlightDataError("Problème à l'API aiport_LH", details_1=iata_code, details_2=airport_info)
 
     # Fonction pour calculer la distance orthodromique entre deux points (en km)
     @staticmethod
@@ -38,7 +39,7 @@ class FlightProcessor:
         lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
         dlat = lat2 - lat1
         dlon = lon2 - lon1
-        a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+        a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = R * c
         return distance
@@ -53,7 +54,7 @@ class FlightProcessor:
         x = A * math.cos(lat1) * math.cos(lon1) + B * math.cos(lat2) * math.cos(lon2)
         y = A * math.cos(lat1) * math.sin(lon1) + B * math.cos(lat2) * math.sin(lon2)
         z = A * math.sin(lat1) + B * math.sin(lat2)
-        new_lat = math.atan2(z, math.sqrt(x**2 + y**2))
+        new_lat = math.atan2(z, math.sqrt(x ** 2 + y ** 2))
         new_lon = math.atan2(y, x)
         return math.degrees(new_lat), math.degrees(new_lon)
 
@@ -74,40 +75,47 @@ class FlightProcessor:
                 "conditions": meteo['currentConditions'].get('conditions'),
                 "icon": meteo['currentConditions'].get('icon')
             }
-        raise FlightDataError("Problème à l'API météo", detail_1=lat, detail_2=lon, detail_3=meteo)
+        raise FlightDataError("Problème à l'API météo", details_1=lat, details_2=lon, details_3=meteo)
 
     # Fonction pour traiter un vol et obtenir les données à insérer sur un seul enregistrement
     def process_flight_AS(self, flight):
-        # Vérification des données de départ et d'arrivée
         if not flight.get('departure') or not flight.get('arrival'):
-            raise FlightDataError("Problème avec l'objet passé dans process_flight_AS", detail_1=flight)
+            raise FlightDataError("Problème avec l'objet passé dans process_flight_AS", details_1=flight)
 
         # Récupérer les informations de l'aéroport de départ
-        dep_latitude, dep_longitude = self.get_airport_coordinates(flight['departure']['iata'])
+        try:
+            dep_latitude, dep_longitude = self.get_airport_coordinates(flight['departure']['iata'])
+        except FlightDataError:
+            print(f"L'aéroport de départ {flight['departure'].get('iata')} n'est pas reconnu par l'API LH.")
+            return None
+
         # Récupérer les informations de l'aéroport d'arrivée
-        arr_latitude, arr_longitude = self.get_airport_coordinates(flight['arrival']['iata'])
-        
+        try:
+            arr_latitude, arr_longitude = self.get_airport_coordinates(flight['arrival']['iata'])
+        except FlightDataError:
+            print(f"L'aéroport d'arrivée {flight['arrival'].get('iata')} n'est pas reconnu par l'API LH.")
+            return None
+
         if dep_latitude and arr_latitude:
-            # Calculer la distance totale entre l'aéroport de départ et d'arrivée
             total_distance = self.haversine(dep_latitude, dep_longitude, arr_latitude, arr_longitude)
-            
-            # Découper en segments de 100 km
-            num_segments = int(total_distance // 100)  # Nombre de segments de 100 km
+
+            num_segments = int(total_distance // 100)
             segment_positions = {}
 
-            # Calculer les positions intermédiaires tous les 100 km et récupérer la météo
             for i in range(1, num_segments + 1):
-                fraction = (i * 100) / total_distance  # Fraction de la distance totale parcourue
+                fraction = (i * 100) / total_distance
                 intermediate_lat, intermediate_lon = self.interpolate_great_circle(dep_latitude, dep_longitude, arr_latitude, arr_longitude, fraction)
-                
-                #Calcul de 'time' correspondant à date et heure à chaque segment
+
                 formatted_datetime = datetime.fromisoformat(flight['departure'].get('scheduled')).strftime("%Y-%m-%dT%H:%M:%S")
                 datetime_obj = datetime.strptime(formatted_datetime, "%Y-%m-%dT%H:%M:%S")
-                updated_datetime = datetime_obj + timedelta(minutes=10*i)
+                updated_datetime = datetime_obj + timedelta(minutes=10 * i)
                 formatted_updated_datetime = updated_datetime.strftime("%Y-%m-%dT%H:%M:%S")
 
-                # Obtenir les données météo à la position intermédiaire
-                weather_data = self.get_weather_data(intermediate_lat, intermediate_lon, formatted_updated_datetime)
+                try:
+                    weather_data = self.get_weather_data(intermediate_lat, intermediate_lon, formatted_updated_datetime)
+                except FlightDataError:
+                    print(f"Erreur lors de la récupération des données météo pour le segment à {i * 100} km.")
+                    weather_data = {}
 
                 segment_positions[f"{i * 100}Km"] = {
                     "latitude": intermediate_lat,
@@ -116,10 +124,8 @@ class FlightProcessor:
                     **weather_data
                 }
 
-            # Récupérer les informations de l'avion (si présentes)
             aircraft = flight.get('aircraft') or {}
 
-            # Construire le document à insérer dans MongoDB
             return {
                 'flight_date': flight.get('flight_date'),
                 'flight_status': flight.get('flight_status'),
@@ -175,15 +181,17 @@ class FlightProcessor:
                     'icao': aircraft.get('icao'),
                     'icao24': aircraft.get('icao24')
                 },
-                'segments': segment_positions  # Ajout des segments de 100 km avec météo
+                'segments': segment_positions
             }
-        raise FlightDataError("Problème avec la fonction get_airport_coordinates", detail_1=dep_latitude, detail_2=dep_longitude, detail_3=arr_latitude, detail_4=arr_longitude)
-    
-    # Fonction pour traiter des vols et obtenir les données à insérer pour une liste de vols
+
     def process_flight_AS_list(self, flights_list):
         flights_to_insert = []
         for flight in flights_list:
-            flight_document = self.process_flight_AS(flight)
-            if flight_document:
-                flights_to_insert.append(flight_document)
+            try:
+                flight_document = self.process_flight_AS(flight)
+                if flight_document:
+                    flights_to_insert.append(flight_document)
+            except FlightDataError as e:
+                print(f"Erreur lors du traitement du vol {flight.get('flight', {}).get('iata')}: {e}")
+                continue
         return flights_to_insert
