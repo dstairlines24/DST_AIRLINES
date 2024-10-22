@@ -3,11 +3,21 @@ from datetime import datetime,timedelta
 
 class APIRequests:
     def __init__(self):
-        self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
-        self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        # self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
+        #Nouveau compte créé par Guillaume le 22/10 :
+        self.access_key_AS = "1029af3b615d19eabb828a556e1a14b6"
+
+        # self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        #Nouveau compte créé par Guillaume le 22/10 :
+        self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
+
         # Token et En-têtes pour API LHOpenAPI
-        self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
-        self.client_secret = 'CwUc62danJ'
+        # self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
+        # self.client_secret = 'CwUc62danJ'
+        #Nouveau compte créé par Guillaume le 22/10 :
+        self.client_id = 'xba2dh7y2xqabeamx2t7zcssx'
+        self.client_secret = 'drAEmGMT7B'
+        
         self.acces_token_LH = self.get_access_token_LH()
         self.headers_LH = {
             "Accept": "application/json",
