@@ -32,7 +32,7 @@ class APIRequests:
             print("Nouveau token obtenu :", self.access_token)
             return self.access_token
         else:
-            print("Erreur lors de l'obtention du token :", response.json())
+            print(f"Erreur lors de l'obtention du token :{response.status_code}: {response.text}")
 
     def get_flights_list_LH(self, departure_airport, arrival_airport, flight_date):
         api_url_LH = f"https://api.lufthansa.com/v1/operations/customerflightinformation/route/{departure_airport}/{arrival_airport}/{flight_date}"
@@ -40,7 +40,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            print("Erreur lors de la requête API LH :", response.json())
+            print(f"Erreur lors de la requête API LH :{response.status_code}: {response.text}")
 
     def get_flight_infos_AS(self, flight_iata):
         api_url_AS = f"https://api.aviationstack.com/v1/flights?access_key={self.access_key_AS}&flight_iata={flight_iata}"
@@ -48,7 +48,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            print("Erreur lors de la requête API AS :", response.json())
+            print(f"Erreur lors de la requête API Avionstack :{response.status_code}: {response.text}")
 
     def get_airport_LH(self, airport_iata):
         api_url_LH = f"https://api.lufthansa.com/v1/mds-references/airports/{airport_iata}?offset=0&LHoperated=0"
@@ -56,7 +56,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            print("Erreur lors de la requête API LH airport :", response.json())
+            print(f"Erreur lors de la requête API LH airport :{response.status_code}: {response.text}")
 
     def get_flights_departure_before_yesterday(self):  # souscription payante
         flight_date = (datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')
@@ -65,7 +65,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            print("Erreur lors de la requête API AS before yesterday :", response.json())
+            print(f"Erreur lors de la requête API AS before yesterday :{response.status_code}: {response.text}")
 
     def get_flights_landed(self):
         status = 'landed'
@@ -75,7 +75,7 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            print("Erreur lors de la requête API AS landed :", response.json())
+            print(f"Erreur lors de la requête API AS landed :{response.status_code}: {response.text}")
 
     def get_meteo(self, latitude, longitude, dateheure):
         dateheure = datetime.fromisoformat(dateheure).strftime("%Y-%m-%dT%H:%M:%S")
@@ -84,4 +84,5 @@ class APIRequests:
         if response.status_code == 200:
             return response.json()
         else:
-            print("Erreur lors de la requête API Visualcrossing :", response.json())
+            print(f"Erreur lors de la requête API Visualcrossing :{response.status_code}: {response.text}")
+
