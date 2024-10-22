@@ -5,12 +5,12 @@ from datetime import datetime, timedelta
 import time
 
 class FlightDataError(Exception):
-    def __init__(self, message, details_1=None, details_2=None, details_3=None, details_4=None):
+    def __init__(self, message, detail_1=None, detail_2=None, detail_3=None, detail_4=None):
         super().__init__(message)
-        self.details_1 = details_1
-        self.details_2 = details_2
-        self.details_3 = details_3
-        self.details_4 = details_4
+        self.detail_1 = detail_1
+        self.detail_2 = detail_2
+        self.detail_3 = detail_3
+        self.detail_4 = detail_4
 
 class FlightProcessor:
     def __init__(self):

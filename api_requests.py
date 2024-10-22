@@ -3,11 +3,31 @@ from datetime import datetime, timedelta
 
 class APIRequests:
     def __init__(self):
-        self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
-        self.access_key_visualcrossing = 'W9NSD6SUADPMWHHEAZWSE5E9W'
-        # Token et en-têtes pour l'API LHOpenAPI
-        self.client_id = '22642rjuu7z74utsdajwa8b9t'
-        self.client_secret = 'U57JwBbEKJ'
+        #Clé 1 :
+        #self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
+        #Clé Lydie :
+        #self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
+        #Clé Guillaume du 22/10 :
+        self.access_key_AS = "1029af3b615d19eabb828a556e1a14b6"
+        
+        #Clé 1 :
+        #self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        #Clé Lydie :
+        #self.access_key_visualcrossing = 'W9NSD6SUADPMWHHEAZWSE5E9W'
+        #Clé Guillaume du 22/10 :
+        self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
+
+        # Token et En-têtes pour API LHOpenAPI
+        #Compte 1 :
+        #self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
+        #self.client_secret = 'CwUc62danJ'
+        #Compte Lydie :
+        #self.client_id = '22642rjuu7z74utsdajwa8b9t'
+        #self.client_secret = 'U57JwBbEKJ'
+        #Compte Guillaume du 22/10 :
+        self.client_id = 'xba2dh7y2xqabeamx2t7zcssx'
+        self.client_secret = 'drAEmGMT7B'
+
         self.acces_token_LH = self.get_access_token_LH()
         self.headers_LH = {
             "Accept": "application/json",
