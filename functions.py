@@ -184,14 +184,30 @@ class FlightProcessor:
                 'segments': segment_positions
             }
 
-    def process_flight_AS_list(self, flights_list):
-        flights_to_insert = []
+    def process_flight_AS_list(self, flights_list, mongo_collection):
+        successfully_processed_flights = []
+        failed_flights = []
+
         for flight in flights_list:
             try:
                 flight_document = self.process_flight_AS(flight)
                 if flight_document:
-                    flights_to_insert.append(flight_document)
+                    # Insérer le vol traité dans la collection MongoDB
+                    mongo_collection.insert_one(flight_document)
+                    successfully_processed_flights.append(flight)
+                    print(f"Vol {flight['flight']['iata']} traité et inséré.")
             except FlightDataError as e:
+                # En cas d'erreur, enregistrer les informations du vol échoué
+                failed_flights.append({
+                    "flight": flight,
+                    "error": str(e),
+                    "details": e.args
+                })
                 print(f"Erreur lors du traitement du vol {flight.get('flight', {}).get('iata')}: {e}")
-                continue
-        return flights_to_insert
+
+        # Retourner un résumé du traitement
+        return {
+            "vols traités": len(successfully_processed_flights),
+            "vols échoués": len(failed_flights),
+            "details échecs": failed_flights
+        }
