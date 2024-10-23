@@ -6,22 +6,22 @@ class APIRequests:
         #Clé 1 :
         #self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
         #Clé Lydie :
-        #self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
+        #self.access_key_AS = "c8af5305b9d8d3367e336086e9835e0a"
         #Clé Guillaume du 22/10 :
         self.access_key_AS = "1029af3b615d19eabb828a556e1a14b6"
         
-        #Clé 1 :
-        #self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
         #Clé Lydie :
+        #self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        #Clé Yoan :
         #self.access_key_visualcrossing = 'W9NSD6SUADPMWHHEAZWSE5E9W'
         #Clé Guillaume du 22/10 :
         self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
 
         # Token et En-têtes pour API LHOpenAPI
-        #Compte 1 :
+        #Compte Llydie :
         #self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
         #self.client_secret = 'CwUc62danJ'
-        #Compte Lydie :
+        #Compte Yoan :
         #self.client_id = '22642rjuu7z74utsdajwa8b9t'
         #self.client_secret = 'U57JwBbEKJ'
         #Compte Guillaume du 22/10 :
