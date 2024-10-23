@@ -2,40 +2,32 @@ import requests
 from datetime import datetime, timedelta
 
 class APIRequests:
-    def __init__(self):
-<<<<<<< HEAD
-        self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
-        self.access_key_visualcrossing = '7BTWRWM4MYHBJEWF3JWZKKGRG'
-        # Token et en-têtes pour l'API LHOpenAPI
-        self.client_id = '22642rjuu7z74utsdajwa8b9t'
-        self.client_secret = 'U57JwBbEKJ'
-=======
-        #Clé 1 :
-        # self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
+    def __init__(self):        
         #Clé Lydie :
-        #self.access_key_AS = "c8af5305b9d8d3367e336086e9835e0a"
-        #Clé Guillaume du 22/10 :
-        self.access_key_AS = "1029af3b615d19eabb828a556e1a14b6"
+        #self.access_key_AS = 'c8af5305b9d8d3367e336086e9835e0a'
+        #Clé Yoan :
+        self.access_key_AS = '11cdd6f194badc16f64953a2fb383042'
+        #Clé Guillaume :
+        #self.access_key_AS = '1029af3b615d19eabb828a556e1a14b6'
         
         #Clé Lydie :
-        # self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        #self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
         #Clé Yoan :
-        #self.access_key_visualcrossing = 'W9NSD6SUADPMWHHEAZWSE5E9W'
-        #Clé Guillaume du 22/10 :
-        self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
+        self.access_key_visualcrossing = 'KTXFYHL5QFZFAXWFJ5BRPWG6C'
+        #self.access_key_visualcrossing = 'YLNCGXBD6NZFNG3F4DVEXMPTQ'
+        #Clé Guillaume :
+        #self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
 
-        # Token et En-têtes pour API LHOpenAPI
         #Compte Llydie :
-        # self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
-        # self.client_secret = 'CwUc62danJ'
+        #self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
+        #self.client_secret = 'CwUc62danJ'
         #Compte Yoan :
-        #self.client_id = '22642rjuu7z74utsdajwa8b9t'
-        #self.client_secret = 'U57JwBbEKJ'
-        #Compte Guillaume du 22/10 :
-        self.client_id = 'xba2dh7y2xqabeamx2t7zcssx'
-        self.client_secret = 'drAEmGMT7B'
+        self.client_id = '22642rjuu7z74utsdajwa8b9t'
+        self.client_secret = 'U57JwBbEKJ'
+        #Compte Guillaume :
+        #self.client_id = 'xba2dh7y2xqabeamx2t7zcssx'
+        #self.client_secret = 'drAEmGMT7B'
 
->>>>>>> main
         self.acces_token_LH = self.get_access_token_LH()
         self.headers_LH = {
             "Accept": "application/json",

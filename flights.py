@@ -1,34 +1,29 @@
 from pymongo import MongoClient
-from datetime import datetime
-from api_requests import APIRequests 
-from functions import FlightProcessor, FlightDataError
+from functions import FlightProcessor
 
 # Connexion à MongoDB
 client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
 db = client.app_data
 
-api_requests = APIRequests() 
 flightprocessor = FlightProcessor()
 
 def today_all_flights_append():
-    flight_info = api_requests.get_flights_landed()
+    # Requête API pour récupérer les vols "landed" (aviationstack)
+    flight_info = flightprocessor.get_flights_landed()
 
     if flight_info and 'data' in flight_info:
         all_flights = flight_info['data']
 
         if all_flights:
-            try:
-                all_flights_processed = flightprocessor.process_flight_AS_list(all_flights)
+            # Traiter la liste des vols et insérer dans la collection MongoDB
+            result = flightprocessor.process_flight_AS_list(all_flights, db.all_flights)
 
-                # Insertion des vols dans MongoDB
-                result = db.all_flight.insert_many(all_flights_processed)
-                message = f"{len(all_flights_processed)} résultats de vols insérés dans la base de données."
-                print(message)
+            # Résumé des opérations
+            print(f"{result['vols traités']} vols traités et insérés dans la base de données.")
+            if result["vols échoués"]:
+                print(f"{result['vols échoués']} vols ont échoué et n'ont pas été insérés.")
 
-                return {"Documents ajoutés": len(result.inserted_ids)}
-
-            except FlightDataError as e:
-                return {"error": e.args[0], "details": e.details}, 400
+            return result
         else:
             return {"error": "Aucun vol trouvé.", "details": all_flights}, 404
     else:
