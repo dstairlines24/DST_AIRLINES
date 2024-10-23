@@ -5,16 +5,23 @@ from datetime import datetime, timedelta
 import time
 
 class FlightDataError(Exception):
-    def __init__(self, message, details_1=None, details_2=None, details_3=None, details_4=None):
+    def __init__(self, message, detail_1=None, detail_2=None, detail_3=None, detail_4=None):
         super().__init__(message)
-        self.details_1 = details_1
-        self.details_2 = details_2
-        self.details_3 = details_3
-        self.details_4 = details_4
+        self.detail_1 = detail_1
+        self.detail_2 = detail_2
+        self.detail_3 = detail_3
+        self.detail_4 = detail_4
 
 class FlightProcessor:
     def __init__(self):
         self.api_requests = APIRequests()
+
+    # Fonction pour récupérer les vols du jour
+    def get_flights_landed(self):
+        flights_info=self.api_requests.get_flights_landed()
+        if flights_info:
+            return flights_info
+        raise FlightDataError("Problème lié à l'api avionstack")
 
     # Fonction pour récupérer les informations géographiques d'un aéroport
     def get_airport_coordinates(self, iata_code):
@@ -23,7 +30,7 @@ class FlightProcessor:
             latitude = airport_info['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Latitude']
             longitude = airport_info['AirportResource']['Airports']['Airport']['Position']['Coordinate']['Longitude']
             return latitude, longitude
-        raise FlightDataError("Problème à l'API aiport_LH", details_1=iata_code, details_2=airport_info)
+        raise FlightDataError("Problème à l'API aiport_LH", detail_1=iata_code, detail_2=airport_info)
 
     # Fonction pour calculer la distance orthodromique entre deux points (en km)
     @staticmethod
@@ -68,12 +75,12 @@ class FlightProcessor:
                 "conditions": meteo['currentConditions'].get('conditions'),
                 "icon": meteo['currentConditions'].get('icon')
             }
-        raise FlightDataError("Problème à l'API météo", details_1=lat, details_2=lon, details_3=meteo)
+        raise FlightDataError("Problème à l'API météo", detail_1=lat, detail_2=lon, detail_3=meteo)
 
     # Fonction pour traiter un vol et obtenir les données à insérer sur un seul enregistrement
     def process_flight_AS(self, flight):
         if not flight.get('departure') or not flight.get('arrival'):
-            raise FlightDataError("Problème avec l'objet passé dans process_flight_AS", details_1=flight)
+            raise FlightDataError("Problème avec l'objet passé dans process_flight_AS", detail_1=flight)
 
         # Récupérer les informations de l'aéroport de départ
         try:
@@ -177,14 +184,30 @@ class FlightProcessor:
                 'segments': segment_positions
             }
 
-    def process_flight_AS_list(self, flights_list):
-        flights_to_insert = []
+    def process_flight_AS_list(self, flights_list, mongo_collection):
+        successfully_processed_flights = []
+        failed_flights = []
+
         for flight in flights_list:
             try:
                 flight_document = self.process_flight_AS(flight)
                 if flight_document:
-                    flights_to_insert.append(flight_document)
+                    # Insérer le vol traité dans la collection MongoDB
+                    mongo_collection.insert_one(flight_document)
+                    successfully_processed_flights.append(flight)
+                    print(f"Vol {flight['flight']['iata']} traité et inséré.")
             except FlightDataError as e:
+                # En cas d'erreur, enregistrer les informations du vol échoué
+                failed_flights.append({
+                    "flight": flight,
+                    "error": str(e),
+                    "details": e.args
+                })
                 print(f"Erreur lors du traitement du vol {flight.get('flight', {}).get('iata')}: {e}")
-                continue
-        return flights_to_insert
+
+        # Retourner un résumé du traitement
+        return {
+            "vols traités": len(successfully_processed_flights),
+            "vols échoués": len(failed_flights),
+            "details échecs": failed_flights
+        }

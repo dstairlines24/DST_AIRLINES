@@ -36,15 +36,15 @@ def submit_flight_number():
         flight_infos_filtered = [flight for flight in flight_info['data'] if flight['flight_date'] == flight_date]
 
         if flight_infos_filtered:
-            try:
-                flight_infos_processed = flightprocessor.process_flight_AS_list(flight_infos_filtered)
-                db.form_flight_infos.insert_many(flight_infos_processed)
-                message = f"{len(flight_infos_processed)} résultats de vols insérés dans la base de données."
-                print(message)
+            flight_infos_processed = flightprocessor.process_flight_AS_list(flight_infos_filtered, db.form_flight_infos)
 
-                return redirect(url_for('display_positions'))
-            except FlightDataError as e:
-                return jsonify({"error": e.args[0], "details": e.details}), 400
+            # Résumé des opérations
+            print(f"{flight_infos_processed['vols traités']} vols traités et insérés dans la base de données.")
+            if flight_infos_processed["vols échoués"]:
+                print(f"{flight_infos_processed['vols échoués']} vols ont échoué et n'ont pas été insérés.")
+
+            return redirect(url_for('display_positions'))
+        
         else:
             return jsonify({"error": "Aucun vol trouvé pour cette date."}), 404
     else:
@@ -155,13 +155,15 @@ def submit_flight_details():
         db.form_flight_infos.drop()
         try:
             flight_infos_processed = flightprocessor.process_flight_AS(flight_infos_simulated)
-            db.form_flight_infos.insert_one(flight_infos_processed)
-            message = f"{len(flight_infos_processed)} résultats de vols insérés dans la base de données."
-            print(message)
+            if flight_infos_processed:
+                # Insérer le vol traité dans la collection MongoDB
+                db.form_flight_infos.insert_one(flight_infos_processed)
 
-            return redirect(url_for('display_positions'))
+                print(f"Vol {flight_infos_processed['flight']['iata']} traité et inséré.")
+                return redirect(url_for('display_positions'))
+            
         except FlightDataError as e:
-            return jsonify({"error": e.args[0], "details": e.details}), 400
+            print(f"Erreur lors du traitement du vol {flight_infos_simulated.get('flight', {}).get('iata')}: {e}")
 
     return redirect(url_for('index'))
 
