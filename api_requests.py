@@ -2,23 +2,27 @@ import requests
 from datetime import datetime, timedelta
 
 class APIRequests:
-    def __init__(self):        
+    def __init__(self):
+        self.countVisualCrossing = 0  # Initialisation du compteur d'appels API météo
+
         #Clé Lydie :
-        #self.access_key_AS = 'c8af5305b9d8d3367e336086e9835e0a'
+        #self.access_key_AS = "c8af5305b9d8d3367e336086e9835e0a"
         #Clé Yoan :
-        self.access_key_AS = '11cdd6f194badc16f64953a2fb383042'
+        self.access_key_AS = "b856567c8b3e0d2e69a0f107f656c213"
         #Clé Guillaume :
-        #self.access_key_AS = '1029af3b615d19eabb828a556e1a14b6'
+        #self.access_key_AS = "1029af3b615d19eabb828a556e1a14b6"
         
         #Clé Lydie :
-        #self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
+        #self.access_key_visualcrossing = 'RERF7RY267CY5754N8W2VZVKT'
+        #self.access_key_visualcrossing_2 = 'UQJNPFRG3MA24EA5PG4DFAR6L'
         #Clé Yoan :
-        self.access_key_visualcrossing = 'KTXFYHL5QFZFAXWFJ5BRPWG6C'
-        #self.access_key_visualcrossing = 'YLNCGXBD6NZFNG3F4DVEXMPTQ'
+        self.access_key_visualcrossing = 'YLNCGXBD6NZFNG3F4DVEXMPTQ'
+        self.access_key_visualcrossing_2 = 'KTXFYHL5QFZFAXWFJ5BRPWG6C'
         #Clé Guillaume :
-        #self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
+        #self.access_key_visualcrossing = '2Q5Q5GC6BTZEBEPQQMALNRTBP'
 
-        #Compte Llydie :
+        # Token et En-têtes pour API LHOpenAPI
+        #Compte Lydie :
         #self.client_id = 'kmcdkm9jsmhrpt4upa7t6tpzb'
         #self.client_secret = 'CwUc62danJ'
         #Compte Yoan :
@@ -102,6 +106,10 @@ class APIRequests:
         api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude},{longitude}/{dateheure}?key={self.access_key_visualcrossing}&include=current&unitGroup=metric"
         response = requests.get(api_url)
         if response.status_code == 200:
+            self.countVisualCrossing += 1
+            if self.countVisualCrossing == 1000: # Forfait journalier atteint
+                self.access_key_visualcrossing = self.access_key_visualcrossing_2  # Utilise la seconde clé
+                self.countVisualCrossing = 0  # Réinitialise le compteur 
             return response.json()
         else:
             print(f"Erreur lors de la requête API Visualcrossing :{response.status_code}: {response.text}")
