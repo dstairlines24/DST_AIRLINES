@@ -4,20 +4,23 @@ from datetime import datetime, timedelta
 class APIRequests:
     def __init__(self):
         self.countVisualCrossing = 0  # Initialisation du compteur d'appels API météo
-        #Clé 1 :
-        #self.access_key_AS = "11cdd6f194badc16f64953a2fb383042"
         #Clé Lydie :
-        #self.access_key_AS = "c8af5305b9d8d3367e336086e9835e0a"
-        #Clé Guillaume du 22/10 :
-        #self.access_key_AS = "1029af3b615d19eabb828a556e1a14b6"
+        #self.access_key_AS = 'c8af5305b9d8d3367e336086e9835e0a'
+        #Clé Yoan :
+        #self.access_key_AS = '11cdd6f194badc16f64953a2fb383042'
+        #Clé Guillaume :
+        #self.access_key_AS = '1029af3b615d19eabb828a556e1a14b6'
         
         #Clé Lydie :
         #self.access_key_visualcrossing='RERF7RY267CY5754N8W2VZVKT'
         #self.access_key_visualcrossing_2='UQJNPFRG3MA24EA5PG4DFAR6L'
         #Clé Yoan :
-        #self.access_key_visualcrossing = 'W9NSD6SUADPMWHHEAZWSE5E9W'
-        #Clé Guillaume du 22/10 :
+        #self.access_key_visualcrossing = 'KTXFYHL5QFZFAXWFJ5BRPWG6C'
+        #self.access_key_visualcrossing_2 = 'W9NSD6SUADPMWHHEAZWSE5E9W'
+        #Clé Guillaume :
         #self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
+        #self.access_key_visualcrossing_2='P5EQ8RLEBUC7CZ9ZTN8WZG4AZ'
+
 
         # Token et En-têtes pour API LHOpenAPI
         #Compte Lydie :
@@ -26,7 +29,7 @@ class APIRequests:
         #Compte Yoan :
         #self.client_id = '22642rjuu7z74utsdajwa8b9t'
         #self.client_secret = 'U57JwBbEKJ'
-        #Compte Guillaume du 22/10 :
+        #Compte Guillaume :
         #self.client_id = 'xba2dh7y2xqabeamx2t7zcssx'
         #self.client_secret = 'drAEmGMT7B'
 
