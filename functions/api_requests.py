@@ -1,30 +1,26 @@
 import requests
 from datetime import datetime, timedelta
+import os
 
-# # Récupérer le mot de passe à partir des variables d'environnement
-# key_AS = os.getenv('KEY_AS')
-# key_visualcrossing = os.getenv('KEY_VISUALCROSSING')
-# key_visualcrossing_2 = os.getenv('KEY_VISUALCROSSING_2')
-# client_id_LH = os.getenv('CLIENT_ID_LH')
-# client_secret_LH = os.getenv('CLIENT_SECRET_LH')
+# Récupérer le mot de passe à partir des variables d'environnement
+key_AS = os.getenv('KEY_AS')
+key_visualcrossing = os.getenv('KEY_VISUALCROSSING')
+key_visualcrossing_2 = os.getenv('KEY_VISUALCROSSING_2')
+client_id_LH = os.getenv('CLIENT_ID_LH')
+client_secret_LH = os.getenv('CLIENT_SECRET_LH')
 
 
 class APIRequests:
     def __init__(self):
         self.countVisualCrossing = 0  # Initialisation du compteur d'appels API météo
-        self.access_key_AS = '1029af3b615d19eabb828a556e1a14b6'
-        # self.access_key_AS = key_AS
+        self.access_key_AS = key_AS
         
-        self.access_key_visualcrossing='2Q5Q5GC6BTZEBEPQQMALNRTBP'
-        self.access_key_visualcrossing_2='P5EQ8RLEBUC7CZ9ZTN8WZG4AZ'
-        # self.access_key_visualcrossing = key_visualcrossing
-        # self.access_key_visualcrossing_2 = key_visualcrossing_2
+        self.access_key_visualcrossing = key_visualcrossing
+        self.access_key_visualcrossing_2 = key_visualcrossing_2
 
         # Token et En-têtes pour API LHOpenAPI
-        self.client_id = 'xba2dh7y2xqabeamx2t7zcssx'
-        self.client_secret = 'drAEmGMT7B'
-        # self.client_id = client_id_LH
-        # self.client_secret = client_secret_LH
+        self.client_id = client_id_LH
+        self.client_secret = client_secret_LH
 
         self.acces_token_LH = self.get_access_token_LH()
         self.headers_LH = {
