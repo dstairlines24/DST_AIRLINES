@@ -15,8 +15,13 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 #=================================================
 # 1. Connexion à MongoDB et Extraction des Données
 #=================================================
+import os
+
+# Récupérer l'URI de MongoDB depuis la variable d'environnement
+mongo_uri = os.getenv("MONGO_URI")
+
 # Connexion à MongoDB
-client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
+client = MongoClient(mongo_uri)
 db = client.app_data
 
 # Création du DataFrame pandas et suppression des doublons

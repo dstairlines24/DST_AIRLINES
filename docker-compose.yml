@@ -4,7 +4,7 @@ services:
     image: mongo:4.4
     container_name: dstair_mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: dstairlines
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_LOGIN}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - ./data:/data/db
@@ -19,4 +19,18 @@ services:
     depends_on:
       - mongodb
     environment:
-      - MONGO_URI=mongodb://dstairlines:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data
+      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
+      #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
+      - FLASK_ADMIN_LOGIN=${FLASK_ADMIN_LOGIN}
+      - FLASK_ADMIN_PASSWORD=${FLASK_ADMIN_PASSWORD}
+      - FLASK_USER_LOGIN=${FLASK_USER_LOGIN}
+      - FLASK_USER_PASSWORD=${FLASK_USER_PASSWORD}
+      - KEY_AS=${KEY_AS}
+      - KEY_VISUALCROSSING=${KEY_VISUALCROSSING}
+      - KEY_VISUALCROSSING_2=${KEY_VISUALCROSSING_2}
+      - CLIENT_ID_LH=${CLIENT_ID_LH}
+      - CLIENT_SECRET_LH=${CLIENT_SECRET_LH}
+    command: >
+      bash -c "
+      python init_db.py && 
+      python app.py"

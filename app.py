@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort
+from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session
 from pymongo import MongoClient
 from datetime import datetime
 from functools import wraps
@@ -10,16 +10,15 @@ import os
 
 app = Flask(__name__)
 
+# Ajoutez une clé secrète pour la session
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "votre_cle_secrete_par_defaut")
+
+# Récupérer l'URI de MongoDB depuis la variable d'environnement
+mongo_uri = os.getenv("MONGO_URI")
+
 # Connexion à MongoDB
-client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
+client = MongoClient(mongo_uri)
 db = client.app_data
-
-# # Récupérer le mot de passe à partir des variables d'environnement
-# mongo_password = os.getenv('MONGO_ROOT_PASSWORD')
-
-# # Connexion à MongoDB
-# client = MongoClient(host="mongodb", port=27017, username="dstairlines", password=mongo_password)
-# db = client.app_data
 
 api_requests = APIRequests()  # Créer une instance de la classe APIRequests
 flightprocessor = FlightProcessor() # Créer une instance de la classe FlightProcessor
@@ -31,7 +30,7 @@ def check_role(required_role):
         def wrapper(*args, **kwargs):
             if 'role' not in session:
                 return redirect(url_for('login'))
-            if session['role'] != required_role:
+            if session['role'] != required_role and session['role'] != 'admin':
                 abort(403)  # Accès refusé si le rôle ne correspond pas
             return f(*args, **kwargs)
         return wrapper
@@ -283,5 +282,5 @@ def run_script(script_name):
     return Response(stream_with_context(generate()), mimetype='text/plain')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
 
