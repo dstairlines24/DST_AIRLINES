@@ -19,17 +19,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
 db = client.app_data
 
-# Récupération des collections
-collections = ['all_flights', 'asia_flights', 'europe_flights']
-data = []
-
-# Concaténer les collections en un DataFrame
-for collection_name in collections:
-    collection = db[collection_name]
-    data.extend(list(collection.find()))
-
 # Création du DataFrame pandas et suppression des doublons
-df = pd.DataFrame(data).drop_duplicates(subset=['_id'])
+df = pd.DataFrame(list(db['final_flights'].find())).drop_duplicates(subset=['_id'])
 
 #================================================================
 # 2. Création des colonnes pour les Features et la Variable Cible

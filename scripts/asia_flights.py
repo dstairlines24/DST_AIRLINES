@@ -1,5 +1,10 @@
 from pymongo import MongoClient
-from functions import FlightProcessor
+
+# Ajouter le chemin du dossier parent pour pouvoir accéder à functions
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from functions.functions import FlightProcessor
 
 # Connexion à MongoDB
 client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
@@ -7,16 +12,21 @@ db = client.app_data
 
 flightprocessor = FlightProcessor()
 
-def today_all_flights_append():
+def today_asia_flights_append():
     # Requête API pour récupérer les vols "landed" (aviationstack)
     flight_info = flightprocessor.get_flights_landed()
 
+    # Filtrer les vols avec un départ et une arrivée en Asie
     if flight_info and 'data' in flight_info:
-        all_flights = flight_info['data']
+        asia_flights = [
+            flight for flight in flight_info['data']
+            if flight.get('departure', {}).get('timezone') and flight.get('arrival', {}).get('timezone') and
+               flight['departure']['timezone'].startswith('Asia') and flight['arrival']['timezone'].startswith('Asia')
+        ]
 
-        if all_flights:
+        if asia_flights:
             # Traiter la liste des vols et insérer dans la collection MongoDB
-            result = flightprocessor.process_flight_AS_list(all_flights, db.all_flights)
+            result = flightprocessor.process_flight_AS_list(asia_flights, db.asia_flights)
 
             # Résumé des opérations
             print(f"{result['vols traités']} vols traités et insérés dans la base de données.")
@@ -25,8 +35,8 @@ def today_all_flights_append():
 
             return result
         else:
-            return {"error": "Aucun vol trouvé.", "details": all_flights}, 404
+            return {"error": "Aucun vol trouvé en Asie.", "details": asia_flights}, 404
     else:
         return {"error": "Aucun vol trouvé ou problème API AS", "details": flight_info}
 
-today_all_flights_append()
+today_asia_flights_append()

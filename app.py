@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context
 from pymongo import MongoClient
 from datetime import datetime
-from api_requests import APIRequests  # Importer la classe APIRequests
-from functions import FlightProcessor, FlightDataError # Importer les classes FlightProcessor et FlightDataError
+from functions.api_requests import APIRequests
+from functions.functions import FlightProcessor, FlightDataError
+import subprocess
+import os
 
 app = Flask(__name__)
 
@@ -198,6 +200,36 @@ def get_data(db_name, col_name):
             return jsonify({"error": "Collection introuvable."}), 404
     else:
         return jsonify({"error": "Base de données introuvable."}), 404
+    
+# Sous-répertoire où les fichiers sont situés
+SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), 'scripts')
+
+@app.route('/run_script/<script_name>', methods=['GET', 'POST'])
+def run_script(script_name):
+    # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
+    if not script_name.endswith('.py'):
+        return jsonify({'status': 'error', 'error': 'Invalid script extension'}), 400
+
+    # Chemin complet du script à exécuter
+    script_path = os.path.join(SCRIPTS_DIR, script_name)
+    
+    # Vérifie si le fichier existe dans le sous-répertoire
+    if not os.path.isfile(script_path):
+        return jsonify({'status': 'error', 'error': 'Script not found'}), 404
+
+    # Créez un générateur pour streamer la sortie en temps réel
+    def generate():
+        # Exécutez le script en utilisant subprocess et capturez stdout ligne par ligne
+        process = subprocess.Popen(['python3', '-u', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        
+        # Itérez sur la sortie ligne par ligne
+        for line in iter(process.stdout.readline, ''):
+            yield line  # Envoyer la sortie en direct au client
+            
+        process.stdout.close()
+        process.wait()  # Attendez que le processus se termine
+
+    return Response(stream_with_context(generate()), mimetype='text/plain')
 
 if __name__ == "__main__":
     app.run(debug=True)

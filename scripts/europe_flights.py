@@ -1,5 +1,10 @@
 from pymongo import MongoClient
-from functions import FlightProcessor
+
+# Ajouter le chemin du dossier parent pour pouvoir accéder à functions
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from functions.functions import FlightProcessor
 
 # Connexion à MongoDB
 client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
