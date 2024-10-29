@@ -5,8 +5,18 @@ services:
     container_name: dstair_mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: dstairlines
-      MONGO_INITDB_ROOT_PASSWORD: dstairlines
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - ./data:/data/db
     ports:
       - 27017:27017
+      
+  flask_app:
+    build: .
+    container_name: dstair_flask_app
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://dstairlines:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data

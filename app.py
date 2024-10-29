@@ -1,6 +1,8 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context
+from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort
 from pymongo import MongoClient
 from datetime import datetime
+from functools import wraps
+from werkzeug.security import check_password_hash  # Pour vérifier les mots de passe
 from functions.api_requests import APIRequests
 from functions.functions import FlightProcessor, FlightDataError
 import subprocess
@@ -12,14 +14,58 @@ app = Flask(__name__)
 client = MongoClient(host="localhost", port=27017, username="dstairlines", password="dstairlines")
 db = client.app_data
 
+# # Récupérer le mot de passe à partir des variables d'environnement
+# mongo_password = os.getenv('MONGO_ROOT_PASSWORD')
+
+# # Connexion à MongoDB
+# client = MongoClient(host="mongodb", port=27017, username="dstairlines", password=mongo_password)
+# db = client.app_data
+
 api_requests = APIRequests()  # Créer une instance de la classe APIRequests
 flightprocessor = FlightProcessor() # Créer une instance de la classe FlightProcessor
+
+# Middleware pour vérifier le rôle de l'utilisateur
+def check_role(required_role):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            if 'role' not in session:
+                return redirect(url_for('login'))
+            if session['role'] != required_role:
+                abort(403)  # Accès refusé si le rôle ne correspond pas
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Récupérer l'utilisateur de la base de données
+        user = db.users.find_one({"username": username})
+        
+        # Vérifier les identifiants et le mot de passe
+        if user and check_password_hash(user['password'], password):  # Le mot de passe doit être hashé et stocké
+            session['username'] = username
+            session['role'] = user['role']  # Stockez le rôle dans la session ('user' ou 'admin')
+            return redirect(url_for('index'))
+        else:
+            return "Identifiant ou mot de passe incorrect", 401
+    return render_template('login.html')  # Page de connexion
+
+@app.route('/logout')
+def logout():
+    session.clear()  # Effacer la session
+    return redirect(url_for('login'))
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/submit_flight_number', methods=['POST'])
+@check_role('user')
 def submit_flight_number():
     print("Form data:", request.form)
     #Récupération informations entrées par l'utilisateur
@@ -54,6 +100,7 @@ def submit_flight_number():
 
 
 @app.route('/map')
+@check_role('user')
 def display_positions():
     # Récupérer le vol depuis MongoDB
     flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
@@ -65,6 +112,7 @@ def display_positions():
 
 
 @app.route('/submit_flight_details', methods=['POST'])
+@check_role('user')
 def submit_flight_details():
     flight_date = request.form['flight_date']
     flight_time = request.form.get('flight_time', 'Non spécifié')
@@ -170,6 +218,7 @@ def submit_flight_details():
     return redirect(url_for('index'))
 
 @app.route('/flights')
+@check_role('user')
 def display_flights_list():
     # Récupérer les données de la collection MongoDB
     flights = list(db.form_flights_list.find())
@@ -177,6 +226,7 @@ def display_flights_list():
     return render_template('flights.html', flights=flights)
 
 @app.route("/get_data/<db_name>/<col_name>")
+@check_role('admin')
 def get_data(db_name, col_name):
     # Vérifier si la base de données existe
     if db_name in client.list_database_names():
@@ -205,6 +255,7 @@ def get_data(db_name, col_name):
 SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), 'scripts')
 
 @app.route('/run_script/<script_name>', methods=['GET', 'POST'])
+@check_role('admin')
 def run_script(script_name):
     # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
     if not script_name.endswith('.py'):
