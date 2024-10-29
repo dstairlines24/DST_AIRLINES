@@ -6,7 +6,7 @@ client = MongoClient(host="localhost", port=27017, username="dstairlines", passw
 db = client.app_data
 
 # Récupération des collections
-collections = ['all_flights', 'asia_flights', 'europe_flights', 'america_flights']
+collections = ['all_flights', 'asia_flights', 'europe_flights', 'america_flights', 'temp_db']
 data = []
 
 # Concaténer les collections en un DataFrame
