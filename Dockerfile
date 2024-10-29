@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 # COPY . .
 
 # Copie les répertoires spécifiques
-COPY data /app/data
+# COPY data /app/data
 COPY functions /app/functions
 COPY scripts /app/scripts
 COPY static /app/static
