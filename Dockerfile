@@ -13,8 +13,19 @@ COPY requirements.txt .
 # Installer les dépendances
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
-# Copier les fichiers de l'application
-COPY . .
+# Copier tous les fichiers de l'application
+# COPY . .
+
+# Copie les répertoires spécifiques
+COPY data /app/data
+COPY functions /app/functions
+COPY scripts /app/scripts
+COPY static /app/static
+COPY templates /app/templates
+
+# Copie les fichiers spécifiques
+COPY app.py /app/app.py
+COPY init_db.py /app/init_db.py
 
 # Exécuter le script d'initialisation de la base de données
 # RUN python init_db.py
