@@ -96,11 +96,14 @@ class APIRequests:
         api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude},{longitude}/{dateheure}?key={self.access_key_visualcrossing}&include=current&unitGroup=metric"
         response = requests.get(api_url)
         if response.status_code == 200:
-            self.countVisualCrossing += 1
-            if self.countVisualCrossing == 1000: # Forfait journalier atteint
-                self.access_key_visualcrossing = self.access_key_visualcrossing_2  # Utilise la seconde clé
-                self.countVisualCrossing = 0  # Réinitialise le compteur 
             return response.json()
         else:
-            print(f"Erreur lors de la requête API Visualcrossing :{response.status_code}: {response.text}")
+            print(f"Erreur lors de la requête API Visualcrossing (Key={self.access_key_visualcrossing}):{response.status_code}: {response.text}")
+            self.access_key_visualcrossing = self.access_key_visualcrossing_2  # Utilise la seconde clé
+            api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{latitude},{longitude}/{dateheure}?key={self.access_key_visualcrossing}&include=current&unitGroup=metric"
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Erreur lors de la requête API Visualcrossing (Key={self.access_key_visualcrossing}):{response.status_code}: {response.text}")
 
