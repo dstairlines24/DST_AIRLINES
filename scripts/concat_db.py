@@ -40,11 +40,20 @@ df_new['dep_arr_scheduled'] = df_new.apply(
 # print(df_new)
 print(f"\n\nNombre d'enregistrements dans les collections (df_new): {len(df_new)}")
 
-# Affichage du nombre de doublons dans 'dep_arr_scheduled'
-dup_count = df_new['dep_arr_scheduled'].value_counts()
-dup_count = dup_count[dup_count > 1]  # Filtrer pour n'afficher que les valeurs avec des doublons
-print("Nombre de doublons dans 'df_new' :")
-print(dup_count)
+# Récupération du nombre de doublons dans 'dep_arr_scheduled'
+total_dup_count_new = df_new.duplicated(subset=['dep_arr_scheduled']).sum()
+dup_count_new = df_new['dep_arr_scheduled'].value_counts()
+dup_count_new = dup_count_new[dup_count_new > 1]  # Filtrer pour n'afficher que les valeurs avec des doublons
+
+
+# Suppression des doublons
+df_new = df_new.drop_duplicates(subset=['dep_arr_scheduled'])
+
+# Affichage
+print(f"Nombre de doublons total (df_new): {total_dup_count_new}")
+print(f"Nombre d'enregistrements après suppression des doublons (df_new): {len(df_new)}")
+print("Doublons supprimés (df_new):")
+print(dup_count_new)
 
 # Récupération de la collection 'final_flights' existante s'il y a des enregistrements
 if db.final_flights.estimated_document_count() > 0:
@@ -68,24 +77,38 @@ if db.final_flights.estimated_document_count() > 0:
     # print(df_existing)
     print(f"\n\nNombre d'enregistrements existants dans final_flights (df_existing): {len(df_existing)}")
 
-    # Affichage du nombre de doublons dans 'dep_arr_scheduled'
-    dup_count2 = df_existing['dep_arr_scheduled'].value_counts()
-    dup_count2 = dup_count2[dup_count2 > 1]  # Filtrer pour n'afficher que les valeurs avec des doublons
-    print("Nombre de doublons dans 'df_existing' :")
-    print(dup_count2)
+    # Récupération du nombre de doublons dans 'dep_arr_scheduled'
+    total_dup_count_existing = df_existing.duplicated(subset=['dep_arr_scheduled']).sum()
+    dup_count_new_existing = df_existing['dep_arr_scheduled'].value_counts()
+    dup_count_new_existing = dup_count_new_existing[dup_count_new_existing > 1]  # Filtrer pour n'afficher que les valeurs avec des doublons
+
+    # Suppression des doublons
+    df_existing = df_existing.drop_duplicates(subset=['dep_arr_scheduled'])
+
+    # Affichage
+    print(f"Nombre de doublons total (df_existing): {total_dup_count_existing}")
+    print(f"Nombre d'enregistrements après suppression des doublons (df_existing): {len(df_existing)}")
+    print("Doublons supprimés (df_existing):")
+    print(dup_count_new_existing)
 
     # Concaténation des deux DataFrames
     df_combined = pd.concat([df_existing, df_new])
     print(f"\n\nNombre d'enregistrements après concat (df_combined): {len(df_combined)}")
 
-    # Affichage du nombre de doublons dans 'dep_arr_scheduled' dans df_combined avant suppression des doublons
-    dup_count_combined = df_combined['dep_arr_scheduled'].value_counts()
-    dup_count_combined = dup_count_combined[dup_count_combined > 1]  # Filtrer pour n'afficher que les valeurs avec des doublons
-    print("Nombre de doublons dans 'df_combined' avant suppression :")
-    print(dup_count_combined)
+    # Récupération du nombre de doublons dans 'dep_arr_scheduled'
+    total_dup_count_combined = df_combined.duplicated(subset=['dep_arr_scheduled']).sum()
+    dup_count_new_combined = df_combined['dep_arr_scheduled'].value_counts()
+    dup_count_new_combined = dup_count_new_combined[dup_count_new_combined > 1]  # Filtrer pour n'afficher que les valeurs avec des doublons
 
     # Suppression des doublons basés sur 'dep_arr_scheduled'
     df_combined = df_combined.drop_duplicates(subset=['dep_arr_scheduled'])
+
+    # Affichage
+    print(f"Nombre de doublons total (df_combined): {total_dup_count_combined}")
+    print(f"Nombre d'enregistrements après suppression des doublons (df_combined): {len(df_combined)}")
+    print("Doublons supprimés (df_combined):")
+    print(dup_count_new_combined)
+
 else:
     # Si 'final_flights' est vide, utiliser seulement les nouvelles données
     df_combined = df_new
@@ -93,7 +116,7 @@ else:
 # Vérification des données dans df_combined après suppression des doublons
 # print("Données combinées après suppression des doublons:")
 # print(df_combined)
-print(f"\n\nNombre d'enregistrements après concat et suppression des doublons (df_combined): {len(df_combined)}")
+print(f"\n\nNombre d'enregistrements après suppression des doublons (df_combined): {len(df_combined)}")
 
 
 # Suppression des colonnes temporaires avant insertion
