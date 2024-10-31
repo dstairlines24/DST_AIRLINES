@@ -23,6 +23,7 @@ mongo_uri = os.getenv("MONGO_URI")
 # Connexion à MongoDB
 client = MongoClient(mongo_uri)
 db = client.app_data
+db_credentials = client.app_credentials
 
 api_requests = APIRequests()  # Créer une instance de la classe APIRequests
 flightprocessor = FlightProcessor() # Créer une instance de la classe FlightProcessor
@@ -47,7 +48,7 @@ def login():
         password = request.form['password']
         
         # Récupérer l'utilisateur de la base de données
-        user = db.users.find_one({"username": username})
+        user = db_credentials.users.find_one({"username": username})
         
         # Vérifier les identifiants et le mot de passe
         if user and check_password_hash(user['password'], password):  # Le mot de passe doit être hashé et stocké
