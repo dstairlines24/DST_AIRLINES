@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session, flash, get_flashed_messages
+from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session, flash, get_flashed_messages, send_file
 from pymongo import MongoClient
 from datetime import datetime
 from functools import wraps
@@ -355,7 +355,7 @@ def run_script(script_name):
     def generate():
         # Exécutez le script en utilisant subprocess et capturez stdout ligne par ligne
         process = subprocess.Popen(['python3', '-u', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        
+
         # Itérez sur la sortie ligne par ligne
         for line in iter(process.stdout.readline, ''):
             yield line  # Envoyer la sortie en direct au client
@@ -363,7 +363,57 @@ def run_script(script_name):
         process.stdout.close()
         process.wait()  # Attendez que le processus se termine
 
-    return Response(stream_with_context(generate()), mimetype='text/plain')
+    # Exécuter le script
+    response = Response(stream_with_context(generate()), mimetype='text/plain')
+
+    return response
+
+
+@app.route('/run_script_graph/<script_name>', methods=['GET', 'POST'])
+@check_role('admin')
+def run_script_graph(script_name):
+    # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
+    if not script_name.endswith('.py'):
+        return jsonify({'status': 'error', 'error': 'Invalid script extension'}), 400
+
+    # Chemin complet du script à exécuter
+    script_path = os.path.join(SCRIPTS_DIR, script_name)
+    
+    # Vérifie si le fichier existe dans le sous-répertoire
+    if not os.path.isfile(script_path):
+        return jsonify({'status': 'error', 'error': 'Script not found'}), 404
+    
+    # Exécutez le script en utilisant subprocess et capturez stdout ligne par ligne
+    process = subprocess.Popen(['python3', '-u', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            
+    # Exécute le script et capture la sortie dans une variable pour l'inclure dans la réponse HTML
+    output = ""
+
+    # Lire la sortie du processus et la stocker dans `output`
+    for line in iter(process.stdout.readline, ''):
+        output += line  # Ajouter chaque ligne à la chaîne
+    process.stdout.close()
+    process.wait()  # Attend la fin du processus
+
+    #Si la sortie contient un graphique
+    if os.path.exists('output.png'):
+        # Construire la réponse HTML avec l'image intégrée
+        response_content = f"<html><body><pre>{output}</pre>"
+        response_content += '<br><img src="/display_image" alt="Graphique généré" />'
+        response_content += "</body></html>"
+
+        # Suppression de l'image du graphique
+        # os.remove('output.png')
+
+    # Retourne le contenu HTML complet
+    return Response(response_content, mimetype='text/html')
+
+@app.route('/display_image')
+def display_image():
+    """Route pour afficher l'image générée."""
+    response = send_file('output.png', mimetype='image/png')
+    os.remove('output.png')  # Supprimer l'image après l'envoi
+    return response
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
