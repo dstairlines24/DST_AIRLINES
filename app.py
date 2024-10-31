@@ -255,11 +255,7 @@ def predict_from_data(flight_data):
     if os.path.exists(model_path):
         best_model = joblib.load(model_path)
     else:
-        raise ValueError("Modèle non trouvé. Veuillez vérifier le fichier 'best_model.pkl'.")   
-
-    # # Vérifier que "data" existe et qu'il contient au moins un élément
-    # if "data" not in flight_data or not flight_data["data"]:
-    #     raise ValueError("Données de vol non trouvées ou structure invalide dans 'data'.")
+        raise ValueError("Modèle non trouvé. Veuillez vérifier le fichier 'best_model.pkl'.")
     
     # Extraction de la première entrée dans la liste "data" de `flight_data`
     flight_info = flight_data
