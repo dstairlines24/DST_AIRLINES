@@ -30,6 +30,15 @@
 <body>
     <h1>DST Airlines</h1>
     <p>Anticipez vos retards grâce à la météo et aux informations en temps réel de votre vol.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
 
     <h3>Choisissez une option :</h3>
 

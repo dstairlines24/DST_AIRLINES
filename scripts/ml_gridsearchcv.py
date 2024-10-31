@@ -11,6 +11,7 @@ from sklearn.tree import DecisionTreeRegressor
 #from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import joblib
 
 #=================================================
 # 1. Connexion à MongoDB et Extraction des Données
@@ -26,6 +27,7 @@ db = client.app_data
 
 # Création du DataFrame pandas et suppression des doublons
 df = pd.DataFrame(list(db['final_flights'].find())).drop_duplicates(subset=['_id'])
+# df = pd.DataFrame(list(db['final_flights'].find()))
 
 #================================================================
 # 2. Création des colonnes pour les Features et la Variable Cible
@@ -120,9 +122,9 @@ features = [col for col in df_final.columns if 'conditions' in col] + ['distance
 
 X = df_final[features]  # Variables descriptives
 """
-departure_conditions  arrival_conditions  100km_conditions  200km_conditions
-0                Clear              Rain             Cloudy             Sunny
-1                 Fog           Overcast                NaN               NaN
+departure_conditions  arrival_conditions  100km_conditions  200km_conditions   ...  distance_km
+0                Clear              Rain             Cloudy             Sunny  ...  800km
+1                 Fog           Overcast                NaN               NaN  ...  400km
 """
 y = df_final['delay_difference']  # Variable cible
 """
@@ -210,3 +212,10 @@ print(f"MAE (Mean Absolute Error): {mae:.2f}")
 print(f"MSE (Mean Squared Error): {mse:.2f}")
 print(f"RMSE (Root Mean Squared Error): {rmse:.2f}")
 print(f"R² (Coefficient of Determination): {r2:.2f}")
+
+# Sauvegarde du modèle dans un fichier .pkl
+if not os.path.exists('model'):
+    os.makedirs('model')
+    
+joblib.dump(best_model, 'model/best_model.pkl')
+print("\nmodel/best_model.pkl enregistré")

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session
+from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session, flash, get_flashed_messages
 from pymongo import MongoClient
 from datetime import datetime
 from functools import wraps
@@ -7,6 +7,10 @@ from functions.api_requests import APIRequests
 from functions.functions import FlightProcessor, FlightDataError
 import subprocess
 import os
+import joblib
+import pandas as pd
+import numpy as np
+
 
 app = Flask(__name__)
 
@@ -89,26 +93,17 @@ def submit_flight_number():
             # Résumé des opérations
             print(f"{flight_infos_processed['vols traités']} vols traités et insérés dans la base de données.")
             if flight_infos_processed["vols échoués"]:
-                print(f"{flight_infos_processed['vols échoués']} vols ont échoué et n'ont pas été insérés.")
+                failed_flight = flight_infos_processed["details échecs"][0]
+                flight_info = failed_flight["flight"].get("flight", {}).get("iata", "Inconnu")
+                error_message = failed_flight["error"]
+                flash(f"Erreur pour le vol {flight_info} : {error_message}", "error")
+                return redirect(url_for('index')) 
 
             return redirect(url_for('display_positions'))
-        
         else:
             return jsonify({"error": "Aucun vol trouvé pour cette date."}), 404
     else:
         return jsonify({"error": "Aucun vol trouvé ou problème API AS", "details":flight_info})
-
-
-@app.route('/map')
-@check_role('user')
-def display_positions():
-    # Récupérer le vol depuis MongoDB
-    flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
-
-    if flight_data:
-        return render_template('map.html', flight_data=flight_data)
-    else:
-        return jsonify({"error": "Aucune donnée de vol trouvée dans la base de données."}), 404
 
 
 @app.route('/submit_flight_details', methods=['POST'])
@@ -213,9 +208,33 @@ def submit_flight_details():
                 return redirect(url_for('display_positions'))
             
         except FlightDataError as e:
-            print(f"Erreur lors du traitement du vol {flight_infos_simulated.get('flight', {}).get('iata')}: {e}")
+            error_message = f"Erreur lors du traitement du vol : {e}"
+            print(error_message)
+            flash(error_message, 'error')  # Envoie le message d'erreur sur la page html
+            return redirect(url_for('index')) 
 
     return redirect(url_for('index'))
+
+@app.route('/map')
+@check_role('user')
+def display_positions():
+    # Récupérer le vol depuis MongoDB
+    flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
+
+    if flight_data:
+        try:
+            # Prédiction du retard sur le vol
+            retard_pred = predict_from_data(flight_data)
+            return render_template('map.html', flight_data=flight_data, retard_pred=retard_pred)
+        except Exception as e:
+            error_message = f"Erreur lors de la prédiction: {str(e)}"
+            flash(error_message, 'error')  # Envoie le message d'erreur sur la page html       
+            return jsonify({"error": f"Erreur lors de la prédiction: {str(e)}"}), 500    
+        
+    else:
+        error_message = "Aucune donnée de vol trouvée dans la base de données."
+        flash(error_message, 'error')  # Envoie le message d'erreur sur la page html
+        return jsonify({"error": "Aucune donnée de vol trouvée dans la base de données."}), 404
 
 @app.route('/flights')
 @check_role('user')
@@ -224,6 +243,74 @@ def display_flights_list():
     flights = list(db.form_flights_list.find())
 
     return render_template('flights.html', flights=flights)
+
+# Fonction de prédiction pour un appel direct
+def predict_from_data(flight_data):
+    # Charger le modèle ML sauvegardé
+    if not os.path.exists('model'):
+        os.makedirs('model')
+
+    model_path = 'model/best_model.pkl'
+
+    if os.path.exists(model_path):
+        best_model = joblib.load(model_path)
+    else:
+        raise ValueError("Modèle non trouvé. Veuillez vérifier le fichier 'best_model.pkl'.")   
+
+    # # Vérifier que "data" existe et qu'il contient au moins un élément
+    # if "data" not in flight_data or not flight_data["data"]:
+    #     raise ValueError("Données de vol non trouvées ou structure invalide dans 'data'.")
+    
+    # Extraction de la première entrée dans la liste "data" de `flight_data`
+    flight_info = flight_data
+
+    # Extraction des features pertinentes
+    weather_conditions = {}
+
+    # Distance estimée en fonction du nombre de segments
+    distance_km = 100 + 100 * len(flight_info.get('segments', {}))
+    weather_conditions['distance_km'] = distance_km
+
+    # Conditions météo au départ et à l'arrivée
+    weather_conditions['departure_conditions'] = flight_info['departure'].get('conditions', np.nan)
+    weather_conditions['arrival_conditions'] = flight_info['arrival'].get('conditions', np.nan)
+
+    # Conditions météo pour chaque segment de vol
+    for segment_key, segment_value in flight_info.get('segments', {}).items():
+        weather_conditions[f'{segment_key}_conditions'] = segment_value.get('conditions', np.nan)
+
+    # Créer un DataFrame pour les données de prédiction
+    input_data = pd.DataFrame([weather_conditions])
+
+    # Application du pipeline de prétraitement
+    processed_input = best_model.named_steps['preprocessor'].transform(input_data)
+
+    # Prédiction avec le modèle
+    prediction = best_model.predict(processed_input)
+
+    return prediction[0]
+
+
+# Route Flask pour les prédictions via POST
+@app.route('/predict', methods=['POST'])
+@check_role('user')
+def predict():
+    try:
+        # Vérification que les données sont envoyées en JSON
+        flight_data = request.get_json()
+        if not flight_data or "data" not in flight_data or not flight_data["data"]:
+            return jsonify({"error": "Données de vol non fournies ou invalides"}), 400
+
+        # Appel de la fonction de prédiction directe
+        prediction = predict_from_data(flight_data)
+        print(f"prediction : {prediction}")
+        return jsonify({"prediction": prediction}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Erreur lors de la prédiction: {str(e)}"}), 500
+
+
+
 
 @app.route("/get_data/<db_name>/<col_name>")
 @check_role('admin')
