@@ -53,7 +53,7 @@ def extract_features(data):
     weather_conditions = {}
     # Estimation de la distance, ex: 300km si 2 segments
     distance_km = 100 + 100 * len(data.get('segments', {}))
-    weather_conditions['feat_distance_km'] = distance_km + 100*len(data['segments'])
+    weather_conditions['feat_distance_km'] = distance_km
 
     # Définir un système de score pour les conditions
     conditions_scores = {
@@ -105,7 +105,7 @@ weather_data = df.apply(extract_features, axis=1) #axis=1 on applique la fonctio
 """
 weather_df = pd.DataFrame(weather_data.tolist())
 """
-  feat_distance_km   total_conditions_score  
+  feat_distance_km   feat_total_conditions_score  
 0            800                       25  
 1            400                       12 
 2            700                       32 
@@ -114,7 +114,7 @@ weather_df = pd.DataFrame(weather_data.tolist())
 # Concaténer avec les données existantes pour créer le dataset final
 df_final = pd.concat([df, weather_df], axis=1)
 """
-departure          arrival     segments               delay_difference feat_distance_km   total_conditions_score
+departure          arrival     segments               delay_difference feat_distance_km   feat_total_conditions_score
 0   .........................................                     12.0            800                       25
 1   .........................................                     -5.0            400                       12
 1   .........................................                     18.0            400                       32
@@ -135,7 +135,7 @@ features = [col for col in df_final.columns if 'feat_' in col]
 
 X = df_final[features]  # Variables descriptives
 """
-feat_distance_km   total_conditions_score
+feat_distance_km   feat_total_conditions_score
            800                       25
            400                       12
            400                       32

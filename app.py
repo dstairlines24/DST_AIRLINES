@@ -225,7 +225,21 @@ def display_positions():
         try:
             # Prédiction du retard sur le vol
             retard_pred = predict_from_data(flight_data)
-            return render_template('map.html', flight_data=flight_data, retard_pred=retard_pred)
+            # Convertir le retard en secondes
+            total_seconds = int(retard_pred * 60)  # Convertir en secondes
+
+            # Calculer les heures, minutes et secondes
+            hours = total_seconds // 3600
+            remaining_seconds = total_seconds % 3600
+            minutes = remaining_seconds // 60
+            seconds = remaining_seconds % 60
+
+            # Formater l'affichage
+            formatted_retard = f"{hours} heures {minutes} minutes {seconds} secondes"
+
+            print(f"retard_pred = {formatted_retard}")
+            
+            return render_template('map.html', flight_data=flight_data, retard_pred=formatted_retard)
         except Exception as e:
             error_message = f"Erreur lors de la prédiction: {str(e)}"
             flash(error_message, 'error')  # Envoie le message d'erreur sur la page html       
@@ -260,30 +274,64 @@ def predict_from_data(flight_data):
     # Extraction de la première entrée dans la liste "data" de `flight_data`
     flight_info = flight_data
 
+    #--------------------------
+    # Mise en forme des données
+    #--------------------------
+    print(f"flight_info : {flight_info}")
     # Extraction des features pertinentes
     weather_conditions = {}
 
     # Distance estimée en fonction du nombre de segments
     distance_km = 100 + 100 * len(flight_info.get('segments', {}))
-    weather_conditions['distance_km'] = distance_km
+    weather_conditions['feat_distance_km'] = distance_km
 
-    # Conditions météo au départ et à l'arrivée
-    weather_conditions['departure_conditions'] = flight_info['departure'].get('conditions', np.nan)
-    weather_conditions['arrival_conditions'] = flight_info['arrival'].get('conditions', np.nan)
+    
+        # Définir un système de score pour les conditions
+    conditions_scores = {
+        'Clear': 0,                       # Conditions idéales pour le vol
+        'Partially cloudy': 1,            # Conditions généralement favorables
+        'Overcast': 3,                    # Peut entraîner des restrictions de visibilité
+        'Rain': 5,                        # Impact sur la visibilité et les performances de l'avion
+        'Snow': 6,                        # Peut entraîner des retards et des problèmes d'atterrissage
+        'Fog': 8,                         # Très faible visibilité, conditions dangereuses
+        'Wind': 7,                        # Vitesse du vent élevée, risque d'instabilité
+        'Cloudy': 4,                      # Couverture nuageuse importante, peut affecter le vol
+        'Partly cloudy (day)': 2,        # Conditions de vol généralement sûres pendant la journée
+        'Partly cloudy (night)': 3,      # Conditions de vol généralement sûres la nuit, mais moins de visibilité
+        'Clear (day)': 0,                # Conditions idéales pendant la journée
+        'Clear (night)': 1                # Conditions favorables la nuit
+    }
 
-    # Conditions météo pour chaque segment de vol
-    for segment_key, segment_value in flight_info.get('segments', {}).items():
-        weather_conditions[f'{segment_key}_conditions'] = segment_value.get('conditions', np.nan)
+
+    # Extraire les conditions météo et calculer un score total
+    departure_conditions = flight_info['departure'].get('conditions', np.nan)
+    arrival_conditions = flight_info['arrival'].get('conditions', np.nan)
+    departure_conditions_score = conditions_scores.get(departure_conditions, 0)
+    arrival_conditions_score = conditions_scores.get(arrival_conditions, 0)
+
+    segment_conditions = []
+    if 'segments' in flight_info:
+        for segment_key, segment_value in flight_info['segments'].items():
+            segment_conditions = segment_value.get('conditions', np.nan)
+    
+    segment_conditions_score = sum(conditions_scores.get(condition, 0) for condition in segment_conditions)
+    total_conditions_score = segment_conditions_score + departure_conditions_score + arrival_conditions_score
+    weather_conditions['feat_total_conditions_score'] = total_conditions_score
+    #--------------------------
 
     # Créer un DataFrame pour les données de prédiction
     input_data = pd.DataFrame([weather_conditions])
+    print(f"input_data : {input_data}")
 
     # Application du pipeline de prétraitement
     processed_input = best_model.named_steps['preprocessor'].transform(input_data)
+    print(f"processed_input : {processed_input}")
+
+    # Transformation en DF
+    processed_input_df = pd.DataFrame(processed_input, columns=input_data.columns)
 
     # Prédiction avec le modèle
-    prediction = best_model.predict(processed_input)
-
+    prediction = best_model.predict(processed_input_df)
     return prediction[0]
 
 
