@@ -224,6 +224,7 @@ def submit_flight_details():
 def display_positions():
     # Récupérer le vol depuis MongoDB
     flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
+    
     url = 'http://flask_app:5000/predict'
 
     if flight_data:
