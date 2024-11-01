@@ -36,7 +36,7 @@ def init_db():
 
     print("Base de données initialisée avec succès !")
 
-def load_test_from_app_data(bson_file_path):
+def load_test_to_app_data(bson_file_path):
     # Charger le fichier .bson et insérer les documents dans la collection test_col
     db_app = client.app_data
 
@@ -52,7 +52,7 @@ def load_test_from_app_data(bson_file_path):
     except Exception as e:
         print("Erreur lors du chargement du fichier .bson:", e)
 
-def load_test_from_app_data_form(bson_file_path):
+def load_test_to_app_data_form(bson_file_path):
     # Charger le fichier .bson et insérer les documents dans la collection test_col
     db_app_form = client.app_data_form
 
@@ -71,6 +71,6 @@ def load_test_from_app_data_form(bson_file_path):
 if __name__ == "__main__":
     init_db()
     # Spécifier le chemin vers le fichier .bson
-    bson_file_path = "data_test/collection_test.bson"
-    load_test_from_app_data(bson_file_path)
-    load_test_from_app_data_form(bson_file_path)
+    bson_file_path = "data_test/test_col.bson"
+    load_test_to_app_data(bson_file_path)
+    load_test_to_app_data_form(bson_file_path)

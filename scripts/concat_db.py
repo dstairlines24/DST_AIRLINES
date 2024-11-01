@@ -10,7 +10,7 @@ client = MongoClient(mongo_uri)
 db = client.app_data
 
 # Récupération des collections
-collections = ['all_flights', 'asia_flights', 'europe_flights', 'america_flights', 'temp_db']
+collections = ['all_flights', 'asia_flights', 'europe_flights', 'america_flights', 'temp_col']
 data = []
 
 # Concaténer les collections en un DataFrame
