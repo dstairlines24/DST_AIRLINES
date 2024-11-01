@@ -31,7 +31,6 @@ def predict_from_data(flight_data):
     else:
         raise ValueError("Modèle non trouvé. Veuillez vérifier le fichier 'best_model.pkl'.")
     
-    # Extraction de la première entrée dans la liste "data" de `flight_data`
     flight_info = flight_data
 
     #--------------------------
@@ -98,6 +97,7 @@ def predict_from_data(flight_data):
     return prediction[0]
 
 flight_data = db.form_flight_infos.find_one({}, {"_id": 0})
+
 if flight_data:
     try:
         # Prédiction du retard sur le vol
@@ -122,3 +122,6 @@ if flight_data:
 else:
     error_message = "Aucune donnée de vol trouvée dans la base de données."
     print(error_message)
+
+print('\n\n')
+print(flight_data)

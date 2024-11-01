@@ -37,74 +37,84 @@ df = pd.DataFrame(list(db['final_flights'].find())).drop_duplicates(subset=['_id
 df['delay_difference'] = df['arrival'].apply(lambda x: x.get('delay', 0)) - df['departure'].apply(lambda x: x.get('delay', 0))
 df['delay_difference'] = df['delay_difference'].apply(lambda x: max(x, 0))  # Remplace les valeurs négatives par 0
 
-# Variables descriptives distance et météo : "conditions"
+# Variables descriptives distance et météo : "icon"
 def extract_features(data):
     """
     Prend en entrée une ligne du df qui sera de la forme :
     {
-    'departure': ... {'conditions': 'Clear'}...,
-    'arrival': ... {'conditions': 'Rain'}...,
+    'departure': ... {'icon': 'Clear'}...,
+    'arrival': ... {'icon': 'Rain'}...,
     'segments': {
-        '100km': ... {'conditions': 'Cloudy'}...,
-        '200km': ... {'conditions': 'Sunny'}...
+        '100km': ... {'icon': 'Cloudy'}...,
+        '200km': ... {'icon': 'Sunny'}...
         }
     }
     """
-    weather_conditions = {}
+    weather_icon = {}
     # Estimation de la distance, ex: 300km si 2 segments
     distance_km = 100 + 100 * len(data.get('segments', {}))
-    weather_conditions['feat_distance_km'] = distance_km
+    weather_icon['feat_distance_km'] = distance_km
 
-    # Définir un système de score pour les conditions
-    conditions_scores = {
-        'Clear': 0,                       # Conditions idéales pour le vol
-        'Partially cloudy': 1,            # Conditions généralement favorables
-        'Overcast': 3,                    # Peut entraîner des restrictions de visibilité
-        'Rain': 5,                        # Impact sur la visibilité et les performances de l'avion
-        'Snow': 6,                        # Peut entraîner des retards et des problèmes d'atterrissage
-        'Fog': 8,                         # Très faible visibilité, conditions dangereuses
-        'Wind': 7,                        # Vitesse du vent élevée, risque d'instabilité
-        'Cloudy': 4,                      # Couverture nuageuse importante, peut affecter le vol
-        'Partly cloudy (day)': 2,        # Conditions de vol généralement sûres pendant la journée
-        'Partly cloudy (night)': 3,      # Conditions de vol généralement sûres la nuit, mais moins de visibilité
-        'Clear (day)': 0,                # Conditions idéales pendant la journée
-        'Clear (night)': 1                # Conditions favorables la nuit
+    # Définir un système de score pour les icon
+    icon_scores = {
+        'clear-day': 1,
+        'clear-night': 1,
+        'cloudy': 2,
+        'fog': 8,
+        'hail': 9,
+        'partly-cloudy-day': 2,
+        'partly-cloudy-night': 2,
+        'rain': 6,
+        'rain-snow': 7,
+        'rain-snow-showers-day': 6,
+        'rain-snow-showers-night': 6,
+        'showers-day': 5,
+        'showers-night': 5,
+        'sleet': 8,
+        'snow': 9,
+        'snow-showers-day': 7,
+        'snow-showers-night': 7,
+        'thunder': 10,
+        'thunder-rain': 10,
+        'thunder-showers-day': 9,
+        'thunder-showers-night': 9,
+        'wind': 7
     }
 
-    # Extraire les conditions météo et calculer un score total
-    departure_conditions = data['departure'].get('conditions', np.nan)
-    arrival_conditions = data['arrival'].get('conditions', np.nan)
-    departure_conditions_score = conditions_scores.get(departure_conditions, 0)
-    arrival_conditions_score = conditions_scores.get(arrival_conditions, 0)
+    # Extraire les icon météo et calculer un score total
+    departure_icon = data['departure'].get('icon', np.nan)
+    arrival_icon = data['arrival'].get('icon', np.nan)
+    departure_icon_score = icon_scores.get(departure_icon, 0)
+    arrival_icon_score = icon_scores.get(arrival_icon, 0)
 
-    segment_conditions = []
+    segment_icon = []
     if 'segments' in data:
         for segment_key, segment_value in data['segments'].items():
-            segment_conditions = segment_value.get('conditions', np.nan)
+            segment_icon = segment_value.get('icon', np.nan)
     
-    segment_conditions_score = sum(conditions_scores.get(condition, 0) for condition in segment_conditions)
-    total_conditions_score = segment_conditions_score + departure_conditions_score + arrival_conditions_score
-    weather_conditions['feat_total_conditions_score'] = total_conditions_score
+    segment_icon_score = sum(icon_scores.get(icon, 0) for icon in segment_icon)
+    total_icon_score = segment_icon_score + departure_icon_score + arrival_icon_score
+    weather_icon['feat_total_icon_score'] = total_icon_score
 
-    return weather_conditions
+    return weather_icon
     """
     Retourne un dictionnaire de la forme :
     {
     'feat_distance_km': '800',
-    'feat_total_conditions_score': '25'
+    'feat_total_icon_score': '25'
     }
     """
 
 # Extraire les variables descriptives
 weather_data = df.apply(extract_features, axis=1) #axis=1 on applique la fonction à chaque ligne
 """
-0    {'feat_distance_km': '800', 'feat_total_conditions_score': '25'} 
-1    {'feat_distance_km': '400', 'feat_total_conditions_score': '12'}
-2    {'feat_distance_km': '700', 'feat_total_conditions_score': '32'}
+0    {'feat_distance_km': '800', 'feat_total_icon_score': '25'} 
+1    {'feat_distance_km': '400', 'feat_total_icon_score': '12'}
+2    {'feat_distance_km': '700', 'feat_total_icon_score': '32'}
 """
 weather_df = pd.DataFrame(weather_data.tolist())
 """
-  feat_distance_km   feat_total_conditions_score  
+  feat_distance_km   feat_total_icon_score  
 0            800                       25  
 1            400                       12 
 2            700                       32 
@@ -113,7 +123,7 @@ weather_df = pd.DataFrame(weather_data.tolist())
 # Concaténer avec les données existantes pour créer le dataset final
 df_final = pd.concat([df, weather_df], axis=1)
 """
-departure          arrival     segments               delay_difference feat_distance_km   feat_total_conditions_score
+departure          arrival     segments               delay_difference feat_distance_km   feat_total_icon_score
 0   .........................................                     12.0            800                       25
 1   .........................................                     -5.0            400                       12
 1   .........................................                     18.0            400                       32
@@ -134,7 +144,7 @@ features = [col for col in df_final.columns if 'feat_' in col]
 
 X = df_final[features]  # Variables descriptives
 """
-feat_distance_km   feat_total_conditions_score
+feat_distance_km   feat_total_icon_score
            800                       25
            400                       12
            400                       32
@@ -253,10 +263,10 @@ print("\n\n")
 #---------------------------------------
 
 #----------------------------------------------------------
-# Affichage des fréquences de 'feat_total_conditions_score'
+# Affichage des fréquences de 'feat_total_icon_score'
 #----------------------------------------------------------
 # # Compter le nombre de valeurs uniques et leur fréquence
-# delay_counts = df_final['feat_total_conditions_score'].value_counts()
+# delay_counts = df_final['feat_total_icon_score'].value_counts()
 
 # # Afficher les fréquences
 # print(delay_counts)
@@ -264,8 +274,8 @@ print("\n\n")
 # # Optionnel : Visualiser les fréquences
 # plt.figure(figsize=(10, 6))
 # delay_counts.plot(kind='bar')
-# plt.title('Fréquence des valeurs de feat_total_conditions_score')
-# plt.xlabel('Total Conditions Score')
+# plt.title('Fréquence des valeurs de feat_total_icon_score')
+# plt.xlabel('Total icon Score')
 # plt.ylabel('Count')
 # plt.grid()
 #----------------------------------------------------------
@@ -278,7 +288,7 @@ plt.figure(figsize=(10, 6))
 
 # Créer le nuage de points avec une échelle de couleur
 scatter = plt.scatter(df_final['delay_difference'], 
-                      df_final['feat_total_conditions_score'], 
+                      df_final['feat_total_icon_score'], 
                       c=df_final['feat_distance_km'], 
                       cmap='viridis', 
                       alpha=0.7)
@@ -288,8 +298,8 @@ cbar = plt.colorbar(scatter)
 cbar.set_label('Distance (km)')
 
 # Ajouter les étiquettes et le titre
-plt.title('Relation entre Delay Difference, Total Conditions Score et Distance')
-plt.ylabel('Total Conditions Score')
+plt.title('Relation entre Delay Difference, Total icon Score et Distance')
+plt.ylabel('Total icon Score')
 plt.xlabel('Delay Difference')
 #------------------------------
 
@@ -301,7 +311,7 @@ plt.xlabel('Delay Difference')
 
 # # Premier graphique avec df_final
 # scatter1 = axs[0].scatter(df_final['delay_difference'], 
-#                           df_final['feat_total_conditions_score'], 
+#                           df_final['feat_total_icon_score'], 
 #                           c=df_final['feat_distance_km'], 
 #                           cmap='viridis', 
 #                           alpha=0.7)
@@ -311,13 +321,13 @@ plt.xlabel('Delay Difference')
 # cbar1.set_label('Distance (km)')
 
 # # Ajouter les étiquettes et le titre pour le premier graphique
-# axs[0].set_title('Relation entre Delay Difference, Total Conditions Score et Distance (Toutes les données)')
-# axs[0].set_ylabel('Total Conditions Score')
+# axs[0].set_title('Relation entre Delay Difference, Total icon Score et Distance (Toutes les données)')
+# axs[0].set_ylabel('Total icon Score')
 # axs[0].set_xlabel('Delay Difference')
 
 # # Deuxième graphique avec X_train et y_train
 # scatter2 = axs[1].scatter(y_train, 
-#                           X_train['feat_total_conditions_score'], 
+#                           X_train['feat_total_icon_score'], 
 #                           c=X_train['feat_distance_km'], 
 #                           cmap='viridis', 
 #                           alpha=0.7)
@@ -327,8 +337,8 @@ plt.xlabel('Delay Difference')
 # cbar2.set_label('Distance (km)')
 
 # # Ajouter les étiquettes et le titre pour le deuxième graphique
-# axs[1].set_title('Relation entre Delay Difference, Total Conditions Score et Distance (Données d’entraînement)')
-# axs[1].set_ylabel('Total Conditions Score')
+# axs[1].set_title('Relation entre Delay Difference, Total icon Score et Distance (Données d’entraînement)')
+# axs[1].set_ylabel('Total icon Score')
 # axs[1].set_xlabel('Delay Difference')
 #---------------------------------
 

@@ -272,7 +272,6 @@ def predict_from_data(flight_data):
     else:
         raise ValueError("Modèle non trouvé. Veuillez vérifier le fichier 'best_model.pkl'.")
     
-    # Extraction de la première entrée dans la liste "data" de `flight_data`
     flight_info = flight_data
 
     #--------------------------
@@ -287,7 +286,7 @@ def predict_from_data(flight_data):
     weather_conditions['feat_distance_km'] = distance_km
 
     
-        # Définir un système de score pour les conditions
+    # Définir un système de score pour les conditions
     conditions_scores = {
         'Clear': 0,                       # Conditions idéales pour le vol
         'Partially cloudy': 1,            # Conditions généralement favorables
@@ -332,18 +331,21 @@ def predict_from_data(flight_data):
     processed_input_df = pd.DataFrame(processed_input, columns=input_data.columns)
 
     # Prédiction avec le modèle
-    prediction = best_model.predict(processed_input_df)
-    return prediction[0]
+    try:
+        prediction = best_model.predict(processed_input_df)
+        return prediction[0]
+    except Exception as e:
+        print(f"Erreur lors de la prédiction : {e}")
+        raise ValueError("Erreur lors de la prédiction avec le modèle.")
 
 
 # Route Flask pour les prédictions via POST
 @app.route('/predict', methods=['POST'])
-@check_role('user')
 def predict():
     try:
         # Vérification que les données sont envoyées en JSON
         flight_data = request.get_json()
-        if not flight_data or "data" not in flight_data or not flight_data["data"]:
+        if not flight_data:
             return jsonify({"error": "Données de vol non fournies ou invalides"}), 400
 
         # Appel de la fonction de prédiction directe
