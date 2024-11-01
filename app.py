@@ -10,12 +10,16 @@ import os
 import joblib
 import pandas as pd
 import numpy as np
+from functools import wraps
+
 
 
 app = Flask(__name__)
+# Utiliser une variable d'environnement pour stocker la clé API de manière sécurisée
+app.config['API_KEY'] = os.getenv("API_KEY", "api_key_dstairlines_default")
 
 # Ajoutez une clé secrète pour la session
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "votre_cle_secrete_par_defaut")
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "secret_key_dstairlines_default")
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")
@@ -27,6 +31,17 @@ db_credentials = client.app_credentials
 
 api_requests = APIRequests()  # Créer une instance de la classe APIRequests
 flightprocessor = FlightProcessor() # Créer une instance de la classe FlightProcessor
+
+# Décorateur pour vérifier la clé API
+def require_api_key(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Récupération de la clé API depuis les en-têtes
+        api_key = request.headers.get('x-api-key')
+        if not api_key or api_key != app.config['API_KEY']:
+            return jsonify({"error": "Clé API manquante ou invalide"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Middleware pour vérifier le rôle de l'utilisateur
 def check_role(required_role):
@@ -150,6 +165,7 @@ def predict_from_data(flight_data):
 
 # Route Flask pour les prédictions via POST
 @app.route('/predict', methods=['POST'])
+@require_api_key
 def predict():
     try:
         # Vérification que les données sont envoyées en JSON
@@ -169,6 +185,10 @@ def predict():
 @app.route("/get_data/<db_name>/<col_name>")
 @check_role('admin')
 def get_data(db_name, col_name):
+    # Interdire l'accès à la BDD des credentials
+    if db_name == "app_credentials":
+        return jsonify({"error": "Accès interdit."}), 403
+    
     # Vérifier si la base de données existe
     if db_name in client.list_database_names():
         # Accéder à la base de données
