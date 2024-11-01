@@ -70,5 +70,5 @@ def load_test_from_app_data_form(bson_file_path):
 if __name__ == "__main__":
     init_db()
     # Spécifier le chemin vers le fichier .bson
-    bson_file_path = "test/collection_test.bson"
+    bson_file_path = "data_test/collection_test.bson"
     load_test_from_app_data(bson_file_path)
