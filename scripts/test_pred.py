@@ -36,7 +36,7 @@ def predict_from_data(flight_data):
     #--------------------------
     # Mise en forme des données
     #--------------------------
-    print(f"\nflight_info : {flight_info}\n")
+    print(f"\nContenu de flight_info : \n {flight_info}\n")
     # Extraction des features pertinentes
     weather_conditions = {}
 
@@ -80,15 +80,15 @@ def predict_from_data(flight_data):
 
     # Créer un DataFrame pour les données de prédiction
     input_data = pd.DataFrame([weather_conditions])
-    print(f"\ninput_data : {input_data}\n")
+    print(f"\nContenu de input_data : \n{input_data}\n")
 
     # Application du pipeline de prétraitement
     processed_input = best_model.named_steps['preprocessor'].transform(input_data)
-    print(f"\nprocessed_input : {processed_input}\n")
+    print(f"\nContenu de processed_input : \n{processed_input}\n")
     print(f"Type de processed_input : {type(processed_input)}\n")
 
     processed_input_df = pd.DataFrame(processed_input, columns=input_data.columns)
-    print(f"\nprocessed_input_df : {processed_input_df}\n")
+    print(f"\nContenu de processed_input_df : \n{processed_input_df}\n")
     print(f"Type de processed_input_df : {type(processed_input_df)}\n")
 
     # Prédiction avec le modèle
@@ -96,7 +96,11 @@ def predict_from_data(flight_data):
     
     return prediction[0]
 
-flight_data = db.form_flight_infos.find_one({}, {"_id": 0})
+# --------------------------------------------------------------
+# Choisir une collection où récupérer un exemple de vol à tester
+# --------------------------------------------------------------
+flight_data = db.test_col.find_one({}, {"_id": 0})
+# --------------------------------------------------------------
 
 if flight_data:
     try:
@@ -114,7 +118,7 @@ if flight_data:
         # Formater l'affichage
         formatted_retard = f"{hours} heures {minutes} minutes {seconds} secondes"
 
-        print(f"retard_pred = {formatted_retard}")
+        print(f"\n--------------------\n---->retard_pred = {formatted_retard}")
     except Exception as e:
         error_message = f"Erreur lors de la prédiction: {str(e)}"
         print(error_message)   

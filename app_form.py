@@ -25,7 +25,7 @@ mongo_uri = os.getenv("MONGO_URI")
 
 # Connexion à MongoDB
 client = MongoClient(mongo_uri)
-db = client.app_data
+db = client.app_data_form
 db_credentials = client.app_credentials
 
 api_requests = APIRequests()  # Créer une instance de la classe APIRequests
@@ -275,130 +275,6 @@ def display_flights_list():
 
     return render_template('flights.html', flights=flights)
 
-# Fonction de prédiction pour un appel direct
-def predict_from_data(flight_data):
-    # Charger le modèle ML sauvegardé
-    if not os.path.exists('model'):
-        os.makedirs('model')
-
-    model_path = 'model/best_model.pkl'
-
-    if os.path.exists(model_path):
-        best_model = joblib.load(model_path)
-    else:
-        raise ValueError("Modèle non trouvé. Veuillez vérifier le fichier 'best_model.pkl'.")
-    
-    # Extraction de la première entrée dans la liste "data" de `flight_data`
-    flight_info = flight_data
-
-    #--------------------------
-    # Mise en forme des données
-    #--------------------------
-    print(f"flight_info : {flight_info}")
-    # Extraction des features pertinentes
-    weather_conditions = {}
-
-    # Distance estimée en fonction du nombre de segments
-    distance_km = 100 + 100 * len(flight_info.get('segments', {}))
-    weather_conditions['feat_distance_km'] = distance_km
-
-    
-        # Définir un système de score pour les conditions
-    conditions_scores = {
-        'Clear': 0,                       # Conditions idéales pour le vol
-        'Partially cloudy': 1,            # Conditions généralement favorables
-        'Overcast': 3,                    # Peut entraîner des restrictions de visibilité
-        'Rain': 5,                        # Impact sur la visibilité et les performances de l'avion
-        'Snow': 6,                        # Peut entraîner des retards et des problèmes d'atterrissage
-        'Fog': 8,                         # Très faible visibilité, conditions dangereuses
-        'Wind': 7,                        # Vitesse du vent élevée, risque d'instabilité
-        'Cloudy': 4,                      # Couverture nuageuse importante, peut affecter le vol
-        'Partly cloudy (day)': 2,        # Conditions de vol généralement sûres pendant la journée
-        'Partly cloudy (night)': 3,      # Conditions de vol généralement sûres la nuit, mais moins de visibilité
-        'Clear (day)': 0,                # Conditions idéales pendant la journée
-        'Clear (night)': 1                # Conditions favorables la nuit
-    }
-
-
-    # Extraire les conditions météo et calculer un score total
-    departure_conditions = flight_info['departure'].get('conditions', np.nan)
-    arrival_conditions = flight_info['arrival'].get('conditions', np.nan)
-    departure_conditions_score = conditions_scores.get(departure_conditions, 0)
-    arrival_conditions_score = conditions_scores.get(arrival_conditions, 0)
-
-    segment_conditions = []
-    if 'segments' in flight_info:
-        for segment_key, segment_value in flight_info['segments'].items():
-            segment_conditions = segment_value.get('conditions', np.nan)
-    
-    segment_conditions_score = sum(conditions_scores.get(condition, 0) for condition in segment_conditions)
-    total_conditions_score = segment_conditions_score + departure_conditions_score + arrival_conditions_score
-    weather_conditions['feat_total_conditions_score'] = total_conditions_score
-    #--------------------------
-
-    # Créer un DataFrame pour les données de prédiction
-    input_data = pd.DataFrame([weather_conditions])
-    print(f"input_data : {input_data}")
-
-    # Application du pipeline de prétraitement
-    processed_input = best_model.named_steps['preprocessor'].transform(input_data)
-    print(f"processed_input : {processed_input}")
-
-    # Transformation en DF
-    processed_input_df = pd.DataFrame(processed_input, columns=input_data.columns)
-
-    # Prédiction avec le modèle
-    prediction = best_model.predict(processed_input_df)
-    return prediction[0]
-
-
-# Route Flask pour les prédictions via POST
-@app.route('/predict', methods=['POST'])
-@check_role('user')
-def predict():
-    try:
-        # Vérification que les données sont envoyées en JSON
-        flight_data = request.get_json()
-        if not flight_data or "data" not in flight_data or not flight_data["data"]:
-            return jsonify({"error": "Données de vol non fournies ou invalides"}), 400
-
-        # Appel de la fonction de prédiction directe
-        prediction = predict_from_data(flight_data)
-        print(f"prediction : {prediction}")
-        return jsonify({"prediction": prediction}), 200
-
-    except Exception as e:
-        return jsonify({"error": f"Erreur lors de la prédiction: {str(e)}"}), 500
-
-
-
-
-@app.route("/get_data/<db_name>/<col_name>")
-@check_role('admin')
-def get_data(db_name, col_name):
-    # Vérifier si la base de données existe
-    if db_name in client.list_database_names():
-        # Accéder à la base de données
-        db_show = client[db_name]
-
-        # Vérifier si la collection existe
-        if col_name in db_show.list_collection_names():
-            # Accéder à la collection
-            collection = db_show[col_name]
-
-            # Récupérer tous les documents dans la collection
-            documents = list(collection.find({}, {"_id": 0}))  # On exclut l'ID MongoDB (_id)
-
-            # Vérifier s'il y a des documents à afficher
-            if documents:
-                return jsonify({"data": documents}), 200  # Retourner les documents en format JSON
-            else:
-                return jsonify({"error": "Aucun document trouvé dans la collection."}), 404
-        else:
-            return jsonify({"error": "Collection introuvable."}), 404
-    else:
-        return jsonify({"error": "Base de données introuvable."}), 404
-    
 # Sous-répertoire où les fichiers sont situés
 SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), 'scripts')
 
@@ -431,53 +307,6 @@ def run_script(script_name):
     # Exécuter le script
     response = Response(stream_with_context(generate()), mimetype='text/plain')
 
-    return response
-
-
-@app.route('/run_script_graph/<script_name>', methods=['GET', 'POST'])
-@check_role('admin')
-def run_script_graph(script_name):
-    # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
-    if not script_name.endswith('.py'):
-        return jsonify({'status': 'error', 'error': 'Invalid script extension'}), 400
-
-    # Chemin complet du script à exécuter
-    script_path = os.path.join(SCRIPTS_DIR, script_name)
-    
-    # Vérifie si le fichier existe dans le sous-répertoire
-    if not os.path.isfile(script_path):
-        return jsonify({'status': 'error', 'error': 'Script not found'}), 404
-    
-    # Exécutez le script en utilisant subprocess et capturez stdout ligne par ligne
-    process = subprocess.Popen(['python3', '-u', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-            
-    # Exécute le script et capture la sortie dans une variable pour l'inclure dans la réponse HTML
-    output = ""
-
-    # Lire la sortie du processus et la stocker dans `output`
-    for line in iter(process.stdout.readline, ''):
-        output += line  # Ajouter chaque ligne à la chaîne
-    process.stdout.close()
-    process.wait()  # Attend la fin du processus
-
-    #Si la sortie contient un graphique
-    if os.path.exists('output.png'):
-        # Construire la réponse HTML avec l'image intégrée
-        response_content = f"<html><body><pre>{output}</pre>"
-        response_content += '<br><img src="/display_image" alt="Graphique généré" />'
-        response_content += "</body></html>"
-
-        # Suppression de l'image du graphique
-        # os.remove('output.png')
-
-    # Retourne le contenu HTML complet
-    return Response(response_content, mimetype='text/html')
-
-@app.route('/display_image')
-def display_image():
-    """Route pour afficher l'image générée."""
-    response = send_file('output.png', mimetype='image/png')
-    os.remove('output.png')  # Supprimer l'image après l'envoi
     return response
 
 if __name__ == "__main__":

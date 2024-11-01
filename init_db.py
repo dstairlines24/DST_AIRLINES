@@ -16,24 +16,59 @@ print(f"Admin login: {flask_admin_login}, User login: {flask_user_login}")
 # Connexion à MongoDB
 try:
     client = MongoClient(mongo_uri)
-    db = client.app_credentials
     print("Connexion à MongoDB réussie.")
 except Exception as e:
     print("Erreur de connexion à MongoDB:", e)
     exit(1)
 
 def init_db():
+    db_credientials = client.app_credentials
     # Supprimer la collection des utilisateurs si elle existe déjà
-    db.users.drop()
+    db_credientials.users.drop()
 
     # Créer des utilisateurs avec des mots de passe hachés
     flask_admin_password_h = generate_password_hash(flask_admin_password)
     flask_user_password_h = generate_password_hash(flask_user_password)
 
-    db.users.insert_one({"username": flask_admin_login, "password": flask_admin_password_h, "role": "admin"})
-    db.users.insert_one({"username": flask_user_login, "password": flask_user_password_h, "role": "user"})
+    db_credientials.users.insert_one({"username": flask_admin_login, "password": flask_admin_password_h, "role": "admin"})
+    db_credientials.users.insert_one({"username": flask_user_login, "password": flask_user_password_h, "role": "user"})
 
     print("Base de données initialisée avec succès !")
 
+def load_test_from_app_data(bson_file_path):
+    # Charger le fichier .bson et insérer les documents dans la collection test_col
+    db_app = client.app_data
+
+    # Supprimer la collection si elle existe déjà pour éviter les doublons
+    db_app.test_col.drop()
+
+    try:
+        # Lire le fichier .bson et insérer chaque document
+        with open(bson_file_path, 'rb') as f:
+            data = bson.decode_all(f.read())
+            db_app.test_col.insert_many(data)
+        print(f"Collection 'app_data.test_col' remplie avec succès à partir de {bson_file_path}")
+    except Exception as e:
+        print("Erreur lors du chargement du fichier .bson:", e)
+
+def load_test_from_app_data_form(bson_file_path):
+    # Charger le fichier .bson et insérer les documents dans la collection test_col
+    db_app_form = client.app_data_form
+
+    # Supprimer la collection si elle existe déjà pour éviter les doublons
+    db_app_form.test_col.drop()
+
+    try:
+        # Lire le fichier .bson et insérer chaque document
+        with open(bson_file_path, 'rb') as f:
+            data = bson.decode_all(f.read())
+            db_app_form.test_col.insert_many(data)
+        print(f"Collection 'app_data_form.test_col' remplie avec succès à partir de {bson_file_path}")
+    except Exception as e:
+        print("Erreur lors du chargement du fichier .bson:", e)
+
 if __name__ == "__main__":
     init_db()
+    # Spécifier le chemin vers le fichier .bson
+    bson_file_path = "test/collection_test.bson"
+    load_test_from_app_data(bson_file_path)

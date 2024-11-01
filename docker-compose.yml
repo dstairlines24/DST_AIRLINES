@@ -12,17 +12,14 @@ services:
       - 27017:27017
       
   flask_app:
-    build: .
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile.app
     container_name: dstair_flask_app
     ports:
       - 5000:5000
     depends_on:
       - mongodb
-    volumes:
-      - ./app.py:/app/app.py
     environment:
       - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
@@ -30,6 +27,7 @@ services:
       - FLASK_ADMIN_PASSWORD=${FLASK_ADMIN_PASSWORD}
       - FLASK_USER_LOGIN=${FLASK_USER_LOGIN}
       - FLASK_USER_PASSWORD=${FLASK_USER_PASSWORD}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
       - KEY_AS=${KEY_AS}
       - KEY_VISUALCROSSING=${KEY_VISUALCROSSING}
       - KEY_VISUALCROSSING_2=${KEY_VISUALCROSSING_2}
@@ -41,30 +39,25 @@ services:
       python app.py"
 
   flask_app_form:
-    build: .
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile.app_form
     container_name: dstair_flask_app_form
     ports:
       - 5001:5000
     depends_on:
       - mongodb
-    volumes:
-      - ./app_form.py:/app/app.py
     environment:
-      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
+      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data_form?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
       - FLASK_ADMIN_LOGIN=${FLASK_ADMIN_LOGIN}
       - FLASK_ADMIN_PASSWORD=${FLASK_ADMIN_PASSWORD}
       - FLASK_USER_LOGIN=${FLASK_USER_LOGIN}
       - FLASK_USER_PASSWORD=${FLASK_USER_PASSWORD}
+      - FLASK_SECRET_KEY_FORM=${FLASK_SECRET_KEY_FORM}
       - KEY_AS=${KEY_AS}
       - KEY_VISUALCROSSING=${KEY_VISUALCROSSING}
       - KEY_VISUALCROSSING_2=${KEY_VISUALCROSSING_2}
       - CLIENT_ID_LH=${CLIENT_ID_LH}
       - CLIENT_SECRET_LH=${CLIENT_SECRET_LH}
-    command: >
-      bash -c "
-      python init_db.py && 
-      python app.py"
+    command: python app.py
