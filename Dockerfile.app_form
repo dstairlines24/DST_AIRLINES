@@ -21,7 +21,7 @@ COPY templates_form /app/templates
 COPY static /app/static
 
 # Copie les fichiers spécifiques
-COPY init_db.py /app/init_db.py
+# COPY init_db.py /app/init_db.py
 COPY app_form.py /app/app.py
 
 # Exposer le port sur lequel l'application Flask sera exécutée
