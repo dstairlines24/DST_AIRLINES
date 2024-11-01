@@ -118,7 +118,10 @@ if flight_data:
         # Formater l'affichage
         formatted_retard = f"{hours} heures {minutes} minutes {seconds} secondes"
 
-        print(f"\n--------------------\n---->retard_pred = {formatted_retard}")
+        print("\n\n")
+        print("==================================================")
+        print(f"---> retard_pred = {formatted_retard}")
+        print("==================================================")
     except Exception as e:
         error_message = f"Erreur lors de la prédiction: {str(e)}"
         print(error_message)   

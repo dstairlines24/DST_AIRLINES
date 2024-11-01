@@ -225,12 +225,17 @@ def display_positions():
     # Récupérer le vol depuis MongoDB
     flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
     
+    # Récupérer la clé API pour envoyer la requête
+    api_key = os.getenv("API_KEY")
     url = 'http://flask_app:5000/predict'
+    headers = {
+    'x-api-key': api_key
+    }
 
     if flight_data:
         try:
             # Prédiction du retard sur le vol
-            response = requests.post(url, json=flight_data)
+            response = requests.post(url, json=flight_data, headers=headers)
 
             # Debug : Affiche la réponse brute du serveur
             print("Statut de la réponse:", response.status_code)
