@@ -1,97 +1,194 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DST Airlines</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <title>DST Airlines API</title>
     <style>
-        #map {
-            height: 600px;
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+        }
+        section {
+            margin-top: 20px;
+        }
+        table {
             width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
         }
-        form {
-            margin-bottom: 20px;
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
         }
-        label, input, button {
+        th {
+            background-color: #f2f2f2;
+        }
+        code {
             display: block;
-            margin: 5px 0;
-        }
-        .form-section {
-            margin-bottom: 40px;
-        }
-        .divider {
-            margin: 20px 0;
-            text-align: center;
-            font-weight: bold;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
-    <h1>DST Airlines</h1>
-    <p>Anticipez vos retards grâce à la météo et aux informations en temps réel de votre vol.</p>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <ul class="flashes">
-            {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
+    <h1>DST Airlines API</h1>
+    <h2>Getting Started</h2>
+    
+    <section>
+        <h3>Request URI</h3>
+        <table>
+            <tr>
+                <th>POST Parameter</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>JSON body</td>
+                <td>Your structured flight data (JSON)</td>
+            </tr>
+        </table>
+    </section>
 
-    <h3>Choisissez une option :</h3>
+    <section>
+        <h3>Request Example</h3>
+        <code>
+curl -X POST http://flask_app:5000/predict -H "Content-Type: application/json" -d '{
+    "data": [
+        {
+            [...],
+            "arrival": {
+                "actual": "2024-10-30T07:37:00+00:00",
+                "actual_runway": "2024-10-30T07:37:00+00:00",
+                "airport": "Franz Josef Strauss",
+                "baggage": null,
+                "cloudcover": 100.0,
+                "conditions": "Overcast",
+                "delay": 3,
+                "estimated": "2024-10-30T07:35:00+00:00",
+                "estimated_runway": "2024-10-30T07:37:00+00:00",
+                "gate": "K3",
+                "humidity": 100.0,
+                "iata": "MUC",
+                "icao": "EDDM",
+                "icon": "cloudy",
+                "latitude": 48.3539,
+                "longitude": 11.7861,
+                "precip": 0.0,
+                "pressure": 1027.0,
+                "scheduled": "2024-10-30T07:35:00+00:00",
+                "snow": 0.0,
+                "snowdepth": 0.0,
+                "temp": 8.0,
+                "terminal": "2",
+                "timezone": "Europe/Berlin",
+                "visibility": 1.0,
+                "windspeed": 3.6
+            },
+            "departure": {
+                "actual": "2024-10-30T06:21:00+00:00",
+                "actual_runway": "2024-10-30T06:21:00+00:00",
+                "airport": "Charles De Gaulle",
+                "cloudcover": 99.9,
+                "conditions": "Overcast",
+                "delay": 11,
+                "estimated": "2024-10-30T06:10:00+00:00",
+                "estimated_runway": "2024-10-30T06:21:00+00:00",
+                "gate": "67",
+                "humidity": 100.0,
+                "iata": "CDG",
+                "icao": "LFPG",
+                "icon": "cloudy",
+                "latitude": 49.0097,
+                "longitude": 2.5478,
+                "precip": 0.0,
+                "pressure": 1027.0,
+                "scheduled": "2024-10-30T06:10:00+00:00",
+                "snow": 0.0,
+                "snowdepth": 0.0,
+                "temp": 11.0,
+                "terminal": "1",
+                "timezone": "Europe/Paris",
+                "visibility": 3.1,
+                "windspeed": 5.3
+            },
+            "flight": {
+                "codeshared": null,
+                "iata": "LH2239",
+                "icao": "DLH2239",
+                "number": "2239"
+            },
+            "flight_date": "2024-10-30",
+            "flight_status": "landed",
+            "segments": {
+                "100Km": {
+                    "cloudcover": 100.0,
+                    "conditions": "Overcast",
+                    "humidity": 100.0,
+                    "icon": "cloudy",
+                    "latitude": 48.960010677964945,
+                    "longitude": 3.916102484436122,
+                    "precip": 0.0,
+                    "pressure": 1027.0,
+                    "snow": 0.0,
+                    "snowdepth": 0.0,
+                    "temp": 11.0,
+                    "time": "2024-10-30T06:20:00",
+                    "visibility": 4.6,
+                    "windspeed": 8.8
+                },
+                "200Km": {
+                    "cloudcover": 100.0,
+                    "conditions": "Overcast",
+                    "humidity": 96.8,
+                    "icon": "cloudy",
+                    "latitude": 48.89417431243148,
+                    "longitude": 5.281239637348548,
+                    "precip": 0.0,
+                    "pressure": 1027.0,
+                    "snow": 0.0,
+                    "snowdepth": 0.0,
+                    "temp": 10.2,
+                    "time": "2024-10-30T06:30:00",
+                    "visibility": 5.0,
+                    "windspeed": 8.6
+                },
+                [...]
+            }
+        }
+    ]
+}'
+        </code>
+    </section>
 
-    <!-- Première partie : Formulaire pour entrer le N° de vol -->
-    <div class="form-section">
-        <h4>Option 1: Entrer votre N° de vol</h4>
-        <form action="/submit_flight_number" method="POST">
-            <label for="flight_number">N° de vol:</label>
-            <input type="text" id="flight_number" name="flight_number" required>
-            
-            <label for="flight_date">Date (DD/MM/YYYY):</label>
-            <input type="date" id="flight_date" name="flight_date" required>
+    <section>
+        <h3>Response Structure Definition</h3>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>prediction</td>
+                <td>Your delay prediction in minutes (float64)</td>
+            </tr>
+        </table>
+    </section>
 
-            <button type="submit">Soumettre</button>
-        </form>
-    </div>
-
-    <!-- Deuxième partie : Formulaire pour entrer les autres informations -->
-    <div class="form-section">
-        <h4>Option 2: Rechercher un vol ou Simuler votre itinéraire</h4>
-        <form action="/submit_flight_details" method="POST">
-            <label for="flight_date">Date (DD/MM/YYYY):</label>
-            <input type="date" id="flight_date" name="flight_date" required>
-
-            <label for="flight_time">Heure (HH:mm) <em>(facultatif)</em>:</label>
-            <input type="time" id="flight_time" name="flight_time">
-
-            <label for="departure_airport">Aéroport départ:</label>
-            <input type="text" id="departure_airport" name="departure_airport" required>
-
-            <label for="arrival_airport">Aéroport arrivée:</label>
-            <input type="text" id="arrival_airport" name="arrival_airport" required>
-
-            <button type="submit" name="action" value="list_flights">Afficher la liste des vols</button>
-            <button type="submit" name="action" value="simulate_itinerary">Simuler mon itinéraire</button>
-        </form>
-    </div>
-
-    <h3>Carte des Aéroports</h3>
-    <div id="map"></div>
-
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        // Initialiser la carte sur une position par défaut
-        var map = L.map('map').setView([48.8566, 2.3522], 2); // Coordonnées de Paris
-
-        // Charger les tuiles de la carte
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-        }).addTo(map);
-
-        // Vous pouvez ajouter un code JavaScript ici pour charger les aéroports si besoin
-    </script>
+    <section>
+        <h3>Response Example</h3>
+        <code>
+{"prediction": 1.1556889216856927}
+        </code>
+    </section>
 </body>
 </html>
-

@@ -14,6 +14,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
 # Copie les répertoires spécifiques
+COPY data_test /app/data_test
 COPY functions /app/functions
 COPY scripts_form /app/scripts
 COPY templates_form /app/templates

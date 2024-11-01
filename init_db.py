@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 import os
+import bson
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")
@@ -72,3 +73,4 @@ if __name__ == "__main__":
     # Spécifier le chemin vers le fichier .bson
     bson_file_path = "data_test/collection_test.bson"
     load_test_from_app_data(bson_file_path)
+    load_test_from_app_data_form(bson_file_path)
