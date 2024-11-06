@@ -1,5 +1,5 @@
 from flask import jsonify
-from api_requests import APIRequests
+from functions.api_requests import APIRequests
 import math
 from datetime import datetime, timedelta
 import time

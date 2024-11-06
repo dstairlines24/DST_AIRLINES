@@ -1,0 +1,28 @@
+# Utiliser l'image de base Python
+FROM python:3.9-slim
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Met à jour pip
+RUN pip install --upgrade pip
+
+# Copier le fichier requirements.txt pour installer les dépendances
+COPY requirements.txt .
+
+# Installer les dépendances
+RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
+
+# Copie les répertoires spécifiques
+COPY data_test /app/data_test
+COPY functions /app/functions
+COPY scripts_form /app/scripts
+COPY templates_form /app/templates
+COPY static /app/static
+
+# Copie les fichiers spécifiques
+# COPY init_db.py /app/init_db.py
+COPY app_form.py /app/app.py
+
+# Exposer le port sur lequel l'application Flask sera exécutée
+EXPOSE 5000

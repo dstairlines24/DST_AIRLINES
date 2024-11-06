@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DST Airlines - Météo de votre vol</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Météo de votre vol</h1>
+
+    <!-- Affichage de l'estimation du retard -->
+    <div class="retard-estimation">
+        Estimation du retard sur votre vol à partir de nos modèles :
+        <strong style="font-size: 1.2em;">{{ retard_pred }}</strong>
+    </div>
+    
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialiser la carte sur une position par défaut
+        var map = L.map('map').setView([48.8566, 2.3522], 2); // Coordonnées de Paris
+
+        // Charger les tuiles de la carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Récupérer les données des aéroports
+        var flight_data = {{ flight_data | tojson }};
+
+        // Fonction pour créer une icône personnalisée
+        function createIcon(iconName) {
+            return L.icon({
+                iconUrl: `/static/icons/${iconName}.png`,
+                iconSize: [32, 32], // Taille de l'icône
+                iconAnchor: [16, 32], // Point d'ancrage (au centre du bas de l'icône)
+                popupAnchor: [0, -32] // Position de la popup par rapport à l'icône
+            });
+        }
+
+        // Ajouter un marqueur pour l'aéroport de départ
+        L.marker([flight_data.departure.latitude, flight_data.departure.longitude], {
+            icon: createIcon(flight_data.departure.icon)})
+            .addTo(map)
+            .bindPopup(`<b>${flight_data.departure.airport} (${flight_data.departure.iata})</b><br>
+                    Date/heure: ${flight_data.departure.scheduled}<br>
+                    Conditions: ${flight_data.departure.conditions}<br>
+                    Température: ${flight_data.departure.temp} °C<br>
+                    Humidité: ${flight_data.departure.humidity} %<br>
+                    Précipitions: ${flight_data.departure.precip} mm<br>
+                    Neige: ${flight_data.departure.snow} cm<br>
+                    Epaisseur neige au sol: ${flight_data.departure.snowdepth} cm<br>
+                    Vitesse vent: ${flight_data.departure.windspeed} kph<br>
+                    Pression: ${flight_data.departure.pressure} mb<br>
+                    Visibilité: ${flight_data.departure.visibility} km<br>
+                    Couverture nuageuse: ${flight_data.departure.cloudcover} %`);
+
+        // Ajouter un marqueur pour l'aéroport d'arrivée
+        L.marker([flight_data.arrival.latitude, flight_data.arrival.longitude], {
+            icon: createIcon(flight_data.arrival.icon)})
+            .addTo(map)
+            .bindPopup(`<b>${flight_data.arrival.airport} (${flight_data.arrival.iata})</b><br>
+                    Date/heure: ${flight_data.arrival.scheduled}<br>
+                    Conditions: ${flight_data.arrival.conditions}<br>
+                    Température: ${flight_data.arrival.temp} °C<br>
+                    Humidité: ${flight_data.arrival.humidity} %<br>
+                    Précipitions: ${flight_data.arrival.precip} mm<br>
+                    Neige: ${flight_data.arrival.snow} cm<br>
+                    Epaisseur neige au sol: ${flight_data.arrival.snowdepth} cm<br>
+                    Vitesse vent: ${flight_data.arrival.windspeed} kph<br>
+                    Pression: ${flight_data.arrival.pressure} mb<br>
+                    Visibilité: ${flight_data.arrival.visibility} km<br>
+                    Couverture nuageuse: ${flight_data.arrival.cloudcover} %`);
+
+        // Centrer la carte sur les deux aéroports
+        var latlngs = [
+            [flight_data.departure.latitude, flight_data.departure.longitude],
+            [flight_data.arrival.latitude, flight_data.arrival.longitude]
+        ];
+        var group = L.latLngBounds(latlngs);
+        map.fitBounds(group);
+
+        // Ajouter les marqueurs pour chaque segment
+        for (var segment in flight_data.segments) {
+            var segment_data = flight_data.segments[segment];
+            L.marker([segment_data.latitude, segment_data.longitude], {
+                icon: createIcon(segment_data.icon)})
+                .addTo(map)
+                .bindPopup(`<b>Segment ${segment}</b><br>
+                    Date/heure: ${segment_data.time}<br>
+                    Conditions: ${segment_data.conditions}<br>
+                    Température: ${segment_data.temp} °C<br>
+                    Humidité: ${segment_data.humidity} %<br>
+                    Précipitions: ${segment_data.precip} mm<br>
+                    Neige: ${segment_data.snow} cm<br>
+                    Epaisseur neige au sol: ${segment_data.snowdepth} cm<br>
+                    Vitesse vent: ${segment_data.windspeed} kph<br>
+                    Pression: ${segment_data.pressure} mb<br>
+                    Visibilité: ${segment_data.visibility} km<br>
+                    Couverture nuageuse: ${segment_data.cloudcover} %`);
+        }
+    </script>
+</body>
+</html>
+
