@@ -274,23 +274,22 @@ def run_script_graph(script_name):
     process.wait()  # Attend la fin du processus
 
     #Si la sortie contient un graphique
-    if os.path.exists('output.png'):
-        # Construire la réponse HTML avec l'image intégrée
-        response_content = f"<html><body><pre>{output}</pre>"
-        response_content += '<br><img src="/display_image" alt="Graphique généré" />'
-        response_content += "</body></html>"
+    response_content = f"<html><body><pre>{output}</pre>"
+    if os.path.exists('output.png') and os.path.exists('feature_importances.png'):
+        response_content += '<br><img src="/display_image/output" alt="Graphique Prédictions vs Réel" />'
+        response_content += '<br><img src="/display_image/importance" alt="Graphique Importance des caractéristiques" />'
+    response_content += "</body></html>"
 
-        # Suppression de l'image du graphique
-        # os.remove('output.png')
-
+    # Suppression de l'image du graphique
+    # os.remove('output.png')
     # Retourne le contenu HTML complet
     return Response(response_content, mimetype='text/html')
 
-@app.route('/display_image')
-def display_image():
-    """Route pour afficher l'image générée."""
-    response = send_file('output.png', mimetype='image/png')
-    os.remove('output.png')  # Supprimer l'image après l'envoi
+@app.route('/display_image/<image_type>')
+def display_image(image_type):
+    image_file = 'output.png' if image_type == 'output' else 'feature_importances.png'
+    response = send_file(image_file, mimetype='image/png')
+    os.remove(image_file)
     return response
 
 if __name__ == "__main__":
