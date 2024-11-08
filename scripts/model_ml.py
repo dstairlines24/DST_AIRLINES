@@ -112,6 +112,10 @@ rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 print(f"\nTest MAE: {mae}")
 print(f"Test RMSE: {rmse}")
 
+print("\nNombre de lignes total:", df.shape[0])
+print("Nombre de lignes dans train:", X_train.shape[0])
+print("Nombre de lignes dans test:", X_test.shape[0])
+
 # Graphique de la différence entre les prédictions et les valeurs réelles
 plt.figure(figsize=(10, 6))
 plt.scatter(y_test, y_pred, alpha=0.5, color='b', label="Prédictions vs Valeurs réelles")
