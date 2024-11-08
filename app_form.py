@@ -5,6 +5,8 @@ from functools import wraps
 from werkzeug.security import check_password_hash  # Pour vérifier les mots de passe
 from functions.api_requests import APIRequests
 from functions.functions import FlightProcessor, FlightDataError
+from flasgger import Swagger, swag_from
+
 import subprocess
 import os
 import joblib
@@ -16,9 +18,13 @@ import requests
 
 
 app = Flask(__name__)
+																			   
 
 # Ajoutez une clé secrète pour la session
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "votre_cle_secrete_par_defaut2")
+
+# Configure flasgger
+swagger = Swagger(app)
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")
@@ -45,6 +51,13 @@ def check_role(required_role):
     return decorator
 
 @app.route('/login', methods=['GET', 'POST'])
+@swag_from({
+    'responses': {
+        200: {
+            'description': 'Page de connexion'
+        }
+    }
+})
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -63,17 +76,50 @@ def login():
     return render_template('login.html')  # Page de connexion
 
 @app.route('/logout')
+@swag_from({
+    'responses': {
+        302: {
+            'description': 'Redirection vers la page de connexion'
+        }
+    }
+})		
 def logout():
     session.clear()  # Effacer la session
     return redirect(url_for('login'))
 
 @app.route('/')
 @check_role('user')
+@swag_from({
+    'responses': {
+        200: {
+            'description': 'Page d\'accueil'
+        }
+    }
+})			
 def index():
     return render_template('index.html')
 
 @app.route('/submit_flight_number', methods=['POST'])
 @check_role('user')
+@swag_from({
+    'parameters': [
+        {
+            'name': 'flight_number',
+            'in': 'formData',
+            'type': 'string',
+            'required': True,
+            'description': 'Numéro de vol à soumettre'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Détails du vol soumis'
+        },
+        404: {
+            'description': 'Aucun vol trouvé ou problème API AS'
+        }
+    }
+})			
 def submit_flight_number():
     print("Form data:", request.form)
     #Récupération informations entrées par l'utilisateur
@@ -112,6 +158,22 @@ def submit_flight_number():
 
 @app.route('/submit_flight_details', methods=['POST'])
 @check_role('user')
+@swag_from({
+    'parameters': [
+        {
+            'name': 'flight_details',
+            'in': 'formData',
+            'type': 'string',
+            'required': True,
+            'description': 'Détails du vol à soumettre'
+        }
+    ],
+    'responses': {
+        302: {
+            'description': 'Redirection vers la page d\'accueil'
+        }
+    }
+})			
 def submit_flight_details():
     flight_date = request.form['flight_date']
     flight_time = request.form.get('flight_time', 'Non spécifié')
@@ -221,6 +283,16 @@ def submit_flight_details():
 
 @app.route('/map')
 @check_role('user')
+@swag_from({
+    'responses': {
+        200: {
+            'description': 'Carte des positions de vol'
+        },
+        404: {
+            'description': 'Aucune donnée de vol trouvée dans la base de données.'
+        }
+    }
+})
 def display_positions():
     # Récupérer le vol depuis MongoDB
     flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
@@ -275,6 +347,13 @@ def display_positions():
 
 @app.route('/flights')
 @check_role('user')
+@swag_from({
+    'responses': {
+        200: {
+            'description': 'Liste des vols disponibles'
+        }
+    }
+})			
 def display_flights_list():
     # Récupérer les données de la collection MongoDB
     flights = list(db.form_flights_list.find())
@@ -286,6 +365,22 @@ SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), 'scripts')
 
 @app.route('/run_script/<script_name>', methods=['GET', 'POST'])
 @check_role('admin')
+@swag_from({
+    'parameters': [
+        {
+            'name': 'script_name',
+            'in': 'path',
+            'type': 'string',
+            'required': True,
+            'description': 'Nom du script à exécuter'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Résultat de l\'exécution du script'
+        }
+    }
+})			
 def run_script(script_name):
     # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
     if not script_name.endswith('.py'):

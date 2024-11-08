@@ -11,7 +11,7 @@ import joblib
 import pandas as pd
 import numpy as np
 from functools import wraps
-
+from flasgger import Swagger, swag_from
 
 
 app = Flask(__name__)
@@ -21,6 +21,9 @@ app.config['API_KEY'] = os.getenv("API_KEY", "api_key_dstairlines_default")
 # Ajoutez une clé secrète pour la session
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "secret_key_dstairlines_default")
 
+# Configure flasgger
+swagger = Swagger(app)		
+					  
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")
 
@@ -57,6 +60,33 @@ def check_role(required_role):
     return decorator
 
 @app.route('/login', methods=['GET', 'POST'])
+@swag_from({
+    'tags': ['Authentication'],
+    'parameters': [
+        {
+            'name': 'username',
+            'in': 'formData',
+            'type': 'string',
+            'required': True,
+            'description': 'Nom d\'utilisateur'
+        },
+        {
+            'name': 'password',
+            'in': 'formData',
+            'type': 'string',
+            'required': True,
+            'description': 'Mot de passe'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Page de connexion'
+        },
+        401: {
+            'description': 'Identifiant ou mot de passe incorrect'
+        }
+    }
+})			
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -75,11 +105,27 @@ def login():
     return render_template('login.html')  # Page de connexion
 
 @app.route('/logout')
+@swag_from({
+    'tags': ['Authentication'],
+    'responses': {
+        302: {
+            'description': 'Redirection vers la page de connexion'
+        }
+    }
+})
 def logout():
     session.clear()  # Effacer la session
     return redirect(url_for('login'))
 
 @app.route('/')
+@swag_from({
+    'tags': ['General'],
+    'responses': {
+        200: {
+            'description': 'Page d\'accueil'
+        }
+    }
+}) 
 def index():
     return render_template('index.html')
 
@@ -166,6 +212,40 @@ def predict_from_data(flight_data):
 # Route Flask pour les prédictions via POST
 @app.route('/predict', methods=['POST'])
 @require_api_key
+@swag_from({
+    'tags': ['Prediction'],
+    'parameters': [
+        {
+            'name': 'flight_data',
+            'in': 'body',
+            'type': 'json',
+            'required': True,
+            'description': 'Données de vol pour la prédiction'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Prédiction réussie',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'prediction': {
+                        'type': 'string'
+                    }
+                }
+            }
+        },
+        400: {
+            'description': 'Données de vol non fournies ou invalides'
+        },
+        401: {
+            'description': 'Clé API manquante ou invalide'
+        },
+        500: {
+            'description': 'Erreur lors de la prédiction'
+        }
+    }
+}) 
 def predict():
     try:
         # Vérification que les données sont envoyées en JSON
@@ -184,6 +264,36 @@ def predict():
 
 @app.route("/get_data/<db_name>/<col_name>")
 @check_role('admin')
+@swag_from({
+    'tags': ['Database'],
+    'parameters': [
+        {
+            'name': 'db_name',
+            'in': 'path',
+            'type': 'string',
+            'required': True,
+            'description': 'Nom de la base de données'
+        },
+        {
+            'name': 'col_name',
+            'in': 'path',
+            'type': 'string',
+            'required': True,
+            'description': 'Nom de la collection'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Données de la collection'
+        },
+        403: {
+            'description': 'Accès interdit'
+        },
+        404: {
+            'description': 'Base de données ou collection introuvable'
+        }
+    }
+})
 def get_data(db_name, col_name):
     # Interdire l'accès à la BDD des credentials
     if db_name == "app_credentials":
@@ -217,6 +327,29 @@ SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), 'scripts')
 
 @app.route('/run_script/<script_name>', methods=['GET', 'POST'])
 @check_role('admin')
+@swag_from({
+    'tags': ['Scripts'],
+    'parameters': [
+        {
+            'name': 'script_name',
+            'in': 'path',
+            'type': 'string',
+            'required': True,
+            'description': 'Nom du script à exécuter'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Sortie du script'
+        },
+        400: {
+            'description': 'Extension de script invalide'
+        },
+        404: {
+            'description': 'Script introuvable'
+        }
+    }
+}) 
 def run_script(script_name):
     # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
     if not script_name.endswith('.py'):
@@ -249,6 +382,29 @@ def run_script(script_name):
 
 @app.route('/run_script_graph/<script_name>', methods=['GET', 'POST'])
 @check_role('admin')
+@swag_from({
+    'tags': ['Scripts'],
+    'parameters': [
+        {
+            'name': 'script_name',
+            'in': 'path',
+            'type': 'string',
+            'required': True,
+            'description': 'Nom du script à exécuter'
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Sortie du script avec graphique'
+        },
+        400: {
+            'description': 'Extension de script invalide'
+        },
+        404: {
+            'description': 'Script introuvable'
+        }
+    }
+}) 
 def run_script_graph(script_name):
     # Vérifie que le fichier a une extension .py pour limiter l'exécution aux scripts Python
     if not script_name.endswith('.py'):
@@ -287,6 +443,14 @@ def run_script_graph(script_name):
     return Response(response_content, mimetype='text/html')
 
 @app.route('/display_image')
+@swag_from({
+    'tags': ['Images'],
+    'responses': {
+        200: {
+            'description': 'Image affichée'
+        }
+    }
+})
 def display_image():
     """Route pour afficher l'image générée."""
     response = send_file('output.png', mimetype='image/png')
