@@ -5,7 +5,7 @@ import os
 # Récupérer la clé API pour envoyer la requête
 api_key = os.getenv("API_KEY")
 
-url = 'http://flask_app:5000/predict'
+url = 'http://flask_app:5002/predict'
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")

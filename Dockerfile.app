@@ -8,20 +8,16 @@ WORKDIR /app
 RUN pip install --upgrade pip
 
 # Copier le fichier requirements.txt pour installer les dépendances
-COPY requirements.txt .
+COPY /app/requirements.txt .
 
 # Installer les dépendances
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
-# Copie les répertoires spécifiques
-COPY data_test /app/data_test
-COPY functions /app/functions
-COPY scripts /app/scripts
-COPY templates /app/templates
-
 # Copie les fichiers spécifiques
-COPY init_db.py /app/init_db.py
-COPY app.py /app/app.py
+COPY /model /app/model
+COPY /app/app.py /app/app.py
+# Copier le fichier de classe DataTransform qui se situe dans app_admin
+COPY /app_admin/scripts/ml_data_transform.py /app/ml_data_transform.py
 
 # Exposer le port sur lequel l'application Flask sera exécutée
 EXPOSE 5000

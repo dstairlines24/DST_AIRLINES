@@ -1,0 +1,39 @@
+blinker==1.8.2                 # Bibliothèque pour la gestion de signaux, utilisée par Flask pour certains événements internes
+certifi==2024.8.30             # Fournit des certificats racine SSL pour les connexions sécurisées HTTP
+charset-normalizer==3.3.2      # Normalisation de l'encodage des caractères, utilisée pour traiter les données textuelles
+click==8.1.7                   # Outil pour la gestion des commandes en ligne de commande (utilisé par Flask)
+contourpy==1.3.0              # Bibliothèque pour la génération de contours dans les visualisations graphiques
+cycler==0.12.1                 # Utilisé pour gérer la cyclabilité des couleurs et autres paramètres dans les graphiques matplotlib
+dnspython==2.6.1               # Fournit des outils pour la gestion DNS, utilisé par pymongo pour la connexion à MongoDB
+Flask==3.0.3                   # Framework web principal pour créer l'application
+Flask-PyMongo==2.3.0           # Extension Flask pour intégrer MongoDB facilement
+fonttools==4.54.1              # Utilisé pour manipuler les polices dans les graphiques et visualisations
+idna==3.10                     # Implémentation de l'algorithme IDNA (Internationalized Domain Names) pour les URL
+itsdangerous==2.2.0            # Sécurisation des données pour Flask (utilisé pour les sessions et la gestion des tokens)
+Jinja2==3.1.4                  # Moteur de templates pour Flask, utilisé pour rendre les pages HTML
+joblib==1.4.2                  # Outil de sérialisation pour les modèles de machine learning (utilisé pour charger les modèles)
+kiwisolver==1.4.7              # Résolveur pour les contraintes géométriques, utilisé par matplotlib
+MarkupSafe==2.1.5              # Sécurisation des données HTML pour éviter les vulnérabilités XSS dans Flask
+matplotlib==3.9.2              # Bibliothèque pour la création de graphiques et visualisations
+numpy==1.23.0                  # Bibliothèque de calcul numérique, utilisée pour la gestion des tableaux et matrices de données
+packaging==24.1                # Utilitaire pour gérer les versions des paquets et leurs métadonnées
+pandas==2.2.3                  # Bibliothèque pour la manipulation des données en format DataFrame (utilisée pour le traitement des données)
+pillow==11.0.0                 # Bibliothèque pour le traitement d'images (utilisée pour afficher ou manipuler des images)
+pymongo==4.10.1                # Client Python pour interagir avec MongoDB, utilisé pour la base de données
+pyparsing==3.2.0               # Bibliothèque pour la création de parsers pour des formats de données spécifiques
+python-dateutil==2.9.0.post0   # Utilitaire pour travailler avec des dates et heures en Python
+pytz==2024.2                   # Bibliothèque pour la gestion des fuseaux horaires
+requests==2.32.3               # Bibliothèque pour faire des requêtes HTTP, utilisée dans l'API pour communiquer avec des services externes
+scikit-learn==1.5.2            # Bibliothèque pour le machine learning (utilisée pour l'entraînement et la prédiction des modèles)
+six==1.16.0                    # Utilitaire pour garantir la compatibilité entre Python 2 et 3
+threadpoolctl==3.5.0           # Utilitaire pour gérer les threads dans les calculs parallèles, utilisé avec scikit-learn et d'autres bibliothèques
+tzdata==2024.2                 # Fournit les données sur les fuseaux horaires (nécessaire pour pytz)
+urllib3==2.2.3                 # Bibliothèque de gestion des connexions HTTP, utilisée par requests et d'autres
+Werkzeug==3.0.4                # Bibliothèque de bas niveau utilisée par Flask pour la gestion des requêtes HTTP et des sessions
+flasgger                       # Extension Flask pour générer automatiquement la documentation Swagger pour l'API
+jupyter                        # Environnement interactif pour le calcul scientifique et l'exploration des données
+plotly                         # Bibliothèque pour créer des visualisations interactives de données
+dash                           # Framework pour créer des applications web interactives basées sur Plotly
+# scipy==1.8.0                   # Bibliothèque scientifique pour Python, utilisée pour des calculs avancés (mathématiques, algèbre linéaire, etc.)
+# jupyterlab                     # Interface de nouvelle génération pour Jupyter Notebooks et l'exploration des données
+# xgboost                        # Bibliothèque de machine learning pour les modèles de boosting (souvent utilisée pour les prédictions)

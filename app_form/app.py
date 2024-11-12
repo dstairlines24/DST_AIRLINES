@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session, flash, get_flashed_messages, send_file
+from flask import Flask, request, jsonify, render_template, redirect, url_for, Response, stream_with_context, abort, session, flash
 from pymongo import MongoClient
 from datetime import datetime
 from functools import wraps
@@ -9,9 +9,6 @@ from flasgger import Swagger, swag_from
 
 import subprocess
 import os
-import joblib
-import pandas as pd
-import numpy as np
 
 import requests
 
@@ -299,7 +296,7 @@ def display_positions():
     
     # Récupérer la clé API pour envoyer la requête
     api_key = os.getenv("API_KEY")
-    url = 'http://flask_app:5000/predict'
+    url = 'http://flask_app:5002/predict'
     headers = {
     'x-api-key': api_key
     }
