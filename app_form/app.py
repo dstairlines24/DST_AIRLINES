@@ -292,7 +292,8 @@ def submit_flight_details():
 })
 def display_positions():
     # Récupérer le vol depuis MongoDB
-    flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
+    # flight_data = db.form_flight_infos.find_one({}, {"_id": 0})  # Ne pas inclure l'_id dans la réponse
+    flight_data = list(db['form_flight_infos'].find({}, {"_id": 0}))  # Ne pas inclure l'_id dans la réponse
     
     # Récupérer la clé API pour envoyer la requête
     api_key = os.getenv("API_KEY")
@@ -408,5 +409,5 @@ def run_script(script_name):
     return response
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, port=5001)
 

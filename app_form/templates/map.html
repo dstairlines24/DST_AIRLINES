@@ -34,7 +34,7 @@
         }).addTo(map);
 
         // Récupérer les données des aéroports
-        var flight_data = {{ flight_data | tojson }};
+        var flight_data = {{ flight_data[0] | tojson }};
 
         // Fonction pour créer une icône personnalisée
         function createIcon(iconName) {

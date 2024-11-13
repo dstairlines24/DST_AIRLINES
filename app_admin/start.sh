@@ -8,5 +8,5 @@ jupyter notebook --no-browser --allow-root --NotebookApp.token='' &
 
 # Lancer les app
 python app_flask.py &
-python app_dash.py &
+python app_dash.py
 

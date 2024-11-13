@@ -36,4 +36,4 @@ plotly                         # Bibliothèque pour créer des visualisations in
 dash                           # Framework pour créer des applications web interactives basées sur Plotly
 # scipy==1.8.0                   # Bibliothèque scientifique pour Python, utilisée pour des calculs avancés (mathématiques, algèbre linéaire, etc.)
 # jupyterlab                     # Interface de nouvelle génération pour Jupyter Notebooks et l'exploration des données
-# xgboost                        # Bibliothèque de machine learning pour les modèles de boosting (souvent utilisée pour les prédictions)
+xgboost                        # Bibliothèque de machine learning pour les modèles de boosting (souvent utilisée pour les prédictions)

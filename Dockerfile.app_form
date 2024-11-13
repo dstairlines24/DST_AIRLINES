@@ -25,4 +25,4 @@ COPY /app_form/static /app/static
 COPY /app_form/app.py /app/app.py
 
 # Exposer le port sur lequel l'application Flask sera exécutée
-EXPOSE 5000
+EXPOSE 5001

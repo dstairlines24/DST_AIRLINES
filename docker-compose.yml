@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile.app
     container_name: dstair_flask_app
     ports:
-      - 5002:5000
+      - 5002:5002
     depends_on:
       - mongodb
     volumes:
@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile.app_form
     container_name: dstair_flask_app_form
     ports:
-      - 5001:5000
+      - 5001:5001
     depends_on:
       - mongodb
     environment:
@@ -67,7 +67,7 @@ services:
       - mongodb
     ports:
       - "8888:8888"  # Port pour Jupyter Notebook
-      - "8050:8050"  # Port pour Dash
+      - "8051:8051"  # Port pour Dash
       - "5000:5000"  # Port pour flask
     volumes:
       - ./app_admin/scripts:/app/scripts

@@ -135,19 +135,16 @@ def predict_from_data(flight_data):
 
 
     # Création du DataFrame pandas
-    df = pd.DataFrame(list(flight_data))
+    # df = pd.DataFrame(list(flight_data))
+    df = pd.DataFrame(flight_data)
 
     #==========================================================
     # Appliquer les transformation avec la classe DataTransform
     #==========================================================
     from ml_data_transform import DataTransform
     datatransform = DataTransform(df)
-    df = datatransform.remove_na(subset=['target_delay_difference']) # Supprimer les lignes où 'target_delay_difference' est manquant
-    df = datatransform.add_feat_infos_meteo()                        # Ajout des informations météo
-    df = datatransform.segment_to_col()                              # Transforme les segments en colonne
-    df = datatransform.add_feat_icon_score()                         # Ajout du score d'icône
-    df = datatransform.add_feat_distance_km()                        # Ajout de la distance du vol
-
+    df = datatransform.apply_feat_transforms()
+    
     #==========================================================
     # Séparation du Dataset
     #==========================================================
@@ -232,5 +229,5 @@ def predict():
     
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, port=5002)
 

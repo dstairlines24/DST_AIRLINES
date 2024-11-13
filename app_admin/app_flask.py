@@ -281,10 +281,11 @@ def run_script_graph(script_name):
     process.stdout.close()
     process.wait()  # Attend la fin du processus
 
+    response_content = f"<html><body><pre>{output}</pre>"
+    
     #Si la sortie contient un graphique
     if os.path.exists('output.png'):
         # Construire la réponse HTML avec l'image intégrée
-        response_content = f"<html><body><pre>{output}</pre>"
         response_content += '<br><img src="/display_image" alt="Graphique généré" />'
         response_content += "</body></html>"
 

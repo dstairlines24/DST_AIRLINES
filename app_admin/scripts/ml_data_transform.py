@@ -136,3 +136,20 @@ class DataTransform:
             self.df[f'feat_seg_min_{col}'] = segment_values.apply(lambda x: np.nanmin(x) if len(x) > 0 else np.nan)
         
         return self.df
+    
+    # Fonction pour appliquer les fonctions feat_
+    def apply_feat_transforms(self):
+        # Appliquer toutes les transformations
+        self.add_feat_infos_meteo()
+        self.segment_to_col()
+        self.add_feat_distance_km()
+        self.add_feat_icon_score()
+
+        return self.df
+
+    # Fonction pour appliquer les fonctions target_
+    def apply_target_transforms(self):
+        self.add_target_delay_diff()
+        self.remove_na(['target_delay_difference'])
+        
+        return self.df

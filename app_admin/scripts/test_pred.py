@@ -27,19 +27,20 @@ def predict_from_data(flight_data):
 
 
     # Création du DataFrame pandas
-    df = pd.DataFrame(list(flight_data))
-
+    # df = pd.DataFrame(list(flight_data))
+    df = pd.DataFrame(flight_data)
+    print("---------------------------------------------------------------------------------------")
+    print(f"\nContenu de df : \n{df}\n")
+    
     #==========================================================
     # Appliquer les transformation avec la classe DataTransform
     #==========================================================
     from ml_data_transform import DataTransform
     datatransform = DataTransform(df)
-    df = datatransform.remove_na(subset=['target_delay_difference']) # Supprimer les lignes où 'target_delay_difference' est manquant
-    df = datatransform.add_feat_infos_meteo()                        # Ajout des informations météo
-    df = datatransform.segment_to_col()                              # Transforme les segments en colonne
-    df = datatransform.add_feat_icon_score()                         # Ajout du score d'icône
-    df = datatransform.add_feat_distance_km()                        # Ajout de la distance du vol
-
+    df = datatransform.apply_feat_transforms()
+    print("---------------------------------------------------------------------------------------")
+    print(f"\nContenu de df après DataTransform: \n{df}\n")
+    
     #==========================================================
     # Séparation du Dataset
     #==========================================================
@@ -48,18 +49,20 @@ def predict_from_data(flight_data):
 
     # Créer un DataFrame pour les données de prédiction
     input_data = df[features]
-    print(f"input_data : {input_data}")
+    print("---------------------------------------------------------------------------------------")
+    print(f"\nContenu de input_data : \n{input_data}\n")
 
     #==========================================================
     # Application du preprocessing (pipeline du modèle)
     #==========================================================
     processed_input = best_model.named_steps['preprocessor'].transform(input_data)
-    print(f"processed_input : {processed_input}")
+    print("---------------------------------------------------------------------------------------")
     print(f"\nContenu de processed_input : \n{processed_input}\n")
     print(f"Type de processed_input : {type(processed_input)}\n")
 
     # Transformation en DF
     processed_input_df = pd.DataFrame(processed_input, columns=input_data.columns)
+    print("---------------------------------------------------------------------------------------")
     print(f"\nContenu de processed_input_df : \n{processed_input_df}\n")
     print(f"Type de processed_input_df : {type(processed_input_df)}\n")
 
@@ -77,7 +80,13 @@ def predict_from_data(flight_data):
 # --------------------------------------------------------------
 # Choisir une collection où récupérer un exemple de vol à tester
 # --------------------------------------------------------------
-flight_data = db.test_col.find_one({}, {"_id": 0})
+# flight_data = db.test_col.find_one({}, {"_id": 0})
+# flight_data = db['test_col'].find()
+# flight_data = list(db['test_col'].find())
+flight_data = list(db['test_col'].find({}, {"_id": 0}))
+
+# print("---------------------------------------------------------------------------------------")
+# print(f"Contenu de flight_data : \n{flight_data}\n")
 # --------------------------------------------------------------
 
 if flight_data:
@@ -97,16 +106,16 @@ if flight_data:
         formatted_retard = f"{hours} heures {minutes} minutes {seconds} secondes"
 
         print("\n\n")
-        print("==================================================")
+        print("==================================================================================================")
         print(f"---> retard_pred = {formatted_retard}")
-        print("==================================================")
+        print("==================================================================================================")
     except Exception as e:
         error_message = f"Erreur lors de la prédiction: {str(e)}"
+        print("\n\n")
+        print("==================================================================================================")
         print(error_message)   
+        print("==================================================================================================")
 
 else:
     error_message = "Aucune donnée de vol trouvée dans la base de données."
     print(error_message)
-
-print('\n\n')
-print(flight_data)

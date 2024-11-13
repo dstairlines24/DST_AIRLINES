@@ -1,6 +1,8 @@
 # Utiliser une image de base avec Python
 FROM python:3.9-slim
-# FROM python:3.9
+
+# Définir le dossier de travail
+WORKDIR /app
 
 # Mettre à jour le gestionnaire de paquets et installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y --fix-missing\
@@ -22,9 +24,6 @@ RUN jupyter notebook --generate-config && \
     echo "c.NotebookApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_notebook_config.py && \
     echo "c.NotebookApp.allow_root = True" >> ~/.jupyter/jupyter_notebook_config.py
 
-# Exposer le port pour Jupyter Notebook
-EXPOSE 8888 8050 5000
-
 # Copie les répertoires spécifiques
 COPY data_test /app/data_test
 COPY functions /app/functions
@@ -38,8 +37,10 @@ COPY /app_admin/app_flask.py /app/app_flask.py
 COPY /app_admin/app_dash.py /app/app_dash.py
 COPY /app_admin/start.sh /app/start.sh
 
-# Définir le dossier de travail
-WORKDIR /app
+RUN chmod +x /app/start.sh
+
+# Exposer le port pour Jupyter Notebook
+EXPOSE 8888 8051 5000
 
 # Démarrer Jupyter Notebook
 # CMD ["jupyter", "notebook", "--no-browser", "--allow-root", "--NotebookApp.token=''"]

@@ -34,12 +34,8 @@ df = pd.DataFrame(list(db['final_flights'].find()))
 #==========================================================
 from ml_data_transform import DataTransform
 datatransform = DataTransform(df)
-df = datatransform.remove_na(subset=['target_delay_difference']) # Supprimer les lignes où 'target_delay_difference' est manquant
-df = datatransform.add_feat_infos_meteo()                        # Ajout des informations météo
-df = datatransform.segment_to_col()                              # Transforme les segments en colonne
-df = datatransform.add_feat_icon_score()                         # Ajout du score d'icône
-df = datatransform.add_feat_distance_km()                        # Ajout de la distance du vol
-df = datatransform.add_target_delay_diff()                       # Ajout de la variable cible 'target_delay_difference'
+df = datatransform.apply_feat_transforms()
+df = datatransform.apply_target_transforms()
 
 #==========================================================
 # Séparation du Dataset
