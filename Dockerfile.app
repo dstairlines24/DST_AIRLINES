@@ -14,7 +14,7 @@ COPY /app/requirements.txt .
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
 # Copie les fichiers spécifiques
-COPY /model /app/model
+# COPY /model /app/model
 COPY /app/templates /app/templates
 COPY /app/app.py /app/app.py
 # Copier le fichier de classe DataTransform qui se situe dans app_admin

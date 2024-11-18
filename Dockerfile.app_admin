@@ -29,7 +29,7 @@ COPY data_test /app/data_test
 COPY functions /app/functions
 COPY /app_admin/scripts /app/scripts
 COPY /app_admin/templates /app/templates
-COPY /model /app/model
+# COPY /model /app/model
 
 # Copie les fichiers spécifiques
 COPY /app_admin/init_db.py /app/init_db.py
