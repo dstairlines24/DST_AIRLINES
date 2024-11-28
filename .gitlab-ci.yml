@@ -40,6 +40,9 @@ test-app:
 
 test-app_admin:
   stage: test
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
   script:
     - cd app_admin/
     - sudo pip install --upgrade pip
@@ -48,6 +51,9 @@ test-app_admin:
 
 test-app_form:
   stage: test
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
   script:
     - cd app_form/
     - sudo pip install --upgrade pip
@@ -55,6 +61,9 @@ test-app_form:
     - pip install -r requirements.txt
 
 .do_testing:
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
   services:
     - docker:dind
   before_script:
