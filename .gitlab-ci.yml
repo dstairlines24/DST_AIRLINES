@@ -25,31 +25,31 @@ stages:
   - deploy-dev
   - deploy-prod
 
-# test-app:
-#   stage: test
-#   script:
-#     - cd app/
-#     - sudo pip install --upgrade pip
-#     - sudo apt-get update
-#     - pip install -r requirements.txt
-#     # - python3 -m unittest discover tests/
-#     # - python -m unittest discover -s app/tests -p "*.py"
+test-app:
+  stage: test
+  script:
+    - cd app/
+    - sudo pip install --upgrade pip
+    - sudo apt-get update
+    - pip install -r requirements.txt
+    # - python3 -m unittest discover tests/
+    # - python -m unittest discover -s app/tests -p "*.py"
 
-# test-app_admin:
-#   stage: test
-#   script:
-#     - cd app_admin/
-#     - sudo pip install --upgrade pip
-#     - sudo apt-get update
-#     - pip install -r requirements.txt
+test-app_admin:
+  stage: test
+  script:
+    - cd app_admin/
+    - sudo pip install --upgrade pip
+    - sudo apt-get update
+    - pip install -r requirements.txt
 
-# test-app_form:
-#   stage: test
-#   script:
-#     - cd app_form/
-#     - sudo pip install --upgrade pip
-#     - sudo apt-get update
-#     - pip install -r requirements.txt
+test-app_form:
+  stage: test
+  script:
+    - cd app_form/
+    - sudo pip install --upgrade pip
+    - sudo apt-get update
+    - pip install -r requirements.txt
 
 .do_testing:
   services:
@@ -63,33 +63,33 @@ stages:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - echo "======== before_script  end ========" 
 
-# build-app:
-#   stage: build
-#   # variables:
-#   #   DOCKER_TLS_CERTDIR: ""
-#   image: docker:latest
-#   extends: .do_testing
-#   script:
-#     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
-#     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
+build-app:
+  stage: build
+  # variables:
+  #   DOCKER_TLS_CERTDIR: ""
+  image: docker:latest
+  extends: .do_testing
+  script:
+    - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
 
-# build-app_admin:
-#   stage: build
-#   # variables:
-#   #   DOCKER_TLS_CERTDIR: ""
-#   image: docker:latest
-#   extends: .do_testing
-#   script:
-#     - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
-#     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+build-app_admin:
+  stage: build
+  # variables:
+  #   DOCKER_TLS_CERTDIR: ""
+  image: docker:latest
+  extends: .do_testing
+  script:
+    - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
-# build-app_form:
-#   stage: build
-#   image: docker:latest
-#   extends: .do_testing
-#   script:
-#     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
-#     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+build-app_form:
+  stage: build
+  image: docker:latest
+  extends: .do_testing
+  script:
+    - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
 stop-dev:
   stage: deploy-dev
