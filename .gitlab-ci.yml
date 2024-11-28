@@ -67,6 +67,7 @@ build-app:
     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
 
+
 build-app_admin:
   stage: build
   image: docker:latest
