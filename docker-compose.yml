@@ -12,9 +12,7 @@ services:
       - 27017:27017
       
   flask_app:
-    build:
-      context: .
-      dockerfile: Dockerfile.app
+    image: guillaumegossmann/dst_airlines_app
     container_name: dstair_flask_app
     ports:
       - 5002:5002
@@ -34,9 +32,7 @@ services:
     command: python app.py
 
   flask_app_form:
-    build:
-      context: .
-      dockerfile: Dockerfile.app_form
+    image: guillaumegossmann/dst_airlines_app_form
     container_name: dstair_flask_app_form
     ports:
       - 5001:5001
@@ -59,9 +55,7 @@ services:
     command: python app.py
 
   app_admin:
-    build:
-      context: .
-      dockerfile: Dockerfile.app_admin
+    image: guillaumegossmann/dst_airlines_app_admin
     container_name: dstair_app_admin
     depends_on:
       - mongodb
