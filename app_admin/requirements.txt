@@ -14,7 +14,7 @@ Jinja2==3.1.4                  # Moteur de templates pour Flask, utilisé pour r
 joblib==1.4.2                  # Outil de sérialisation pour les modèles de machine learning (utilisé pour charger les modèles)
 kiwisolver==1.4.7              # Résolveur pour les contraintes géométriques, utilisé par matplotlib
 MarkupSafe==2.1.5              # Sécurisation des données HTML pour éviter les vulnérabilités XSS dans Flask
-matplotlib==3.9.2              # Bibliothèque pour la création de graphiques et visualisations
+matplotlib==3.7.5              # Bibliothèque pour la création de graphiques et visualisations
 numpy==1.23.0                  # Bibliothèque de calcul numérique, utilisée pour la gestion des tableaux et matrices de données
 packaging==24.1                # Utilitaire pour gérer les versions des paquets et leurs métadonnées
 pandas==2.2.3                  # Bibliothèque pour la manipulation des données en format DataFrame (utilisée pour le traitement des données)
