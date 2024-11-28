@@ -49,9 +49,9 @@ test-app_form:
   services:
     - docker:dind
   before_script:
-    - echo "======== before_script start ========" # Débuggage
+    - echo "======== before_script  start ========" # Débuggage
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - echo "======== before_script end ========" 
+    - echo "======== before_script  end ========" 
 
 build-app:
   stage: build
