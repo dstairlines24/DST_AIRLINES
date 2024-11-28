@@ -27,6 +27,9 @@ stages:
 
 test-app:
   stage: test
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
   script:
     - cd app/
     - sudo pip install --upgrade pip
