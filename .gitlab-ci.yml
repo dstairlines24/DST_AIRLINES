@@ -29,8 +29,8 @@ test-app:
   stage: test
   script:
     - cd app/
-    - pip install --upgrade pip
-    - apt-get update
+    # - pip install --upgrade pip
+    # - apt-get update
     - pip install -r requirements.txt
     # - python3 -m unittest discover tests/
     # - python -m unittest discover -s app/tests -p "*.py"
@@ -39,16 +39,12 @@ test-app_admin:
   stage: test
   script:
     - cd app_admin/
-    - pip install --upgrade pip
-    - apt-get update
     - pip install -r requirements.txt
 
 test-app_form:
   stage: test
   script:
     - cd app_form/
-    - pip install --upgrade pip
-    - apt-get update
     - pip install -r requirements.txt
 
 .do_testing:
