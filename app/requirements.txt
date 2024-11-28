@@ -5,7 +5,7 @@ Werkzeug==3.0.4                # Bibliothèque de bas niveau utilisée par Flask
 joblib==1.4.2                  # Outil de sérialisation pour les modèles de machine learning (utilisé pour charger les modèles)
 pandas==2.0.3                  # Bibliothèque pour la manipulation des données en format DataFrame (utilisée pour le traitement des données)
 requests==2.32.3               # Pour faire des requêtes HTTP, utilisée dans l'API pour communiquer avec des services externes
-scikit-learn==1.5.2            # Bibliothèque pour le machine learning (utilisée pour l'entraînement et la prédiction des modèles)
+# scikit-learn==1.5.2            # Bibliothèque pour le machine learning (utilisée pour l'entraînement et la prédiction des modèles)
 # numpy==1.23.0                  # Bibliothèque de calcul numérique, utilisée pour la gestion des tableaux et matrices de données
 # flask-session==0.4.0
 # flask-cors==3.1.1  # Si nécessaire
