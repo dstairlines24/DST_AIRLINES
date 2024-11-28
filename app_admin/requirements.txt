@@ -2,7 +2,7 @@ blinker==1.8.2                 # Bibliothèque pour la gestion de signaux, utili
 certifi==2024.8.30             # Fournit des certificats racine SSL pour les connexions sécurisées HTTP
 charset-normalizer==3.3.2      # Normalisation de l'encodage des caractères, utilisée pour traiter les données textuelles
 click==8.1.7                   # Outil pour la gestion des commandes en ligne de commande (utilisé par Flask)
-contourpy==1.3.0              # Bibliothèque pour la génération de contours dans les visualisations graphiques
+# contourpy==1.3.0              # Bibliothèque pour la génération de contours dans les visualisations graphiques
 cycler==0.12.1                 # Utilisé pour gérer la cyclabilité des couleurs et autres paramètres dans les graphiques matplotlib
 dnspython==2.6.1               # Fournit des outils pour la gestion DNS, utilisé par pymongo pour la connexion à MongoDB
 Flask==3.0.3                   # Framework web principal pour créer l'application
