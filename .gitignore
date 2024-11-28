@@ -1,3 +1,4 @@
 data/
 env/
 _pycache_
+app_admin/scripts/__pycache__/
