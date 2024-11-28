@@ -18,7 +18,7 @@ matplotlib==3.7.5              # Bibliothèque pour la création de graphiques e
 numpy==1.23.0                  # Bibliothèque de calcul numérique, utilisée pour la gestion des tableaux et matrices de données
 packaging==24.1                # Utilitaire pour gérer les versions des paquets et leurs métadonnées
 pandas==2.0.3                  # Bibliothèque pour la manipulation des données en format DataFrame (utilisée pour le traitement des données)
-pillow==11.0.0                 # Bibliothèque pour le traitement d'images (utilisée pour afficher ou manipuler des images)
+pillow==10.4.0                 # Bibliothèque pour le traitement d'images (utilisée pour afficher ou manipuler des images)
 pymongo==4.10.1                # Client Python pour interagir avec MongoDB, utilisé pour la base de données
 pyparsing==3.2.0               # Bibliothèque pour la création de parsers pour des formats de données spécifiques
 python-dateutil==2.9.0.post0   # Utilitaire pour travailler avec des dates et heures en Python
