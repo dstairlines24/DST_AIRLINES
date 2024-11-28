@@ -65,6 +65,8 @@ test-app_form:
 
 build-app:
   stage: build
+  # variables:
+  #   DOCKER_TLS_CERTDIR: ""
   image: docker:latest
   extends: .do_testing
   script:
@@ -73,6 +75,8 @@ build-app:
 
 build-app_admin:
   stage: build
+  # variables:
+  #   DOCKER_TLS_CERTDIR: ""
   image: docker:latest
   extends: .do_testing
   script:
@@ -104,6 +108,7 @@ deploy-dev:
   image: docker:latest
   variables:
     NAMESPACE: dev
+    # DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
@@ -122,6 +127,7 @@ deploy-prod:
   image: docker:latest
   variables:
     NAMESPACE: prod
+    # DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
