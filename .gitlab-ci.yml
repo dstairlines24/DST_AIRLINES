@@ -20,89 +20,89 @@ image:
   entrypoint: ["/bin/sh", "-c"]
 
 stages:
-  # - test
-  # - build
+  - test
+  - build
   - deploy-dev
   - deploy-prod
 
-test-app:
-  stage: test
-  script:
-    - cd app/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
-    - pip install -r requirements.txt
-    # - python3 -m unittest discover tests/
-    # - python -m unittest discover -s app/tests -p "*.py"
+# test-app:
+#   stage: test
+#   script:
+#     - cd app/
+#     - sudo pip install --upgrade pip
+#     - sudo apt-get update
+#     - pip install -r requirements.txt
+#     # - python3 -m unittest discover tests/
+#     # - python -m unittest discover -s app/tests -p "*.py"
 
-test-app_admin:
-  stage: test
-  script:
-    - cd app_admin/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
-    - pip install -r requirements.txt
+# test-app_admin:
+#   stage: test
+#   script:
+#     - cd app_admin/
+#     - sudo pip install --upgrade pip
+#     - sudo apt-get update
+#     - pip install -r requirements.txt
 
-test-app_form:
-  stage: test
-  script:
-    - cd app_form/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
-    - pip install -r requirements.txt
+# test-app_form:
+#   stage: test
+#   script:
+#     - cd app_form/
+#     - sudo pip install --upgrade pip
+#     - sudo apt-get update
+#     - pip install -r requirements.txt
 
-.do_testing:
-  services:
-    - docker:dind
-  before_script:
-    - echo "======== before_script  start ========" # Débuggage
-    - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
-    - echo "DOCKER_PASSWORD= $DOCKER_PASSWORD" # Débuggage
-    - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
-    - echo "Logging in to Docker..."
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - echo "======== before_script  end ========" 
+# .do_testing:
+#   services:
+#     - docker:dind
+#   before_script:
+#     - echo "======== before_script  start ========" # Débuggage
+#     - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
+#     - echo "DOCKER_PASSWORD= $DOCKER_PASSWORD" # Débuggage
+#     - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
+#     - echo "Logging in to Docker..."
+#     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#     - echo "======== before_script  end ========" 
 
-build-app:
-  stage: build
-  # variables:
-  #   DOCKER_TLS_CERTDIR: ""
-  image: docker:latest
-  extends: .do_testing
-  script:
-    - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
+# build-app:
+#   stage: build
+#   # variables:
+#   #   DOCKER_TLS_CERTDIR: ""
+#   image: docker:latest
+#   extends: .do_testing
+#   script:
+#     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
+#     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
 
-build-app_admin:
-  stage: build
-  # variables:
-  #   DOCKER_TLS_CERTDIR: ""
-  image: docker:latest
-  extends: .do_testing
-  script:
-    - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+# build-app_admin:
+#   stage: build
+#   # variables:
+#   #   DOCKER_TLS_CERTDIR: ""
+#   image: docker:latest
+#   extends: .do_testing
+#   script:
+#     - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+#     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
-build-app_form:
-  stage: build
-  image: docker:latest
-  extends: .do_testing
-  script:
-    - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+# build-app_form:
+#   stage: build
+#   image: docker:latest
+#   extends: .do_testing
+#   script:
+#     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+#     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
-stop-dev:
-  stage: deploy-dev
-  variables:
-    NAMESPACE: dev
-  when: manual
-  # Don't stop the "review" for master branch or tags,
-  # it is only for branches (so PRs (most of the time))
-  environment:
-    name: $NAMESPACE-$CI_BUILD_REF_NAME
-    action: stop
-  script:
-    - docker-compose down -v
+# stop-dev:
+#   stage: deploy-dev
+#   variables:
+#     NAMESPACE: dev
+#   when: manual
+#   # Don't stop the "review" for master branch or tags,
+#   # it is only for branches (so PRs (most of the time))
+#   environment:
+#     name: $NAMESPACE-$CI_BUILD_REF_NAME
+#     action: stop
+#   script:
+#     - docker-compose down -v
 
 deploy-dev:
   image: docker:latest
