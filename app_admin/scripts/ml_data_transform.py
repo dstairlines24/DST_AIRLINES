@@ -139,6 +139,10 @@ class DataTransform:
     
     # Fonction pour appliquer les fonctions feat_
     def apply_feat_transforms(self):
+        if self.df.empty:
+            print("Le DataFrame est vide. Aucune transformation ne sera appliquée.")
+            return self.df
+
         # Appliquer toutes les transformations
         self.add_feat_infos_meteo()
         self.segment_to_col()
@@ -149,6 +153,10 @@ class DataTransform:
 
     # Fonction pour appliquer les fonctions target_
     def apply_target_transforms(self):
+        if self.df.empty:
+            print("Le DataFrame est vide. Aucune transformation ne sera appliquée.")
+            return self.df
+            
         self.add_target_delay_diff()
         self.remove_na(['target_delay_difference'])
         
