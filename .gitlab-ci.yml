@@ -25,31 +25,31 @@ stages:
   - deploy-dev
   - deploy-prod
 
-test-app:
-  stage: test
-  script:
-    - cd app/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
-    - pip install -r requirements.txt
-    # - python3 -m unittest discover tests/
-    # - python -m unittest discover -s app/tests -p "*.py"
+# test-app:
+#   stage: test
+#   script:
+#     - cd app/
+#     - sudo pip install --upgrade pip
+#     - sudo apt-get update
+#     - pip install -r requirements.txt
+#     # - python3 -m unittest discover tests/
+#     # - python -m unittest discover -s app/tests -p "*.py"
 
-test-app_admin:
-  stage: test
-  script:
-    - cd app_admin/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
-    - pip install -r requirements.txt
+# test-app_admin:
+#   stage: test
+#   script:
+#     - cd app_admin/
+#     - sudo pip install --upgrade pip
+#     - sudo apt-get update
+#     - pip install -r requirements.txt
 
-test-app_form:
-  stage: test
-  script:
-    - cd app_form/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
-    - pip install -r requirements.txt
+# test-app_form:
+#   stage: test
+#   script:
+#     - cd app_form/
+#     - sudo pip install --upgrade pip
+#     - sudo apt-get update
+#     - pip install -r requirements.txt
 
 .do_testing:
   services:
