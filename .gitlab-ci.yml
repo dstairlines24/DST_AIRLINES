@@ -56,6 +56,8 @@ test-app_form:
     - docker:dind
   before_script:
     - echo "======== before_script  start ========" # Débuggage
+    - echo "$DOCKER_PASSWORD" # Débuggage
+    - echo "$DOCKER_USERNAME" # Débuggage
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - echo "======== before_script  end ========" 
 
