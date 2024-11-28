@@ -20,7 +20,7 @@ packaging==24.1                # Utilitaire pour gérer les versions des paquets
 pandas==2.0.3                  # Bibliothèque pour la manipulation des données en format DataFrame (utilisée pour le traitement des données)
 pillow==10.4.0                 # Bibliothèque pour le traitement d'images (utilisée pour afficher ou manipuler des images)
 pymongo==4.10.1                # Client Python pour interagir avec MongoDB, utilisé pour la base de données
-pyparsing==3.2.0               # Bibliothèque pour la création de parsers pour des formats de données spécifiques
+pyparsing==3.1.4               # Bibliothèque pour la création de parsers pour des formats de données spécifiques
 python-dateutil==2.9.0.post0   # Utilitaire pour travailler avec des dates et heures en Python
 pytz==2024.2                   # Bibliothèque pour la gestion des fuseaux horaires
 requests==2.32.3               # Bibliothèque pour faire des requêtes HTTP, utilisée dans l'API pour communiquer avec des services externes
