@@ -91,18 +91,18 @@ stages:
 #     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
 #     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
-# stop-dev:
-#   stage: deploy-dev
-#   variables:
-#     NAMESPACE: dev
-#   when: manual
-#   # Don't stop the "review" for master branch or tags,
-#   # it is only for branches (so PRs (most of the time))
-#   environment:
-#     name: $NAMESPACE-$CI_BUILD_REF_NAME
-#     action: stop
-#   script:
-#     - docker-compose down -v
+stop-dev:
+  stage: deploy-dev
+  variables:
+    NAMESPACE: dev
+  when: manual
+  # Don't stop the "review" for master branch or tags,
+  # it is only for branches (so PRs (most of the time))
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - docker-compose down -v
 
 deploy-dev:
   image: docker:latest
