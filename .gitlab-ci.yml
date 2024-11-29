@@ -156,7 +156,7 @@ deploy-dev:
     on_stop: stop-dev
   script:
     # - sudo usermod -aG docker gitlab-runner
-    - tree -f
+    - ls -R
     - pwd
     - echo "Vérification de docker-compose"
     - docker-compose --version
@@ -190,7 +190,7 @@ deploy-prod:
   only:
     - main
   script:
-    - tree -f
+    - ls -R
     - pwd
     - echo "Vérification de docker-compose"
     - docker-compose --version
