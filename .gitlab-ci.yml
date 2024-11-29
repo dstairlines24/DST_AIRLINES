@@ -64,13 +64,13 @@ test-app_form:
   services:
     - docker:dind
   before_script:
-    - echo "======== before_script  start ========" # Débuggage
+    - echo "======== before_script start ========" # Débuggage
     - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
     - echo "DOCKER_PASSWORD= $DOCKER_PASSWORD" # Débuggage
     - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
     - echo "Logging in to Docker..."
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - echo "======== before_script  end ========" 
+    - echo "======== before_script end ========" 
 
 build-app:
   stage: build
