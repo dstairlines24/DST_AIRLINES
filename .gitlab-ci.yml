@@ -4,7 +4,7 @@ variables:
   APP_ADMIN_IMAGE: "guillaumegossmann/dst_airlines_app_admin"
   APP_FORM_IMAGE: "guillaumegossmann/dst_airlines_app_form"
   # IP_VM: 127.0.0.1
-  IP_VM: 34.247.38.229
+  IP_VM: 34.250.19.32
   PORT_DEV_APP: 5002
   PORT_DEV_APP_FORM: 5001
   PORT_DEV_APP_ADMIN: 5000
