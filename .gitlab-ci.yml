@@ -155,10 +155,11 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
-    - ls -R
+    - ls -lR
     - pwd
     - sudo chown -R gitlab-runner:gitlab-runner .
     - sudo chmod -R 755 .
+    - ls -lR
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
