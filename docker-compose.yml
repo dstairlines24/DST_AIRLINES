@@ -12,7 +12,7 @@ services:
       - 27017:27017
       
   flask_app:
-    image: docker.io/guillaumegossmann/dst_airlines_app:0af9b99f
+    image: guillaumegossmann/dst_airlines_app:latest
     container_name: dstair_flask_app
     ports:
       - 5002:5002
@@ -32,7 +32,7 @@ services:
     command: python app.py
 
   flask_app_form:
-    image: docker.io/guillaumegossmann/dst_airlines_app_form:latest
+    image: guillaumegossmann/dst_airlines_app_form:latest
     container_name: dstair_flask_app_form
     ports:
       - 5001:5001
