@@ -61,9 +61,9 @@ test-app_form:
     - sudo apt-get update
     - pip install -r requirements.txt
 
-.do_dind:
-  # services:
-  #   - docker:dind
+# .do_dind:
+#   services:
+#     - docker:dind
 
 .do_docker_logging:
   services:
@@ -82,7 +82,7 @@ build-app:
   stage: build
   image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
@@ -93,7 +93,7 @@ build-app_admin:
   stage: build
   image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
@@ -104,7 +104,7 @@ build-app_form:
   stage: build
   image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
