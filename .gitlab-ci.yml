@@ -120,11 +120,13 @@ build-app_form:
 stop-dev:
   stage: deploy-dev
   extends: .do_strategy
+  variables:
+    NAMESPACE: dev
   when: manual
   # Don't stop the "review" for master branch or tags,
   # it is only for branches (so PRs (most of the time))
   environment:
-    name: dev-$CI_BUILD_REF_NAME
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
     action: stop
   script:
     - docker-compose down
