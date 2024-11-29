@@ -66,8 +66,6 @@ test-app_form:
 #     - docker:dind
 
 .do_docker_logging:
-  services:
-    - docker:dind
   before_script:
     - echo "======== before_script start ========" # Débuggage
     - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
@@ -81,6 +79,8 @@ test-app_form:
 build-app:
   stage: build
   image: docker:latest
+  services:
+    - docker:dind
   extends: 
     # - .do_dind
     - .do_strategy
@@ -92,6 +92,8 @@ build-app:
 build-app_admin:
   stage: build
   image: docker:latest
+  services:
+    - docker:dind
   extends: 
     # - .do_dind
     - .do_strategy
@@ -103,6 +105,8 @@ build-app_admin:
 build-app_form:
   stage: build
   image: docker:latest
+  services:
+    - docker:dind
   extends: 
     # - .do_dind
     - .do_strategy
