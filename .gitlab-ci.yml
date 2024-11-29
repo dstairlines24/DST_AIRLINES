@@ -133,7 +133,7 @@ deploy-dev:
   stage: deploy-dev
   extends: .do_testing
   script:
-    - docker-compose -f docker-compose.yml up -d
+    - docker-compose -f docker-compose.yml up --pull always -d
 
 deploy-prod:
   image: docker:latest
@@ -154,4 +154,4 @@ deploy-prod:
     - main
   extends: .do_testing
   script:
-    - docker-compose -f docker-compose.yml up -d
+    - docker-compose -f docker-compose.yml up --pull always -d
