@@ -27,6 +27,8 @@ stages:
   - deploy-prod
 
 .do_strategy:
+  before_script:
+    - umask 022
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
