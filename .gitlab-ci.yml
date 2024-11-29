@@ -136,6 +136,9 @@ deploy-dev:
     - .do_dind
     # - .do_strategy
     - .do_docker_logging
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ 
   # services:
   #   - name: docker:dind
   #     command: ["--host=tcp://0.0.0.0:2375"]
