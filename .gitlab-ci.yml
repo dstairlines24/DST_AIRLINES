@@ -135,6 +135,8 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
+    - docker-compose --version
+    - sudo apt-get update && sudo apt-get install -y docker-compose
     - docker-compose -f docker-compose.yml up --pull always -d
 
 deploy-prod:
