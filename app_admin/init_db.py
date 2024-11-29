@@ -55,16 +55,20 @@ def load_test_to_app_data(bson_file_path):
 def load_test_to_app_data_form(bson_file_path):
     # Charger le fichier .bson et insérer les documents dans la collection test_col
     db_app_form = client.app_data_form
+    db_app = client.app_data
 
     # Supprimer la collection si elle existe déjà pour éviter les doublons
     db_app_form.test_col.drop()
+    db_app.temp_col.drop()
 
     try:
         # Lire le fichier .bson et insérer chaque document
         with open(bson_file_path, 'rb') as f:
             data = bson.decode_all(f.read())
             db_app_form.test_col.insert_many(data)
+            db_app.temp_col.insert_many(data)
         print(f"Collection 'app_data_form.test_col' remplie avec succès à partir de {bson_file_path}")
+        print(f"Collection 'app_data.temp_col' remplie avec succès à partir de {bson_file_path}")
     except Exception as e:
         print("Erreur lors du chargement du fichier .bson:", e)
 
