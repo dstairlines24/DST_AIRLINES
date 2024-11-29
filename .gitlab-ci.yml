@@ -84,8 +84,8 @@ build-app:
     - .do_strategy
     - .do_docker_logging
   script:
-    - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker build -f Dockerfile.app -t $APP_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $APP_IMAGE:$CI_COMMIT_SHORT_SHA
 
 build-app_admin:
   stage: build
@@ -95,8 +95,8 @@ build-app_admin:
     - .do_strategy
     - .do_docker_logging
   script:
-    - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
 
 build-app_form:
   stage: build
@@ -132,6 +132,8 @@ deploy-dev:
     - .do_docker_logging
   variables:
     NAMESPACE: dev
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
