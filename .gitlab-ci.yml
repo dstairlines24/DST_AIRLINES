@@ -73,10 +73,10 @@ test-app_form:
 
 build-app:
   stage: build
+  image: docker:latest
   extends: .do_strategy
   # variables:
   #   DOCKER_TLS_CERTDIR: ""
-  image: docker:latest
   extends: .do_docker_logging
   script:
     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
@@ -84,10 +84,10 @@ build-app:
 
 build-app_admin:
   stage: build
+  image: docker:latest
   extends: .do_strategy
   # variables:
   #   DOCKER_TLS_CERTDIR: ""
-  image: docker:latest
   extends: .do_docker_logging
   script:
     - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
@@ -95,8 +95,8 @@ build-app_admin:
 
 build-app_form:
   stage: build
-  extends: .do_strategy
   image: docker:latest
+  extends: .do_strategy
   extends: .do_docker_logging
   script:
     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
@@ -118,8 +118,8 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
-  extends: .do_strategy
   image: docker:latest
+  extends: .do_strategy
   variables:
     NAMESPACE: dev
     # DOCKER_TLS_CERTDIR: ""
@@ -138,8 +138,8 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy-prod
-  extends: .do_strategy
   image: docker:latest
+  extends: .do_strategy
   variables:
     NAMESPACE: prod
     # DOCKER_TLS_CERTDIR: ""
