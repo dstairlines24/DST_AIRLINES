@@ -158,14 +158,14 @@ deploy-dev:
     - ls -lR
     - pwd
     - sudo chown -R gitlab-runner:gitlab-runner .
-    - sudo chmod -R 777 .
+    - sudo chmod -R 755 .
     - ls -lR
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
     # - docker-compose -f docker-compose.yml up --pull always -d
-    - docker-compose config 
-    - docker-compose up --verbose
+    # - docker-compose config 
+    - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
     - echo "Liste des conteneurs Docker"
