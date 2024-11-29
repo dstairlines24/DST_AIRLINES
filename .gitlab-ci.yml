@@ -69,6 +69,8 @@ test-app_form:
 
 .do_docker_logging:
   before_script:
+    - whoami  # Affiche l'utilisateur courant
+    - id  # Affiche l'UID et le GID de l'utilisateur
     - echo "======== before_script start ========" # Débuggage
     - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
     - echo "Logging in to Docker..."
@@ -118,13 +120,11 @@ build-app_form:
 stop-dev:
   stage: deploy-dev
   extends: .do_strategy
-  variables:
-    NAMESPACE: dev
   when: manual
   # Don't stop the "review" for master branch or tags,
   # it is only for branches (so PRs (most of the time))
   environment:
-    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    name: dev-$CI_BUILD_REF_NAME
     action: stop
   script:
     - docker-compose down
@@ -139,15 +139,14 @@ deploy-dev:
   # services:
   #   - name: docker:dind
   #     command: ["--host=tcp://0.0.0.0:2375"]
-  variables:
-    NAMESPACE: dev
-    # DOCKER_HOST: unix:///var/run/docker.sock 
-    # DOCKER_HOST: tcp://docker:2375 
-    # DOCKER_TLS_CERTDIR: "/certs"
-    # DOCKER_DRIVER: overlay2
-    # DOCKER_TLS_CERTDIR: ""
+  # variables:
+  #   DOCKER_HOST: unix:///var/run/docker.sock 
+  #   DOCKER_HOST: tcp://docker:2375 
+  #   DOCKER_TLS_CERTDIR: "/certs"
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_TLS_CERTDIR: ""
   environment:
-    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    name: dev-$CI_BUILD_REF_NAME
     url: |
       http://$IP_VM:$PORT_DEV_APP
       http://$IP_VM:$PORT_DEV_APP_FORM
@@ -176,10 +175,8 @@ deploy-prod:
     - .do_dind
     - .do_strategy
     - .do_docker_logging
-  variables:
-    NAMESPACE: prod
   environment:
-    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    name: prod-$CI_BUILD_REF_NAME
     url: |
       http://$IP_VM:$PORT_PROD_APP
       http://$IP_VM:$PORT_PROD_APP_FORM
