@@ -134,7 +134,7 @@ deploy-dev:
   image: docker:latest
   extends: 
     - .do_dind
-    - .do_strategy
+    # - .do_strategy
     - .do_docker_logging
   # services:
   #   - name: docker:dind
@@ -157,9 +157,6 @@ deploy-dev:
   script:
     - ls -lR
     - pwd
-    - sudo chown -R gitlab-runner:gitlab-runner .
-    - sudo chmod -R 777 .
-    - ls -lR
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
@@ -177,7 +174,7 @@ deploy-prod:
   image: docker:latest
   extends: 
     - .do_dind
-    # - .do_strategy
+    - .do_strategy
     - .do_docker_logging
   environment:
     name: prod-$CI_BUILD_REF_NAME
