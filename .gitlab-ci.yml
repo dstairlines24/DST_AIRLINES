@@ -159,7 +159,8 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
-    # - ls -lR
+    - sudo pip install --upgrade docker-compose
+    - ls -lR
     - pwd
     - echo "Vérification de docker-compose"
     - docker-compose --version
@@ -192,7 +193,6 @@ deploy-prod:
   only:
     - main
   script:
-    - sudo pip install --upgrade docker-compose
     - ls -R
     - pwd
     - echo "Vérification de docker-compose"
