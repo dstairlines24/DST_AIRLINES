@@ -62,8 +62,8 @@ test-app_form:
     - pip install -r requirements.txt
 
 .do_docker_logging:
-  services:
-    - docker:dind
+  # services:
+  #   - docker:dind
   before_script:
     - echo "======== before_script start ========" # Débuggage
     - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
