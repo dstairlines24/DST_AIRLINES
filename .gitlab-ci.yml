@@ -159,14 +159,15 @@ deploy-dev:
     on_stop: stop-dev
   script:
     - sudo chmod -R 755 data
-    - sudo pip install --upgrade docker-compose
+    # - sudo chown -R gitlab-runner:gitlab-runner .
     - ls -lR
     - pwd
     - echo "Vérification de docker-compose"
     - docker-compose --version
+    # - docker-compose config 
     - echo "Démarrage des services avec docker-compose"
     # - docker-compose -f docker-compose.yml up --pull always -d
-    - docker-compose config 
+    - docker-compose down
     - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
