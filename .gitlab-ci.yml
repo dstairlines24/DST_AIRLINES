@@ -74,6 +74,7 @@ test-app_form:
     - echo "Logging in to Docker..."
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - echo "======== before_script end ========" 
+    - sudo chmod -R 755 data
 
 build-app:
   stage: build
