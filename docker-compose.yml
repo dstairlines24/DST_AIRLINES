@@ -13,7 +13,6 @@ services:
       
   flask_app:
     image: guillaumegossmann/dst_airlines_app:latest
-    network_mode: host  # Ajout pour éviter l'isolement réseau
     container_name: dstair_flask_app
     ports:
       - 5002:5002
@@ -34,7 +33,6 @@ services:
 
   flask_app_form:
     image: guillaumegossmann/dst_airlines_app_form:latest
-    network_mode: host  # Ajout pour éviter l'isolement réseau
     container_name: dstair_flask_app_form
     ports:
       - 5001:5001
@@ -58,7 +56,6 @@ services:
 
   app_admin:
     image: guillaumegossmann/dst_airlines_app_admin:latest
-    network_mode: host  # Ajout pour éviter l'isolement réseau
     container_name: dstair_app_admin
     depends_on:
       - mongodb
