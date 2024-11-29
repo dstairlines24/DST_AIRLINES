@@ -148,7 +148,8 @@ deploy-dev:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
-    - docker-compose -f docker-compose.yml up --pull always -d
+    # - docker-compose -f docker-compose.yml up --pull always -d
+    - docker-compose -f docker-compose.yml up --pull always --verbose
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
     - echo "Liste des conteneurs Docker"
