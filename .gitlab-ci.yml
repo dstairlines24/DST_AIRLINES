@@ -30,7 +30,7 @@ stages:
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
-    DOCKER_TLS_CERTDIR: ""
+    # DOCKER_TLS_CERTDIR: ""
 
 test-app:
   stage: test
