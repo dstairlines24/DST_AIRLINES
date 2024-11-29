@@ -132,7 +132,7 @@ deploy-dev:
     - .do_docker_logging
   variables:
     NAMESPACE: dev
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: unix:///var/run/docker.sock
     DOCKER_DRIVER: overlay2
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
