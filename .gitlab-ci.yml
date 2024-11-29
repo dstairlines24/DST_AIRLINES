@@ -74,7 +74,9 @@ test-app_form:
 build-app:
   stage: build
   image: docker:latest
-  extends: .do_strategy
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
   # variables:
   #   DOCKER_TLS_CERTDIR: ""
   extends: .do_docker_logging
