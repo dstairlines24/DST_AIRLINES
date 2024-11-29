@@ -134,10 +134,8 @@ deploy-dev:
   image: docker:latest
   extends: 
     - .do_dind
-    # - .do_strategy
+    - .do_strategy
     - .do_docker_logging
-  variables:
-    GIT_STRATEGY: fetch
   # services:
   #   - name: docker:dind
   #     command: ["--host=tcp://0.0.0.0:2375"]
@@ -159,7 +157,6 @@ deploy-dev:
   script:
     - ls -lR
     - pwd
-    # - sudo chmod -R 777 .
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
