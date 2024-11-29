@@ -25,11 +25,14 @@ stages:
   - deploy-dev
   - deploy-prod
 
-test-app:
-  stage: test
+.do_strategy:
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
+
+test-app:
+  stage: test
+  extends: .do_strategy
   script:
     - cd app/
     - sudo pip install --upgrade pip
@@ -40,9 +43,7 @@ test-app:
 
 test-app_admin:
   stage: test
-  variables:
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
+  extends: .do_strategy
   script:
     - cd app_admin/
     - sudo pip install --upgrade pip
@@ -51,19 +52,14 @@ test-app_admin:
 
 test-app_form:
   stage: test
-  variables:
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
+  extends: .do_strategy
   script:
     - cd app_form/
     - sudo pip install --upgrade pip
     - sudo apt-get update
     - pip install -r requirements.txt
 
-.do_testing:
-  variables:
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
+.do_docker_logging:
   services:
     - docker:dind
   before_script:
@@ -77,34 +73,38 @@ test-app_form:
 
 build-app:
   stage: build
+  extends: .do_strategy
   # variables:
   #   DOCKER_TLS_CERTDIR: ""
   image: docker:latest
-  extends: .do_testing
+  extends: .do_docker_logging
   script:
     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
 
 build-app_admin:
   stage: build
+  extends: .do_strategy
   # variables:
   #   DOCKER_TLS_CERTDIR: ""
   image: docker:latest
-  extends: .do_testing
+  extends: .do_docker_logging
   script:
     - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
 build-app_form:
   stage: build
+  extends: .do_strategy
   image: docker:latest
-  extends: .do_testing
+  extends: .do_docker_logging
   script:
     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
 
 stop-dev:
   stage: deploy-dev
+  extends: .do_strategy
   variables:
     NAMESPACE: dev
   when: manual
@@ -117,6 +117,8 @@ stop-dev:
     - docker-compose down -v
 
 deploy-dev:
+  stage: deploy-dev
+  extends: .do_strategy
   image: docker:latest
   variables:
     NAMESPACE: dev
@@ -130,12 +132,13 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
-  stage: deploy-dev
-  extends: .do_testing
+  extends: .do_docker_logging
   script:
     - docker-compose -f docker-compose.yml up --pull always -d
 
 deploy-prod:
+  stage: deploy-prod
+  extends: .do_strategy
   image: docker:latest
   variables:
     NAMESPACE: prod
@@ -148,10 +151,9 @@ deploy-prod:
       http://$IP_VM:$PORT_PROD_APP_ADMIN
       http://$IP_VM:$PORT_PROD_APP_ADMIN_JUPYTER
       http://$IP_VM:$PORT_PROD_APP_ADMIN_DASH
-  stage: deploy-prod
   when: manual
   only:
     - main
-  extends: .do_testing
+  extends: .do_docker_logging
   script:
     - docker-compose -f docker-compose.yml up --pull always -d
