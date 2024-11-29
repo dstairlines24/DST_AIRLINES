@@ -192,6 +192,7 @@ deploy-prod:
   only:
     - main
   script:
+    - sudo pip install --upgrade docker-compose
     - ls -R
     - pwd
     - echo "Vérification de docker-compose"
