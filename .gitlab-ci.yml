@@ -29,6 +29,7 @@ stages:
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
+    # DOCKER_TLS_CERTDIR: ""
 
 test-app:
   stage: test
@@ -74,12 +75,9 @@ test-app_form:
 build-app:
   stage: build
   image: docker:latest
-  variables:
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
-  # variables:
-  #   DOCKER_TLS_CERTDIR: ""
-  extends: .do_docker_logging
+  extends: 
+    - .do_docker_logging
+    - .do_strategy
   script:
     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -87,10 +85,9 @@ build-app:
 build-app_admin:
   stage: build
   image: docker:latest
-  extends: .do_strategy
-  # variables:
-  #   DOCKER_TLS_CERTDIR: ""
-  extends: .do_docker_logging
+  extends: 
+    - .do_docker_logging
+    - .do_strategy
   script:
     - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -98,8 +95,9 @@ build-app_admin:
 build-app_form:
   stage: build
   image: docker:latest
-  extends: .do_strategy
-  extends: .do_docker_logging
+  extends: 
+    - .do_docker_logging
+    - .do_strategy
   script:
     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -121,10 +119,11 @@ stop-dev:
 deploy-dev:
   stage: deploy-dev
   image: docker:latest
-  extends: .do_strategy
+  extends: 
+    - .do_docker_logging
+    - .do_strategy
   variables:
     NAMESPACE: dev
-    # DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
@@ -134,17 +133,17 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
-  extends: .do_docker_logging
   script:
     - docker-compose -f docker-compose.yml up --pull always -d
 
 deploy-prod:
   stage: deploy-prod
   image: docker:latest
-  extends: .do_strategy
+  extends: 
+    - .do_docker_logging
+    - .do_strategy
   variables:
     NAMESPACE: prod
-    # DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
@@ -156,6 +155,5 @@ deploy-prod:
   when: manual
   only:
     - main
-  extends: .do_docker_logging
   script:
     - docker-compose -f docker-compose.yml up --pull always -d
