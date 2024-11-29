@@ -135,9 +135,14 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
+    - echo "Vérification de docker-compose"
     - docker-compose --version
-    - sudo apt-get update && sudo apt-get install -y docker-compose
+    - echo "Démarrage des services avec docker-compose"
     - docker-compose -f docker-compose.yml up --pull always -d
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker ps
 
 deploy-prod:
   stage: deploy-prod
