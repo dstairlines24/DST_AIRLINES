@@ -1,2 +1,5 @@
 data/diagnostic.data
 data/journal
+data/
+_pycache_
+app_admin/scripts/__pycache__/
