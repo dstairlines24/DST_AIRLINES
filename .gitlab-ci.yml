@@ -84,7 +84,9 @@ build-app:
     - .do_docker_logging
   script:
     - docker build -f Dockerfile.app -t $APP_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_IMAGE:$CI_COMMIT_SHORT_SHA $APP_IMAGE:latest
     - docker push $APP_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_IMAGE:latest
 
 build-app_admin:
   stage: build
@@ -95,7 +97,9 @@ build-app_admin:
     - .do_docker_logging
   script:
     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA $APP_ADMIN_IMAGE:latest
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_ADMIN_IMAGE:latest
 
 build-app_form:
   stage: build
@@ -106,7 +110,9 @@ build-app_form:
     - .do_docker_logging
   script:
     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA $APP_FORM_IMAGE:latest
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_FORM_IMAGE:latest
 
 stop-dev:
   stage: deploy-dev
@@ -149,14 +155,13 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
-    - sudo usermod -aG docker gitlab-runner
-    - ls
+    # - sudo usermod -aG docker gitlab-runner
+    - tree -f
     - pwd
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
     # - docker-compose -f docker-compose.yml up --pull always -d
-    # - docker-compose up --pull always -d
     - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -185,4 +190,14 @@ deploy-prod:
   only:
     - main
   script:
-    - docker-compose -f docker-compose.yml up --pull always -d
+    - tree -f
+    - pwd
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    - echo "Démarrage des services avec docker-compose"
+    - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
