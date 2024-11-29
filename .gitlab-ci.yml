@@ -164,7 +164,7 @@ deploy-dev:
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
     # - docker-compose -f docker-compose.yml up --pull always -d
-    # - docker-compose config 
+    - docker-compose config 
     - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
