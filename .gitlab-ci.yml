@@ -159,6 +159,7 @@ deploy-dev:
   script:
     - ls -lR
     - pwd
+    # - sudo chmod -R 777 .
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
