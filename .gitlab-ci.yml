@@ -130,8 +130,8 @@ deploy-dev:
     - .do_strategy
     - .do_docker_logging
   services:
-  - name: docker:dind
-    command: --host=tcp://0.0.0.0:2375
+    - name: docker:dind
+      command: ["--host=tcp://0.0.0.0:2375"]
   variables:
     NAMESPACE: dev
     DOCKER_HOST: unix:///var/run/docker.sock
