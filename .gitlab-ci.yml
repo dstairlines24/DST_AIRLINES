@@ -134,8 +134,10 @@ deploy-dev:
   image: docker:latest
   extends: 
     - .do_dind
-    # - .do_strategy
+    - .do_strategy
     - .do_docker_logging
+  variables:
+    NAMESPACE: dev
   # services:
   #   - name: docker:dind
   #     command: ["--host=tcp://0.0.0.0:2375"]
@@ -146,7 +148,7 @@ deploy-dev:
   #   DOCKER_DRIVER: overlay2
   #   DOCKER_TLS_CERTDIR: ""
   environment:
-    name: dev-$CI_BUILD_REF_NAME
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
       http://$IP_VM:$PORT_DEV_APP
       http://$IP_VM:$PORT_DEV_APP_FORM
