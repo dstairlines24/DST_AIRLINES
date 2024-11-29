@@ -61,9 +61,11 @@ test-app_form:
     - sudo apt-get update
     - pip install -r requirements.txt
 
+.do_dind:
+  services:
+    - docker:dind
+
 .do_docker_logging:
-  # services:
-  #   - docker:dind
   before_script:
     - echo "======== before_script start ========" # Débuggage
     - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
@@ -77,8 +79,9 @@ build-app:
   stage: build
   image: docker:latest
   extends: 
-    - .do_docker_logging
+    - .do_dind
     - .do_strategy
+    - .do_docker_logging
   script:
     - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -87,8 +90,9 @@ build-app_admin:
   stage: build
   image: docker:latest
   extends: 
-    - .do_docker_logging
+    - .do_dind
     - .do_strategy
+    - .do_docker_logging
   script:
     - docker build -f Dockerfile.app -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -97,8 +101,9 @@ build-app_form:
   stage: build
   image: docker:latest
   extends: 
-    - .do_docker_logging
+    - .do_dind
     - .do_strategy
+    - .do_docker_logging
   script:
     - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -121,8 +126,8 @@ deploy-dev:
   stage: deploy-dev
   image: docker:latest
   extends: 
-    - .do_docker_logging
     - .do_strategy
+    - .do_docker_logging
   variables:
     NAMESPACE: dev
   environment:
@@ -148,8 +153,8 @@ deploy-prod:
   stage: deploy-prod
   image: docker:latest
   extends: 
-    - .do_docker_logging
     - .do_strategy
+    - .do_docker_logging
   variables:
     NAMESPACE: prod
   environment:
