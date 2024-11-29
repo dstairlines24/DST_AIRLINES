@@ -19,7 +19,8 @@ services:
     depends_on:
       - mongodb
     volumes:
-      - ./model:/app/model  # Volume partagé avec l'hôte
+      # - ./model:/app/model  # Volume partagé avec l'hôte
+      - ${CI_PROJECT_DIR}/model:/app/model  # Volume partagé avec l'hôte
     environment:
       - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
@@ -64,9 +65,9 @@ services:
       - "8051:8051"  # Port pour Dash
       - "5000:5000"  # Port pour flask
     volumes:
-      - ./app_admin/scripts:/app/scripts
-      - ./model:/app/model
-      - ./data_test:/app/data_test
+      - ${CI_PROJECT_DIR}/app_admin/scripts:/app/scripts
+      - ${CI_PROJECT_DIR}/model:/app/model
+      - ${CI_PROJECT_DIR}/data_test:/app/data_test
     environment:
       - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
