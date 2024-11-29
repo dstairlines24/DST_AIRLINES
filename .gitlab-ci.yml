@@ -158,7 +158,7 @@ deploy-dev:
     - ls -lR
     - pwd
     - sudo chown -R gitlab-runner:gitlab-runner .
-    - sudo chmod -R 755 .
+    - sudo chmod -R 777 .
     - ls -lR
     - echo "Vérification de docker-compose"
     - docker-compose --version
