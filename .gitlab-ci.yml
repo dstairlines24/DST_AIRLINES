@@ -67,8 +67,6 @@ test-app_form:
 .do_docker_logging:
   before_script:
     - echo "======== before_script start ========" # Débuggage
-    - echo "DOCKER_USERNAME= $DOCKER_USERNAME" # Débuggage
-    - echo "DOCKER_PASSWORD= $DOCKER_PASSWORD" # Débuggage
     - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
     - echo "Logging in to Docker..."
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -155,7 +153,6 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
-    # - sudo usermod -aG docker gitlab-runner
     - ls -R
     - pwd
     - echo "Vérification de docker-compose"
