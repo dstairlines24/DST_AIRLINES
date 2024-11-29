@@ -30,7 +30,6 @@ stages:
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
-    # DOCKER_TLS_CERTDIR: ""
 
 test-app:
   stage: test
@@ -137,6 +136,7 @@ deploy-dev:
     DOCKER_HOST: unix:///var/run/docker.sock
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
