@@ -76,7 +76,6 @@ test-app_form:
     - echo "Logging in to Docker..."
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - echo "======== before_script end ========" 
-    # - sudo chmod -R 755 data
 
 build-app:
   stage: build
@@ -159,6 +158,7 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
     on_stop: stop-dev
   script:
+    - sudo chmod -R 755 data
     - sudo pip install --upgrade docker-compose
     - ls -lR
     - pwd
