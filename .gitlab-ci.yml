@@ -177,7 +177,7 @@ deploy-prod:
   image: docker:latest
   extends: 
     - .do_dind
-    - .do_strategy
+    # - .do_strategy
     - .do_docker_logging
   environment:
     name: prod-$CI_BUILD_REF_NAME
