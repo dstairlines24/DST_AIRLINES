@@ -30,9 +30,9 @@ stages:
   before_script:
     - whoami  # Affiche l'utilisateur courant
     - id  # Affiche l'UID et le GID de l'utilisateur
-    - find . -type f -exec chmod 644 {} \; # Permissions correctes pour les fichiers
-    - find . -type d -exec chmod 755 {} \; # Permissions correctes pour les dossiers
-    - chown -R gitlab-runner:gitlab-runner . # S'assurer que le runner possède les fichiers
+    # - find . -type f -exec chmod 644 {} \; # Permissions correctes pour les fichiers
+    # - find . -type d -exec chmod 755 {} \; # Permissions correctes pour les dossiers
+    # - chown -R gitlab-runner:gitlab-runner . # S'assurer que le runner possède les fichiers
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/__pycache__/
