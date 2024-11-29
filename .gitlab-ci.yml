@@ -150,6 +150,8 @@ deploy-dev:
     on_stop: stop-dev
   script:
     - sudo usermod -aG docker gitlab-runner
+    - ls
+    - pwd
     - echo "Vérification de docker-compose"
     - docker-compose --version
     - echo "Démarrage des services avec docker-compose"
