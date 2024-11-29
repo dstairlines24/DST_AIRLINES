@@ -134,7 +134,7 @@ deploy-dev:
   image: docker:latest
   extends: 
     - .do_dind
-    - .do_strategy
+    # - .do_strategy
     - .do_docker_logging
   # services:
   #   - name: docker:dind
