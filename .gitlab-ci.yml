@@ -38,7 +38,8 @@ stages:
 test:
   stage: test
   services:
-    - mongo:latest
+    - mongo: latest
+      alias: mongodb
   # volumes: $CI_PROJECT_DIR/data:/data/db
   cache:
     key: $CI_COMMIT_REF_SLUG
@@ -51,7 +52,7 @@ test:
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
   script:
     - sudo chmod -R 777 data
-    - nc -zv mongo 27017
+    - mongosh MONGODB_URI
 
 test-app:
   stage: test
