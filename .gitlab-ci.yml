@@ -34,6 +34,16 @@ stages:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
 
+test:
+  image: python:3.9
+  services:
+    - mongo:latest
+  variables:
+    MONGO_INITDB_DATABASE: testdb
+    MONGODB_URI: mongodb://mongo:27017/testdb
+  script:
+    - nc -zv mongo 27017
+
 test-app:
   stage: test
   extends: .do_strategy
@@ -48,11 +58,11 @@ test-app:
     MONGO_INITDB_DATABASE: testdb
     MONGODB_URI: mongodb://mongo:27017/testdb
     # MONGO_URI: mongo://root:password@mongo:27017/app_data?authSource=admin
-    FLASK_ADMIN_LOGIN: admin
-    FLASK_ADMIN_PASSWORD: admin
-    FLASK_USER_LOGIN: dstairlines
-    FLASK_USER_PASSWORD: dstairlines
-    API_KEY: api_key_dstairlines
+    # FLASK_ADMIN_LOGIN: admin
+    # FLASK_ADMIN_PASSWORD: admin
+    # FLASK_USER_LOGIN: dstairlines
+    # FLASK_USER_PASSWORD: dstairlines
+    # API_KEY: api_key_dstairlines
   script:
     - nc -zv mongo 27017
     - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
