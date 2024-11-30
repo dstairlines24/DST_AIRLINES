@@ -38,7 +38,7 @@ stages:
 test:
   stage: test
   services:
-    - mongo: latest
+    - name: mongo:latest
       alias: mongodb
   # volumes: $CI_PROJECT_DIR/data:/data/db
   cache:
