@@ -40,13 +40,13 @@ test:
   services:
     - name: mongo:4.4
       alias: mongodb
-      command: ["mongod", "--dbpath", "/data/db"]
-      volumes:
-        - $CI_PROJECT_DIR/data:/data/db
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - /data  
+      # command: ["mongod", "--dbpath", "/data/db"]
+      # volumes:
+      #   - $CI_PROJECT_DIR/data:/data/db
+  # cache:
+  #   key: $CI_COMMIT_REF_SLUG
+  #   paths:
+  #     - /data  
   variables:
     MONGO_INITDB_DATABASE: testdb
     MONGODB_URI: mongodb://mongo:27017/testdb
