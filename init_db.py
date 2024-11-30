@@ -4,6 +4,8 @@ import os
 import bson
 
 import pandas as pd
+import time
+from pymongo.errors import ServerSelectionTimeoutError
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")
@@ -11,6 +13,24 @@ flask_admin_login = os.getenv("FLASK_ADMIN_LOGIN")
 flask_admin_password = os.getenv("FLASK_ADMIN_PASSWORD")
 flask_user_login = os.getenv("FLASK_USER_LOGIN")
 flask_user_password = os.getenv("FLASK_USER_PASSWORD")
+
+
+# Attendre que MongoDB soit prêt avant de tenter une connexion
+def wait_for_mongo():
+    print("Attente de la connexion à MongoDB...")
+    while True:
+        try:
+            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)  # Timeout de 5 secondes
+            client.admin.command('ping')  # Tenter un simple ping pour tester la connexion
+            print("MongoDB est prêt.")
+            break
+        except ServerSelectionTimeoutError:
+            print("MongoDB n'est pas encore prêt, réessayer...")
+            time.sleep(5)  # Attendre 5 secondes avant de réessayer
+
+# Appeler cette fonction avant de continuer
+wait_for_mongo()
+
 
 # Débogage : afficher l'URI et autres informations d'authentification
 print(f"Connecting to MongoDB with URI: {mongo_uri}")
