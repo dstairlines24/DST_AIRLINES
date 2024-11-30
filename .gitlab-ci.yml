@@ -50,6 +50,7 @@ test:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
   script:
+    - sudo chmod -R 777 data
     - nc -zv mongo 27017
 
 test-app:
@@ -61,10 +62,11 @@ test-app:
   variables:
     # MONGO_HOST: IP_VM
     # MONGO_PORT: 27017
+    MONGO_INITDB_DATABASE: test_db
+    MONGO_INITDB_ROOT_USERNAME: testuser
+    MONGO_INITDB_ROOT_PASSWORD: testpassword
     MONGO_ROOT_LOGIN: root
     MONGO_ROOT_PASSWORD: password
-    MONGO_INITDB_DATABASE: testdb
-    MONGODB_URI: mongodb://mongo:27017/testdb
     # MONGO_URI: mongo://root:password@mongo:27017/app_data?authSource=admin
     # FLASK_ADMIN_LOGIN: admin
     # FLASK_ADMIN_PASSWORD: admin
@@ -72,6 +74,7 @@ test-app:
     # FLASK_USER_PASSWORD: dstairlines
     # API_KEY: api_key_dstairlines
   script:
+    - sudo chmod -R 755 data
     - nc -zv mongo 27017
     - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
     - >
