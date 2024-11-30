@@ -10,12 +10,12 @@ variables:
   PORT_DEV_APP_FORM: 5001
   PORT_DEV_APP_ADMIN: 5000
   PORT_DEV_APP_ADMIN_JUPYTER: 8888
-  PORT_DEV_APP_ADMIN_DASH: 8051
+  PORT_DEV_APP_DASH: 8051
   PORT_PROD_APP: 15002
   PORT_PROD_APP_FORM: 15001
   PORT_PROD_APP_ADMIN: 15000
   PORT_PROD_APP_ADMIN_JUPYTER: 18888
-  PORT_PROD_APP_ADMIN_DASH: 18051
+  PORT_PROD_APP_DASH: 18051
   
 image:
   name: "python:3.9-slim"
@@ -81,6 +81,10 @@ test-app_form:
 build-app:
   stage: build
   image: docker:latest
+  rules:
+    - changes:
+        - Dockerfile.app
+        - app/*
   extends: 
     - .do_dind
     - .do_strategy
@@ -94,6 +98,10 @@ build-app:
 build-app_admin:
   stage: build
   image: docker:latest
+  rules:
+    - changes:
+        - Dockerfile.app_admin
+        - app_admin/*
   extends: 
     - .do_dind
     - .do_strategy
@@ -107,6 +115,10 @@ build-app_admin:
 build-app_dash:
   stage: build
   image: docker:latest
+  rules:
+    - changes:
+        - Dockerfile.app_dash
+        - app_dash/*
   extends: 
     - .do_dind
     - .do_strategy
@@ -120,6 +132,10 @@ build-app_dash:
 build-app_form:
   stage: build
   image: docker:latest
+  rules:
+    - changes:
+        - Dockerfile.app_form
+        - app_form/*
   extends: 
     - .do_dind
     - .do_strategy
@@ -169,7 +185,7 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_FORM
       http://$IP_VM:$PORT_DEV_APP_ADMIN
       http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
-      http://$IP_VM:$PORT_DEV_APP_ADMIN_DASH
+      http://$IP_VM:$PORT_DEV_APP_DASH
     on_stop: stop-dev
   script:
     - sudo chmod -R 755 data
@@ -203,7 +219,7 @@ deploy-prod:
       http://$IP_VM:$PORT_PROD_APP_FORM
       http://$IP_VM:$PORT_PROD_APP_ADMIN
       http://$IP_VM:$PORT_PROD_APP_ADMIN_JUPYTER
-      http://$IP_VM:$PORT_PROD_APP_ADMIN_DASH
+      http://$IP_VM:$PORT_PROD_APP_DASH
   when: manual
   only:
     - main

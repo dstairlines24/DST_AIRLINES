@@ -5,4 +5,4 @@ dash-table==5.0.0
 plotly
 pandas==2.0.3
 pymongo==4.10.1
-# numpy==1.23.0
+numpy==1.23.0
