@@ -43,8 +43,8 @@ test-app:
   variables:
     MONGO_HOST: mongodb
     MONGO_PORT: 27017
-    MONGO_INITDB_ROOT_USERNAME: root
-    MONGO_INITDB_ROOT_PASSWORD: password
+    MONGO_ROOT_LOGIN: root
+    MONGO_ROOT_PASSWORD: password
     MONGO_URI: mongodb://root:password@mongodb:27017/app_data?authSource=admin
     FLASK_ADMIN_LOGIN: admin
     FLASK_ADMIN_PASSWORD: admin
