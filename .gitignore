@@ -1,4 +1,5 @@
 data/
 env/
-_pycache_
-app_admin/scripts/__pycache__/
+**/_pycache_/
+**/.ipynb_checkpoints/
+# app_admin/scripts/__pycache__/
