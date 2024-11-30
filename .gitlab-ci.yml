@@ -39,9 +39,9 @@ test-app:
   extends: .do_strategy
   services:
     - name: mongo:4.4
-      # alias: mongodb
+      alias: mongodb
   variables:
-    MONGO_HOST: mongo:4.4
+    MONGO_HOST: mongodb
     MONGO_PORT: 27017
     MONGO_INITDB_ROOT_USERNAME: root
     MONGO_INITDB_ROOT_PASSWORD: password
@@ -52,7 +52,12 @@ test-app:
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
   script:
-    - nc -zv mongo:4.4 27017 || exit 1 # Attente que MongoDB soit prêt
+    - >
+      until nc -zv mongodb 27017; do
+        echo "Waiting for MongoDB to be available..."
+        sleep 5
+      done
+    # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
     - python3 init_db.py
     - cd app/
     - sudo pip install --upgrade pip
