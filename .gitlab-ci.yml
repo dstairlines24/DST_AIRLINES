@@ -40,7 +40,7 @@ test:
   services:
     - mongo:latest
     volumes:
-      - data:/data/db
+      - /data:/data/db
       # - $CI_PROJECT_DIR/data:/data/db
   variables:
     MONGO_INITDB_DATABASE: testdb
