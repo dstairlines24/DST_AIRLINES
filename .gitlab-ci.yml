@@ -52,6 +52,8 @@ test-app:
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
   script:
+    - docker-compose ps  # Vérifier l'état du service
+    - docker logs mongodb
     - >
       until nc -zv mongodb 27017; do
         echo "Waiting for MongoDB to be available..."
