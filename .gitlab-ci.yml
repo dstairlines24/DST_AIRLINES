@@ -39,7 +39,7 @@ test:
   stage: test
   services:
     - mongo:latest
-    volumes: $CI_PROJECT_DIR/data:/data/db
+  volumes: $CI_PROJECT_DIR/data:/data/db
   # cache:
   #   paths:
   #     - /cache/mongo-data  
