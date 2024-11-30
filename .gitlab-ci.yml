@@ -41,6 +41,7 @@ test:
     - mongo:latest
   # volumes: $CI_PROJECT_DIR/data:/data/db
   cache:
+    key: $CI_COMMIT_REF_SLUG
     paths:
       - /data  
   variables:
