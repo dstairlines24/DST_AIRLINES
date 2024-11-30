@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --fix-missing\
     && rm -rf /var/lib/apt/lists/*
 
 # Copier le fichier requirements.txt dans le conteneur
-COPY /app_admin/requirements.txt /tmp/requirements.txt
+COPY requirements.txt /tmp/requirements.txt
 
 # Met à jour pip
 RUN pip install --upgrade pip
@@ -24,18 +24,21 @@ RUN jupyter notebook --generate-config && \
     echo "c.NotebookApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_notebook_config.py && \
     echo "c.NotebookApp.allow_root = True" >> ~/.jupyter/jupyter_notebook_config.py
 
+# Copier le contenu du repertoire
+COPY . /app/
+
 # Copie les répertoires spécifiques
-COPY data_test /app/data_test
-# COPY functions /app/functions
-COPY /app_admin/scripts /app/scripts
-COPY /app_admin/templates /app/templates
-COPY /app_admin/tests /app/tests
+# COPY data_test /app/data_test
+# COPY /app_admin/scripts /app/scripts
+# COPY /app_admin/templates /app/templates
+# COPY /app_admin/tests /app/tests
 # COPY /model /app/model
+# COPY functions /app/functions
 
 # Copie les fichiers spécifiques
-COPY /app_admin/init_db.py /app/init_db.py
-COPY /app_admin/app_flask.py /app/app_flask.py
-COPY /app_admin/start.sh /app/start.sh
+# COPY /app_admin/init_db.py /app/init_db.py
+# COPY /app_admin/app_flask.py /app/app_flask.py
+# COPY /app_admin/start.sh /app/start.sh
 
 RUN chmod +x /app/start.sh
 

@@ -13,10 +13,14 @@ COPY requirements.txt .
 # Installer les dépendances
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
-# Copie les fichiers spécifiques
+# Copier le contenu du repertoire
 COPY . /app/
+
+# Copie les répertoires spécifiques
 # COPY /app/templates /app/templates
 # COPY /app/tests /app/tests
+
+# Copie les fichiers spécifiques
 # COPY /app/app.py /app/app.py
 # COPY /model /app/model
 # Copier le fichier de classe DataTransform qui se situe dans app_admin

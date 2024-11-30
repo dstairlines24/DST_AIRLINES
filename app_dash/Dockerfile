@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --fix-missing\
     && rm -rf /var/lib/apt/lists/*
 
 # Copier le fichier requirements.txt dans le conteneur
-COPY /app_dash/requirements.txt /tmp/requirements.txt
+COPY requirements.txt /tmp/requirements.txt
 
 # Met à jour pip
 RUN pip install --upgrade pip
@@ -19,9 +19,12 @@ RUN pip install --upgrade pip
 # Installer les dépendances à partir du fichier requirements.txt
 RUN pip install --no-cache-dir --timeout=100 -r /tmp/requirements.txt
 
+# Copier le contenu du repertoire
+COPY . /app/
+
 # Copie les fichiers spécifiques
-COPY /app_dash/app_dash.py /app/app.py
-COPY /app_dash/tests /app/tests
+# COPY /app_dash/app_dash.py /app/app.py
+# COPY /app_dash/tests /app/tests
 
 # Exposer le port pour Jupyter Notebook
 EXPOSE 8051

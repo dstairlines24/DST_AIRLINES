@@ -46,7 +46,9 @@ test-app:
     MONGO_INITDB_ROOT_USERNAME: root
     MONGO_INITDB_ROOT_PASSWORD: password
     MONGO_URI: mongodb://root:password@mongodb:27017/app_data?authSource=admin
+    API_KEY: api_key_dstairlines
   script:
+    - python3 init_db.py
     - cd app/
     - sudo pip install --upgrade pip
     - sudo apt-get update

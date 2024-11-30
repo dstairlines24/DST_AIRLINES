@@ -18,7 +18,7 @@ app = Flask(__name__)
 																			   
 
 # Ajoutez une clé secrète pour la session
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "votre_cle_secrete_par_defaut2")
+app.secret_key = os.getenv("FLASK_SECRET_KEY_FORM", "votre_cle_secrete_par_defaut2")
 
 # Configure flasgger
 swagger = Swagger(app)

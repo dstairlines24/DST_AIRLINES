@@ -72,6 +72,7 @@ def load_test_to_app_data_form(bson_file_path):
     except Exception as e:
         print("Erreur lors du chargement du fichier .bson:", e)
 
+
 if __name__ == "__main__":
     init_db()
     # Spécifier le chemin vers le fichier .bson
