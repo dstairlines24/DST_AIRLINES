@@ -33,6 +33,15 @@ stages:
   variables:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
+
+test-app:
+  image: docker:latest
+  stage: test
+  extends: .do_strategy
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
     MONGO_HOST: mongodb
     MONGO_PORT: 27017
     MONGO_INITDB_ROOT_USERNAME: root
@@ -43,15 +52,9 @@ stages:
     FLASK_USER_LOGIN: dstairlines
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
-
-test-app:
-  stage: test
-  extends: .do_strategy
-  services:
-    - name: mongo:4.4
-      alias: mongodb
   script:
     - docker-compose ps  # Vérifier l'état du service
+    - docker logs mongodb
     - >
       until nc -zv mongodb 27017; do
         echo "Waiting for MongoDB to be available..."
