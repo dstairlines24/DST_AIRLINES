@@ -19,6 +19,7 @@ COPY data_test /app/data_test
 COPY /app_form/scripts /app/scripts
 COPY /app_form/templates /app/templates
 COPY /app_form/static /app/static
+COPY /app_form/tests /app/tests
 
 # Copie les fichiers spécifiques
 # COPY init_db.py /app/init_db.py
