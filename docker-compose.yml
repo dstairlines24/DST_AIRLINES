@@ -41,7 +41,7 @@ services:
     volumes:
       - ./functions:/app/functions
     environment:
-      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data_form?authSource=admin
+      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
       - FLASK_ADMIN_LOGIN=${FLASK_ADMIN_LOGIN}
       - FLASK_ADMIN_PASSWORD=${FLASK_ADMIN_PASSWORD}
