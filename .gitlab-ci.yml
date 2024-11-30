@@ -38,7 +38,7 @@ test-app:
   stage: test
   extends: .do_strategy
   services:
-    - name: mongo:4.4
+    - name: mongo:latest
       alias: mongodb
   variables:
     # MONGO_HOST: IP_VM
