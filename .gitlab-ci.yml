@@ -15,6 +15,7 @@ variables:
   PORT_PROD_APP_ADMIN: 15000
   PORT_PROD_APP_ADMIN_JUPYTER: 18888
   PORT_PROD_APP_DASH: 18051
+  DOCKER_DRIVER: overlay2
   
 image:
   name: "python:3.9-slim"
@@ -38,8 +39,8 @@ test:
   stage: test
   services:
     - mongo:latest
-    volumes:
-      - $CI_PROJECT_DIR/data:/data/db
+    # volumes:
+    #   - $CI_PROJECT_DIR/data:/data/db
   variables:
     MONGO_INITDB_DATABASE: testdb
     MONGODB_URI: mongodb://mongo:27017/testdb
