@@ -38,7 +38,7 @@ stages:
 test:
   stage: test
   tags:
-    - docker-mongo
+    - test-mongo
   services:
     - name: mongo:4.4
       alias: mongodb
