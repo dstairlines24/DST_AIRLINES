@@ -33,7 +33,6 @@ Werkzeug==3.0.4                # Bibliothèque de bas niveau utilisée par Flask
 flasgger                       # Extension Flask pour générer automatiquement la documentation Swagger pour l'API
 jupyter                        # Environnement interactif pour le calcul scientifique et l'exploration des données
 plotly                         # Bibliothèque pour créer des visualisations interactives de données
-dash                           # Framework pour créer des applications web interactives basées sur Plotly
 # scipy==1.8.0                   # Bibliothèque scientifique pour Python, utilisée pour des calculs avancés (mathématiques, algèbre linéaire, etc.)
 # jupyterlab                     # Interface de nouvelle génération pour Jupyter Notebooks et l'exploration des données
 xgboost                        # Bibliothèque de machine learning pour les modèles de boosting (souvent utilisée pour les prédictions)
