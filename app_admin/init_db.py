@@ -23,16 +23,16 @@ except Exception as e:
     exit(1)
 
 def init_db():
-    db_credientials = client.app_credentials
+    db_credentials = client.app_credentials
     # Supprimer la collection des utilisateurs si elle existe déjà
-    db_credientials.users.drop()
+    db_credentials.users.drop()
 
     # Créer des utilisateurs avec des mots de passe hachés
     flask_admin_password_h = generate_password_hash(flask_admin_password)
     flask_user_password_h = generate_password_hash(flask_user_password)
 
-    db_credientials.users.insert_one({"username": flask_admin_login, "password": flask_admin_password_h, "role": "admin"})
-    db_credientials.users.insert_one({"username": flask_user_login, "password": flask_user_password_h, "role": "user"})
+    db_credentials.users.insert_one({"username": flask_admin_login, "password": flask_admin_password_h, "role": "admin"})
+    db_credentials.users.insert_one({"username": flask_user_login, "password": flask_user_password_h, "role": "user"})
 
     print("Base de données initialisée avec succès !")
 

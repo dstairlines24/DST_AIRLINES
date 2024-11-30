@@ -55,6 +55,7 @@ test:
   script:
     - sudo chmod -R 777 data
     - mongosh $MONGODB_URI
+    - nc -zv mongodb 27017
 
 test-app:
   stage: test
@@ -65,12 +66,12 @@ test-app:
   variables:
     # MONGO_HOST: IP_VM
     # MONGO_PORT: 27017
-    MONGO_INITDB_DATABASE: test_db
-    MONGO_INITDB_ROOT_USERNAME: testuser
-    MONGO_INITDB_ROOT_PASSWORD: testpassword
+    # MONGO_INITDB_DATABASE: test_db
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: password
     MONGO_ROOT_LOGIN: root
     MONGO_ROOT_PASSWORD: password
-    # MONGO_URI: mongo://root:password@mongo:27017/app_data?authSource=admin
+    # MONGO_URI: mongodb://root:password@mongodb:27017/app_data?authSource=admin
     # FLASK_ADMIN_LOGIN: admin
     # FLASK_ADMIN_PASSWORD: admin
     # FLASK_USER_LOGIN: dstairlines
@@ -78,13 +79,13 @@ test-app:
     # API_KEY: api_key_dstairlines
   script:
     - sudo chmod -R 755 data
-    - nc -zv mongo 27017
-    - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
-    - >
-      until nc -zv mongodb 27017; do
-        echo "Waiting for MongoDB to be available..."
-        sleep 5
-      done
+    # - nc -zv mongodb 27017
+    # - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
+    # - >
+    #   until nc -zv mongodb 27017; do
+    #     echo "Waiting for MongoDB to be available..."
+    #     sleep 5
+    #   done
     # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
     - python3 init_db.py
     - cd app/

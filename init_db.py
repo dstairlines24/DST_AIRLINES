@@ -27,33 +27,33 @@ except Exception as e:
     exit(1)
 
 # Attendre que MongoDB soit prêt avant de tenter une connexion
-def wait_for_mongo():
-    print("Attente de la connexion à MongoDB...")
-    while True:
-        try:
-            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)  # Timeout de 5 secondes
-            client.admin.command('ping')  # Tenter un simple ping pour tester la connexion
-            print("MongoDB est prêt.")
-            break
-        except ServerSelectionTimeoutError:
-            print("MongoDB n'est pas encore prêt, réessayer...")
-            time.sleep(5)  # Attendre 5 secondes avant de réessayer
+# def wait_for_mongo():
+#     print("Attente de la connexion à MongoDB...")
+#     while True:
+#         try:
+#             client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)  # Timeout de 5 secondes
+#             client.admin.command('ping')  # Tenter un simple ping pour tester la connexion
+#             print("MongoDB est prêt.")
+#             break
+#         except ServerSelectionTimeoutError:
+#             print("MongoDB n'est pas encore prêt, réessayer...")
+#             time.sleep(5)  # Attendre 5 secondes avant de réessayer
 
-# Appeler cette fonction avant de continuer
-wait_for_mongo()
+# # Appeler cette fonction avant de continuer
+# wait_for_mongo()
 
 
 def init_db():
-    db_credientials = client.app_credentials
+    db_credentials = client.app_credentials
     # Supprimer la collection des utilisateurs si elle existe déjà
-    db_credientials.users.drop()
+    db_credentials.users.drop()
 
     # Créer des utilisateurs avec des mots de passe hachés
     flask_admin_password_h = generate_password_hash(flask_admin_password)
     flask_user_password_h = generate_password_hash(flask_user_password)
 
-    db_credientials.users.insert_one({"username": flask_admin_login, "password": flask_admin_password_h, "role": "admin"})
-    db_credientials.users.insert_one({"username": flask_user_login, "password": flask_user_password_h, "role": "user"})
+    db_credentials.users.insert_one({"username": flask_admin_login, "password": flask_admin_password_h, "role": "admin"})
+    db_credentials.users.insert_one({"username": flask_user_login, "password": flask_user_password_h, "role": "user"})
 
     print("Base de données initialisée avec succès !")
 
