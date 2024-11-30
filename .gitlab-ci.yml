@@ -38,7 +38,7 @@ stages:
 test:
   stage: test
   services:
-    - name: mongo:latest
+    - name: mongo:4.4
       alias: mongodb
   # volumes: $CI_PROJECT_DIR/data:/data/db
   cache:
@@ -58,7 +58,7 @@ test-app:
   stage: test
   extends: .do_strategy
   services:
-    - name: mongo:latest
+    - name: mongo:4.4
       alias: mongodb
   variables:
     # MONGO_HOST: IP_VM
