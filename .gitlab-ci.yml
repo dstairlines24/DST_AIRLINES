@@ -32,8 +32,7 @@ stages:
     - id  # Affiche l'UID et le GID de l'utilisateur
   variables:
     GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: -ffdx -e data/ -e '__pycache__' -e '*.ipynb_checkpoints'
-    # GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
 
 test-app:
   stage: test
