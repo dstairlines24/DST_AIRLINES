@@ -42,7 +42,7 @@ def test_index(client):
     """Test de la page d'accueil"""
     response = client.get('/')
     assert response.status_code == 200
-    assert b'Page d\'accueil' in response.data
+    assert 'Page d\'accueil' in response.get_data(as_text=True)
 
 def test_predict_success(client, monkeypatch):
     """Test de prédiction réussie avec des données valides"""
@@ -65,13 +65,13 @@ def test_predict_missing_data(client):
 
     response = client.post('/predict', json={})
     assert response.status_code == 400
-    assert b"Données de vol non fournies ou invalides" in response.data
+    assert "Données de vol non fournies ou invalides" in response.get_data(as_text=True)
 
 def test_predict_missing_api_key(client):
     """Test de prédiction avec une clé API manquante"""
     response = client.post('/predict', json={'feat_1': 0.5, 'feat_2': 0.8})
     assert response.status_code == 401
-    assert b"Clé API manquante ou invalide" in response.data
+    assert "Clé API manquante ou invalide" in response.get_data(as_text=True)
 
 def test_predict_internal_error(client, monkeypatch):
     """Test de prédiction échouée avec une erreur interne"""
@@ -84,4 +84,4 @@ def test_predict_internal_error(client, monkeypatch):
 
     response = client.post('/predict', json={'feat_1': 0.5, 'feat_2': 0.8})
     assert response.status_code == 500
-    assert b"Erreur lors de la prédiction" in response.data
+    assert "Erreur lors de la prédiction" in response.get_data(as_text=True)
