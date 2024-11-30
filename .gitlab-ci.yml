@@ -36,6 +36,7 @@ stages:
 
 test:
   image: python:3.9
+  extends: .do_strategy
   services:
     - mongo:latest
   variables:
