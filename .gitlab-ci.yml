@@ -43,6 +43,7 @@ test-app:
     - sudo apt-get update
     - pip install -r requirements.txt
     - pip install pytest
+    - pip install --upgrade pyOpenSSL
     - python3 -m pytest tests/
     # - python3 -m unittest discover tests/
     # - python -m unittest discover -s app/tests -p "*.py"
