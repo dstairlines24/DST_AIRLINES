@@ -52,7 +52,7 @@ test-app:
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
   script:
-    - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
+    - nc -zv mongo:4.4 27017 || exit 1 # Attente que MongoDB soit prêt
     - python3 init_db.py
     - cd app/
     - sudo pip install --upgrade pip
