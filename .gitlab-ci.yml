@@ -39,9 +39,10 @@ test:
   stage: test
   services:
     - mongo:latest
-    volumes:
-      - /data:/data/db
-      # - $CI_PROJECT_DIR/data:/data/db
+    volumes: $CI_PROJECT_DIR/data:/data/db
+  cache:
+    paths:
+      - /cache/mongo-data  
   variables:
     MONGO_INITDB_DATABASE: testdb
     MONGODB_URI: mongodb://mongo:27017/testdb
