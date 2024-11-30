@@ -41,7 +41,7 @@ test-app:
     - name: mongo:4.4
       alias: mongodb
   variables:
-    MONGO_HOST: IP_VM
+    MONGO_HOST: mongodb
     MONGO_PORT: 27017
     MONGO_INITDB_ROOT_USERNAME: root
     MONGO_INITDB_ROOT_PASSWORD: password
@@ -52,7 +52,7 @@ test-app:
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
   script:
-    - nc -zv $MONGO_HOST $MONGO_PORT
+    - nc -zv mongodb 27017
     - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
     - >
       until nc -zv mongodb 27017; do
