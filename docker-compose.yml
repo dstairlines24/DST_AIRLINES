@@ -34,10 +34,12 @@ services:
   flask_app_form:
     image: guillaumegossmann/dst_airlines_app_form:latest
     container_name: dstair_flask_app_form
-    ports:
-      - 5001:5001
     depends_on:
       - mongodb
+    ports:
+      - 5001:5001
+    volumes:
+      - ./functions:/app/functions
     environment:
       - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data_form?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
@@ -61,12 +63,12 @@ services:
       - mongodb
     ports:
       - "8888:8888"  # Port pour Jupyter Notebook
-      - "8051:8051"  # Port pour Dash
       - "5000:5000"  # Port pour flask
     volumes:
       - ./app_admin/scripts:/app/scripts
       - ./model:/app/model
       - ./data_test:/app/data_test
+      - ./functions:/app/functions
     environment:
       - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
       #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
@@ -82,3 +84,22 @@ services:
       - CLIENT_ID_LH=${CLIENT_ID_LH}
       - CLIENT_SECRET_LH=${CLIENT_SECRET_LH}
     command: ./start.sh
+    
+  app_dash:
+    image: guillaumegossmann/dst_airlines_app_dash:latest
+    container_name: dstair_app_dash
+    depends_on:
+      - mongodb
+    ports:
+      - "8051:8051"  # Port pour Dash
+    volumes:
+      - ./model:/app/model
+    environment:
+      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
+      #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
+      - FLASK_ADMIN_LOGIN=${FLASK_ADMIN_LOGIN}
+      - FLASK_ADMIN_PASSWORD=${FLASK_ADMIN_PASSWORD}
+      - FLASK_USER_LOGIN=${FLASK_USER_LOGIN}
+      - FLASK_USER_PASSWORD=${FLASK_USER_PASSWORD}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+    command: python app.py

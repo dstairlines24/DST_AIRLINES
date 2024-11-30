@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 COPY /app/templates /app/templates
 COPY /app/app.py /app/app.py
 # Copier le fichier de classe DataTransform qui se situe dans app_admin
-COPY /app_admin/scripts/ml_data_transform.py /app/ml_data_transform.py
+# COPY /app_admin/scripts/ml_data_transform.py /app/ml_data_transform.py
 
 # Exposer le port sur lequel l'application Flask sera exécutée
 EXPOSE 5002

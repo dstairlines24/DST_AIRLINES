@@ -21,7 +21,7 @@ def load_data():
     df = pd.DataFrame(list(db['final_flights'].find()))
     
     # Appliquer les transformations
-    from scripts.ml_data_transform import DataTransform
+    from model.ml_data_transform import DataTransform
     datatransform = DataTransform(df)
     df = datatransform.apply_feat_transforms()
     df = datatransform.apply_target_transforms()

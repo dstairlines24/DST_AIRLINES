@@ -3,6 +3,7 @@ variables:
   APP_IMAGE: "guillaumegossmann/dst_airlines_app"
   APP_ADMIN_IMAGE: "guillaumegossmann/dst_airlines_app_admin"
   APP_FORM_IMAGE: "guillaumegossmann/dst_airlines_app_form"
+  APP_DASH_IMAGE: "guillaumegossmann/dst_airlines_app_dash"
   IP_VM: 127.0.0.1
   # IP_VM: 34.250.19.32
   PORT_DEV_APP: 5002
@@ -102,6 +103,19 @@ build-app_admin:
     - docker tag $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA $APP_ADMIN_IMAGE:latest
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_ADMIN_IMAGE:latest
+
+build-app_dash:
+  stage: build
+  image: docker:latest
+  extends: 
+    - .do_dind
+    - .do_strategy
+    - .do_docker_logging
+  script:
+    - docker build -f Dockerfile.app_dash -t $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA $APP_DASH_IMAGE:latest
+    - docker push $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_DASH_IMAGE:latest
 
 build-app_form:
   stage: build

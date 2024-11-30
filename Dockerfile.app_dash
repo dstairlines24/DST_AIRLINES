@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --fix-missing\
     && rm -rf /var/lib/apt/lists/*
 
 # Copier le fichier requirements.txt dans le conteneur
-COPY /app_admin/requirements.txt /tmp/requirements.txt
+COPY /app_dash/requirements.txt /tmp/requirements.txt
 
 # Met à jour pip
 RUN pip install --upgrade pip
@@ -19,27 +19,11 @@ RUN pip install --upgrade pip
 # Installer les dépendances à partir du fichier requirements.txt
 RUN pip install --no-cache-dir --timeout=100 -r /tmp/requirements.txt
 
-# Configurer Jupyter Notebook pour qu'il écoute sur toutes les interfaces réseau
-RUN jupyter notebook --generate-config && \
-    echo "c.NotebookApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_notebook_config.py && \
-    echo "c.NotebookApp.allow_root = True" >> ~/.jupyter/jupyter_notebook_config.py
-
-# Copie les répertoires spécifiques
-COPY data_test /app/data_test
-# COPY functions /app/functions
-COPY /app_admin/scripts /app/scripts
-COPY /app_admin/templates /app/templates
-# COPY /model /app/model
-
 # Copie les fichiers spécifiques
-COPY /app_admin/init_db.py /app/init_db.py
-COPY /app_admin/app_flask.py /app/app_flask.py
-COPY /app_admin/start.sh /app/start.sh
-
-RUN chmod +x /app/start.sh
+COPY /app_dash/app_dash.py /app/app_dash.py
 
 # Exposer le port pour Jupyter Notebook
-EXPOSE 8888 5000
+EXPOSE 8051
 
 # Démarrer Jupyter Notebook
 # CMD ["jupyter", "notebook", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
