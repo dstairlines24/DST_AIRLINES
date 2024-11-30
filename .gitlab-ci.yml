@@ -35,7 +35,6 @@ stages:
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
 
 test-app:
-  image: docker:latest
   stage: test
   extends: .do_strategy
   services:
@@ -54,6 +53,7 @@ test-app:
     API_KEY: api_key_dstairlines
   script:
     - docker ps  # Vérifier l'état du service
+    - docker-compose ps  # Vérifier l'état du service
     - docker logs mongodb
     - >
       until nc -zv mongodb 27017; do
