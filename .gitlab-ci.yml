@@ -41,7 +41,7 @@ test-app:
     - name: mongo:4.4
       alias: mongodb
   variables:
-    MONGO_HOST: mongodb
+    MONGO_HOST: IP_VM
     MONGO_PORT: 27017
     MONGO_INITDB_ROOT_USERNAME: root
     MONGO_INITDB_ROOT_PASSWORD: password
@@ -52,9 +52,8 @@ test-app:
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
   script:
-    - docker ps  # Vérifier l'état du service
-    - docker-compose ps  # Vérifier l'état du service
-    - docker logs mongodb
+    - nc -zv $MONGO_HOST $MONGO_PORT
+    - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
     - >
       until nc -zv mongodb 27017; do
         echo "Waiting for MongoDB to be available..."
