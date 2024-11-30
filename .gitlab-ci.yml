@@ -37,6 +37,15 @@ stages:
 test-app:
   stage: test
   extends: .do_strategy
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_HOST: mongodb
+    MONGO_PORT: 27017
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: password
+    MONGO_URI: mongodb://root:password@mongodb:27017/app_data?authSource=admin
   script:
     - cd app/
     - sudo pip install --upgrade pip
@@ -74,7 +83,7 @@ test-app_form:
   before_script:
     - whoami  # Affiche l'utilisateur courant
     - id  # Affiche l'UID et le GID de l'utilisateur
-    - echo "======== before_script start ========" # Débuggage
+    - echo "======== before_script start ========"
     - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
     - echo "Logging in to Docker..."
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -85,14 +94,14 @@ build-app:
   image: docker:latest
   rules:
     - changes:
-        - Dockerfile.app
         - app/*
   extends: 
     - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
-    - docker build -f Dockerfile.app -t $APP_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - cd app/
+    - docker build -f Dockerfile -t $APP_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker tag $APP_IMAGE:$CI_COMMIT_SHORT_SHA $APP_IMAGE:latest
     - docker push $APP_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_IMAGE:latest

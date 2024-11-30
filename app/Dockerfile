@@ -8,16 +8,17 @@ WORKDIR /app
 RUN pip install --upgrade pip
 
 # Copier le fichier requirements.txt pour installer les dépendances
-COPY /app/requirements.txt .
+COPY requirements.txt .
 
 # Installer les dépendances
 RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
 # Copie les fichiers spécifiques
+COPY . /app/
+# COPY /app/templates /app/templates
+# COPY /app/tests /app/tests
+# COPY /app/app.py /app/app.py
 # COPY /model /app/model
-COPY /app/templates /app/templates
-COPY /app/tests /app/tests
-COPY /app/app.py /app/app.py
 # Copier le fichier de classe DataTransform qui se situe dans app_admin
 # COPY /app_admin/scripts/ml_data_transform.py /app/ml_data_transform.py
 
