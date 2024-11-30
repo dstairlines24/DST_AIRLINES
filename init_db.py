@@ -14,6 +14,17 @@ flask_admin_password = os.getenv("FLASK_ADMIN_PASSWORD")
 flask_user_login = os.getenv("FLASK_USER_LOGIN")
 flask_user_password = os.getenv("FLASK_USER_PASSWORD")
 
+# Débogage : afficher l'URI et autres informations d'authentification
+print(f"Connecting to MongoDB with URI: {mongo_uri}")
+print(f"Admin login: {flask_admin_login}, User login: {flask_user_login}")
+
+# Connexion à MongoDB
+try:
+    client = MongoClient(mongo_uri)
+    print("Connexion à MongoDB réussie.")
+except Exception as e:
+    print("Erreur de connexion à MongoDB:", e)
+    exit(1)
 
 # Attendre que MongoDB soit prêt avant de tenter une connexion
 def wait_for_mongo():
@@ -31,18 +42,6 @@ def wait_for_mongo():
 # Appeler cette fonction avant de continuer
 wait_for_mongo()
 
-
-# Débogage : afficher l'URI et autres informations d'authentification
-print(f"Connecting to MongoDB with URI: {mongo_uri}")
-print(f"Admin login: {flask_admin_login}, User login: {flask_user_login}")
-
-# Connexion à MongoDB
-try:
-    client = MongoClient(mongo_uri)
-    print("Connexion à MongoDB réussie.")
-except Exception as e:
-    print("Erreur de connexion à MongoDB:", e)
-    exit(1)
 
 def init_db():
     db_credientials = client.app_credentials
