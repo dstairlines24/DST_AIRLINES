@@ -21,6 +21,7 @@ print(f"Admin login: {flask_admin_login}, User login: {flask_user_login}")
 # Connexion à MongoDB
 try:
     client = MongoClient(mongo_uri)
+    client.admin.command("ping")
     print("Connexion à MongoDB réussie.")
 except Exception as e:
     print("Erreur de connexion à MongoDB:", e)
