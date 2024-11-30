@@ -20,7 +20,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir --timeout=100 -r /tmp/requirements.txt
 
 # Copie les fichiers spécifiques
-COPY /app_dash/app_dash.py /app/app_dash.py
+COPY /app_dash/app_dash.py /app/app.py
 
 # Exposer le port pour Jupyter Notebook
 EXPOSE 8051
