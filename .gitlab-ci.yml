@@ -36,8 +36,6 @@ stages:
 
 test:
   stage: test
-  image: python:3.9
-  extends: .do_strategy
   services:
     - mongo:latest
     volumes:
@@ -45,6 +43,8 @@ test:
   variables:
     MONGO_INITDB_DATABASE: testdb
     MONGODB_URI: mongodb://mongo:27017/testdb
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
   script:
     - nc -zv mongo 27017
 
