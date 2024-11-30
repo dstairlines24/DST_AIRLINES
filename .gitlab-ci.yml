@@ -40,13 +40,13 @@ test:
   extends: .do_strategy
   services:
     - mongo:latest
-  volumes:
-    - $CI_PROJECT_DIR/data:/data/db
   variables:
     MONGO_INITDB_DATABASE: testdb
     MONGODB_URI: mongodb://mongo:27017/testdb
   script:
     - nc -zv mongo 27017
+  volumes:
+    - $CI_PROJECT_DIR/data:/data/db
 
 test-app:
   stage: test
