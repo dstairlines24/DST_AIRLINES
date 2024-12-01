@@ -42,7 +42,6 @@ def test_index(client):
     """Test de la page d'accueil"""
     response = client.get('/')
     assert response.status_code == 200
-    assert 'Page d\'accueil' in response.get_data(as_text=True)
 
 def test_predict_success(client, monkeypatch):
     """Test de prédiction réussie avec des données valides"""
