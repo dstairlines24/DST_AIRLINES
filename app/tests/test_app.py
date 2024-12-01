@@ -49,10 +49,10 @@ def test_index(client):
 def test_predict_success(client, monkeypatch):
     """Test de prédiction réussie avec des données valides"""
 
-    def mock_predict_from_data(flight_data):
-        return "prediction_success"
+    # def mock_predict_from_data(flight_data):
+    #     return "prediction_success"
 
-    monkeypatch.setattr('app.predict_from_data', mock_predict_from_data)
+    # monkeypatch.setattr('app.predict_from_data', mock_predict_from_data)
 
     # Ajout d'une clé API valide
     # client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
