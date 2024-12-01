@@ -84,6 +84,7 @@ test-app:
   stage: test
   rules:
     - changes:
+        - gitlab-ci.yml
         - app/*
         - data_test/*
         - model/*
@@ -118,6 +119,7 @@ test-app_admin:
   stage: test
   rules:
     - changes:
+        - gitlab-ci.yml
         - app_admin/*
         - data_test/*
         - model/*
@@ -133,6 +135,7 @@ test-app_form:
   stage: test
   rules:
     - changes:
+        - gitlab-ci.yml
         - app_form/*
         - data_test/*
         - functions/*
@@ -162,6 +165,7 @@ build-app:
   image: docker:latest
   rules:
     - changes:
+        - gitlab-ci.yml
         - app/*
   extends: 
     - .do_dind
@@ -179,6 +183,7 @@ build-app_admin:
   image: docker:latest
   rules:
     - changes:
+        - gitlab-ci.yml
         - app_admin/*
   extends: 
     - .do_dind
@@ -196,6 +201,7 @@ build-app_dash:
   image: docker:latest
   rules:
     - changes:
+        - gitlab-ci.yml
         - app_dash/*
   extends: 
     - .do_dind
@@ -213,6 +219,7 @@ build-app_form:
   image: docker:latest
   rules:
     - changes:
+        - gitlab-ci.yml
         - app_form/*
   extends: 
     - .do_dind
