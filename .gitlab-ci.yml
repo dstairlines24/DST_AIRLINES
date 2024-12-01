@@ -101,6 +101,7 @@ test-app:
     FLASK_USER_LOGIN: dstairlines
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
+  extends: .do_strategy
   script:
     - cp -r data_test app/data_test
     - cp -r model app/model
