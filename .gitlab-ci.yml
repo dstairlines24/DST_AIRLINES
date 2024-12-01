@@ -162,14 +162,14 @@ build-app_admin:
   image: docker:latest
   rules:
     - changes:
-        - Dockerfile.app_admin
         - app_admin/*
   extends: 
     - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
-    - docker build -f Dockerfile.app_admin -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - cd app_admin/
+    - docker build -f Dockerfile -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker tag $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA $APP_ADMIN_IMAGE:latest
     - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_ADMIN_IMAGE:latest
@@ -179,14 +179,14 @@ build-app_dash:
   image: docker:latest
   rules:
     - changes:
-        - Dockerfile.app_dash
         - app_dash/*
   extends: 
     - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
-    - docker build -f Dockerfile.app_dash -t $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - cd app_dash/
+    - docker build -f Dockerfile -t $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker tag $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA $APP_DASH_IMAGE:latest
     - docker push $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_DASH_IMAGE:latest
@@ -196,14 +196,14 @@ build-app_form:
   image: docker:latest
   rules:
     - changes:
-        - Dockerfile.app_form
         - app_form/*
   extends: 
     - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
-    - docker build -f Dockerfile.app_form -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - cd app_form/
+    - docker build -f Dockerfile -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker tag $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA $APP_FORM_IMAGE:latest
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_FORM_IMAGE:latest
