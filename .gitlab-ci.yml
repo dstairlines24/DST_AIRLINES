@@ -56,7 +56,7 @@ test:
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
   script:
     - pwd
-    - sudo chmod -R 777 data
+    # - sudo chmod -R 777 data
     - mongosh $MONGODB_URI
     - nc -zv mongodb 27017
 
