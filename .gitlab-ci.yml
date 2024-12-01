@@ -62,7 +62,7 @@ test:
     # - sudo chmod -R 777 data
     # - mongosh $MONGODB_URI
     # - nc -zv mongodb 27017
-    - python3 init_db.py
+    - python3 init_db2.py
 
 test-app:
   stage: test
