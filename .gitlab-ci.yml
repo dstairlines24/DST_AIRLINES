@@ -97,13 +97,13 @@ test-app:
     #     sleep 5
     #   done
     # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
+    - cd app/
     - pip install --upgrade pip
     - apt-get update
     - pip install -r requirements.txt
     - pip install pytest
     - pip install --upgrade pyOpenSSL
-    - python3 init_db.py
-    - cd app/
+    - python3 ../init_db.py
     - python3 -m pytest tests/
     # - python3 -m unittest discover tests/
     # - python -m unittest discover -s app/tests -p "*.py"
