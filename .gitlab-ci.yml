@@ -117,6 +117,8 @@ test-app:
 
 test-app_admin:
   stage: test
+  tags:
+    - deploy-volume
   rules:
     - changes:
         - .gitlab-ci.yml
@@ -133,8 +135,6 @@ test-app_admin:
 
 test-app_form:
   stage: test
-  tags:
-    - deploy-volume
   rules:
     - changes:
         - .gitlab-ci.yml
@@ -261,9 +261,9 @@ deploy-dev:
   extends: 
     - .do_dind
     - .do_strategy
-  services:
-    - name: docker:dind
-      privileged: true
+  # services:
+  #   - name: docker:dind
+  #     privileged: true
   variables:
     NAMESPACE: dev
   # services:
