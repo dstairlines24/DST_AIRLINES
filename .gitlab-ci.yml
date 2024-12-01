@@ -51,6 +51,7 @@ test:
     GIT_DEPTH: 1
   script:
     - pwd
+    - ping -c 4 mongodb
     - python3 init_db2.py
     # - sudo chmod -R 777 data
     # - mongosh $MONGODB_URI
