@@ -41,11 +41,12 @@ test:
     - test-mongo
   services:
     - name: mongo:4.4
+      alias: mongodb
   variables:
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: root
     # MONGO_INITDB_DATABASE: app_data
-    MONGO_URI: mongodb://mongo/app_data
+    MONGO_URI: mongodb://mongodb/app_data
   script:
     - pwd
     - python3 init_db2.py
