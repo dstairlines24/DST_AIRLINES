@@ -117,8 +117,6 @@ test-app:
 
 test-app_admin:
   stage: test
-  tags:
-    - deploy-volume
   rules:
     - changes:
         - .gitlab-ci.yml
@@ -237,11 +235,15 @@ build-app_form:
 
 stop-dev:
   stage: deploy-dev
+  image: docker:latest
   tags:
     - deploy-volume
   extends: 
     - .do_dind
     - .do_strategy
+  # services:
+  #   - name: docker:dind
+  #     privileged: true
   variables:
     NAMESPACE: dev
   when: manual
@@ -255,6 +257,7 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
+  image: docker:latest
   tags:
     - deploy-volume
   # timeout: 2h 
@@ -304,6 +307,7 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy-prod
+  image: docker:latest
   tags:
     - deploy-volume
   # timeout: 2h 
