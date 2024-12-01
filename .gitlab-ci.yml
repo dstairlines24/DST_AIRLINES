@@ -82,6 +82,11 @@ stages:
 
 test-app:
   stage: test
+  rules:
+    - changes:
+        - app/*
+        - data_test/*
+        - model/*
   tags:
     - test-mongo
   services:
@@ -110,7 +115,12 @@ test-app:
 
 test-app_admin:
   stage: test
-  extends: .do_strategy
+  rules:
+    - changes:
+        - app_admin/*
+        - data_test/*
+        - model/*
+        - functions/*
   script:
     - cd app_admin/
     - sudo pip install --upgrade pip
@@ -119,7 +129,11 @@ test-app_admin:
 
 test-app_form:
   stage: test
-  extends: .do_strategy
+  rules:
+    - changes:
+        - app_form/*
+        - data_test/*
+        - functions/*
   script:
     - cd app_form/
     - sudo pip install --upgrade pip
