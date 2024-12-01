@@ -3,7 +3,7 @@ import os
 from pymongo.errors import ServerSelectionTimeoutError
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
-mongo_uri = "mongo://root:root@mongo:27017/app_data?authSource=admin"
+mongo_uri = "mongodb://root:root@mongo:27017/app_data?authSource=admin"
 
 # Débogage : afficher l'URI et autres informations d'authentification
 print(f"Connecting to MongoDB with URI: {mongo_uri}")
