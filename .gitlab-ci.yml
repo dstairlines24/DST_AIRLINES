@@ -55,9 +55,9 @@ test:
     - cat /etc/resolv.conf
     - echo "Listing hosts"
     - cat /etc/hosts
-    - ping -c 4 mongodb
     - python3 init_db2.py
 
+    # - ping -c 4 mongodb
     # - sudo chmod -R 777 data
     # - mongosh $MONGODB_URI
     # - nc -zv mongodb 27017
