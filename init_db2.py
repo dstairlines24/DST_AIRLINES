@@ -10,7 +10,7 @@ print(f"Connecting to MongoDB with URI: {mongo_uri}")
 
 # Connexion à MongoDB
 try:
-    client = MongoClient("mongodb://root:root@mongodb:27017/app_data?authSource=admin")
+    client = MongoClient("mongodb://root:root@mongodb:27017/")
     client.admin.command("ping")
     print("Connexion à MongoDB réussie.")
 except Exception as e:
