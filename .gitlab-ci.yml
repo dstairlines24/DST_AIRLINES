@@ -310,9 +310,9 @@ deploy-prod:
   extends: 
     - .do_dind
     - .do_strategy
-  services:
-    - name: docker:dind
-      privileged: true
+  # services:
+  #   - name: docker:dind
+  #     privileged: true
   environment:
     name: prod-$CI_BUILD_REF_NAME
     url: |
