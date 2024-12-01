@@ -133,6 +133,8 @@ test-app_admin:
 
 test-app_form:
   stage: test
+  tags:
+    - deploy-volume
   rules:
     - changes:
         - .gitlab-ci.yml
