@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash
 
 import os
 app.config['API_KEY'] = os.getenv("API_KEY", "api_key_dstairlines_default")
+print(app.config['API_KEY']) # debuggage
 
 @pytest.fixture
 def client():
