@@ -42,13 +42,16 @@ stages:
 #     - test-mongo
 #   services:
 #     - name: mongo:4.4
-#       # alias: mongodb
+#       alias: mongodb
 #   variables:
-#     # DOCKER_NETWORK_MODE: "host"
-#     # MONGO_INITDB_ROOT_USERNAME: root
-#     # MONGO_INITDB_ROOT_PASSWORD: root
-#     # MONGO_INITDB_DATABASE: app_data
-#     MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
+#       MONGO_HOST: IP_VM
+#       MONGO_PORT: 27017
+#       MONGO_INITDB_DATABASE: test_db
+#       DOCKER_NETWORK_MODE: "host"
+#       MONGO_INITDB_ROOT_USERNAME: root
+#       MONGO_INITDB_ROOT_PASSWORD: root
+#       MONGO_INITDB_DATABASE: app_data
+#       MONGO_URI: mongodb://mongodb:27017/app_data?authSource=admin
 #   script:
 #     - pwd
 #     - echo "Checking DNS configuration"
@@ -60,32 +63,6 @@ stages:
 #     - pip install -r app/requirements.txt
 #     - python3 init_db2.py
 
-    # - ping -c 4 mongodb
-    # - sudo chmod -R 777 data
-    # - mongosh $MONGODB_URI
-    # - nc -zv mongodb 27017
-
-test-app:
-  stage: test
-  tags:
-    - test-mongo
-  # extends: .do_strategy
-  services:
-    - name: mongo:4.4
-      alias: mongodb
-  variables:
-    # MONGO_HOST: IP_VM
-    # MONGO_PORT: 27017
-    # MONGO_INITDB_DATABASE: test_db
-    MONGO_INITDB_ROOT_USERNAME: root
-    MONGO_INITDB_ROOT_PASSWORD: root
-    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
-    FLASK_ADMIN_LOGIN: admin
-    FLASK_ADMIN_PASSWORD: admin
-    FLASK_USER_LOGIN: dstairlines
-    FLASK_USER_PASSWORD: dstairlines
-    API_KEY: api_key_dstairlines
-  script:
     # - sudo chmod -R 755 data
     # - nc -zv mongodb 27017
     # - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
@@ -95,6 +72,31 @@ test-app:
     #     sleep 5
     #   done
     # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
+    # - python3 -m unittest discover tests/
+    # - python -m unittest discover -s app/tests -p "*.py"
+
+    # - ping -c 4 mongodb
+    # - sudo chmod -R 777 data
+    # - mongosh $MONGODB_URI
+    # - nc -zv mongodb 27017
+
+test-app:
+  stage: test
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
+  script:
     - cp -r data_test app/data_test
     - cp -r model app/model
     - cd app/
@@ -105,8 +107,6 @@ test-app:
     - pip install --upgrade pyOpenSSL
     - python3 ../init_db.py
     - python3 -m pytest tests/
-    # - python3 -m unittest discover tests/
-    # - python -m unittest discover -s app/tests -p "*.py"
 
 test-app_admin:
   stage: test
