@@ -43,6 +43,7 @@ test:
     - name: mongo:4.4
       alias: mongodb
   variables:
+    DOCKER_NETWORK_MODE: "bridge"
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: root
     # MONGO_INITDB_DATABASE: app_data
