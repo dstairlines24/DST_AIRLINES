@@ -50,16 +50,15 @@ test:
     # MONGO_INITDB_DATABASE: app_data
     # MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
   script:
-    - docker version
-    # - pwd
-    # - echo "Listing network interfaces"
-    # - ip addr
-    # - echo "Checking DNS configuration"
-    # - cat /etc/resolv.conf
-    # - echo "Listing hosts"
-    # - cat /etc/hosts
-    # - ping -c 4 mongodb
-    # - python3 init_db2.py
+    - pwd
+    - echo "Listing network interfaces"
+    - ip addr
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - ping -c 4 mongodb
+    - python3 init_db2.py
 
     # - sudo chmod -R 777 data
     # - mongosh $MONGODB_URI
