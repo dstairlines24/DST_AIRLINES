@@ -52,7 +52,6 @@ test:
   extends: .do_strategy
   script:
     - pwd
-    - python3 init_db2.py
     - echo "Listing network interfaces:"
     - ip addr
     - echo "Checking DNS configuration:"
