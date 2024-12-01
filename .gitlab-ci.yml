@@ -252,6 +252,7 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
+  privileged: true
   tags:
     - deploy-volume
   # timeout: 2h 
@@ -298,6 +299,7 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy-prod
+  privileged: true
   tags:
     - deploy-volume
   # timeout: 2h 
