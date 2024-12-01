@@ -48,7 +48,7 @@ test:
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: root
     # MONGO_INITDB_DATABASE: app_data
-    # MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
+    MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
   script:
     - pwd
     - echo "Checking DNS configuration"
