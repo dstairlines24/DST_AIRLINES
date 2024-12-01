@@ -95,8 +95,8 @@ test-app:
     #     sleep 5
     #   done
     # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
-    - cp data_test app/data_test
-    - cp model app/model
+    - cp -r data_test app/data_test
+    - cp -r model app/model
     - cd app/
     - pip install --upgrade pip
     - apt-get update
