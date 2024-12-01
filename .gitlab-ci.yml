@@ -15,7 +15,7 @@ variables:
   PORT_PROD_APP_ADMIN: 15000
   PORT_PROD_APP_ADMIN_JUPYTER: 18888
   PORT_PROD_APP_DASH: 18051
-  DOCKER_DRIVER: overlay2
+  # DOCKER_DRIVER: overlay2
   
 image:
   name: "python:3.9-slim"
