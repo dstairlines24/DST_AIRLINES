@@ -1,22 +1,12 @@
 from pymongo import MongoClient
-from werkzeug.security import generate_password_hash
 import os
-import bson
-
-import pandas as pd
-import time
 from pymongo.errors import ServerSelectionTimeoutError
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGODB_URI")
-flask_admin_login = os.getenv("FLASK_ADMIN_LOGIN")
-flask_admin_password = os.getenv("FLASK_ADMIN_PASSWORD")
-flask_user_login = os.getenv("FLASK_USER_LOGIN")
-flask_user_password = os.getenv("FLASK_USER_PASSWORD")
 
 # Débogage : afficher l'URI et autres informations d'authentification
 print(f"Connecting to MongoDB with URI: {mongo_uri}")
-print(f"Admin login: {flask_admin_login}, User login: {flask_user_login}")
 
 # Connexion à MongoDB
 try:
