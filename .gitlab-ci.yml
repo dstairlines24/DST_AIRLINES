@@ -55,6 +55,9 @@ test:
     - cat /etc/resolv.conf
     - echo "Listing hosts"
     - cat /etc/hosts
+    - sudo pip install --upgrade pip
+    - sudo apt-get update
+    - pip install -r app/requirements.txt
     - python3 init_db2.py
 
     # - ping -c 4 mongodb
