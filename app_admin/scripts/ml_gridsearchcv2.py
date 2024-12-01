@@ -15,17 +15,8 @@ import joblib
 import matplotlib.pyplot as plt
 import os
 
-# ============= DEBOGAGE =============
-# Obtenir le chemin absolu du dossier `model`
-model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../model'))
-
-# Vérifier si le dossier existe
-if os.path.exists(model_dir) and os.path.isdir(model_dir):
-    print(f"Contenu du dossier 'model' : {os.listdir(model_dir)}")
-else:
-    print("Le dossier 'model' n'existe pas ou n'est pas accessible.")
-# ============= END DEBOGAGE =============
 import sys
+# Ajouter le dossier parent au chemin de recherche des modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from model.ml_data_transform import DataTransform
 

@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
+import sys
+# Ajouter le dossier parent au chemin de recherche des modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from model.ml_data_transform import DataTransform
 
 #==========================================================

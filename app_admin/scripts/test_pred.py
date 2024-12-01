@@ -4,6 +4,10 @@ import joblib
 import pandas as pd
 import numpy as np
 
+import sys
+# Ajouter le dossier parent au chemin de recherche des modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from model.ml_data_transform import DataTransform
 
 # Récupérer l'URI de MongoDB depuis la variable d'environnement
 mongo_uri = os.getenv("MONGO_URI")
@@ -35,7 +39,6 @@ def predict_from_data(flight_data):
     #==========================================================
     # Appliquer les transformation avec la classe DataTransform
     #==========================================================
-    from model.ml_data_transform import DataTransform
     datatransform = DataTransform(df)
     df = datatransform.apply_feat_transforms()
     print("---------------------------------------------------------------------------------------")
