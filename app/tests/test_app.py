@@ -5,7 +5,6 @@ from werkzeug.security import generate_password_hash
 
 import os
 app.config['API_KEY'] = os.getenv("API_KEY", "api_key_dstairlines_default")
-print(app.config['API_KEY']) # debuggage
 
 @pytest.fixture
 def client():
@@ -64,6 +63,7 @@ def test_predict_success(client, monkeypatch):
 
 def test_predict_missing_data(client):
     """Test de prédiction avec des données manquantes"""
+    print(app.config['API_KEY']) # debuggage
     client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
 
     response = client.post('/predict', json={})
