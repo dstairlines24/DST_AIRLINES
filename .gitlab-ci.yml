@@ -122,6 +122,7 @@ test-app_admin:
         - data_test/*
         - model/*
         - functions/*
+  extends: .do_strategy
   script:
     - cd app_admin/
     - sudo pip install --upgrade pip
@@ -135,6 +136,7 @@ test-app_form:
         - app_form/*
         - data_test/*
         - functions/*
+  extends: .do_strategy
   script:
     - cd app_form/
     - sudo pip install --upgrade pip
