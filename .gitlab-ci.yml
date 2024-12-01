@@ -148,8 +148,7 @@ test-app_form:
 
 .do_dind:
   services:
-    - name: docker:dind
-      privileged: true
+    - docker:dind
     
 
 .do_docker_logging:
@@ -260,6 +259,9 @@ deploy-dev:
   extends: 
     - .do_dind
     - .do_strategy
+  services:
+    - name: docker:dind
+      privileged: true
   variables:
     NAMESPACE: dev
   # services:
@@ -306,6 +308,9 @@ deploy-prod:
   extends: 
     - .do_dind
     - .do_strategy
+  services:
+    - name: docker:dind
+      privileged: true
   environment:
     name: prod-$CI_BUILD_REF_NAME
     url: |
