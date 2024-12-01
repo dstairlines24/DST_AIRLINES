@@ -149,7 +149,6 @@ test-app_form:
 .do_dind:
   services:
     - docker:dind
-      privileged: true
 
 .do_docker_logging:
   before_script:
@@ -253,11 +252,14 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
+  services:
+    - docker:dind
+      privileged: true
   tags:
     - deploy-volume
   # timeout: 2h 
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
