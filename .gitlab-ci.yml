@@ -19,7 +19,8 @@ variables:
   
 image:
   name: "python:3.9-slim"
-  entrypoint: ["/bin/sh", "-c"]
+  entrypoint: [""]
+  # entrypoint: ["/bin/sh", "-c"]
 
 stages:
   - test
@@ -49,6 +50,7 @@ test:
     # MONGO_INITDB_DATABASE: app_data
     # MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
   script:
+    - docker version
     # - pwd
     # - echo "Listing network interfaces"
     # - ip addr
