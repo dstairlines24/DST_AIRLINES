@@ -51,7 +51,7 @@ test:
   #     - /data  
   variables:
     MONGO_INITDB_DATABASE: testdb
-    MONGODB_URI: mongodb://127.0.0.1:27017/app_data
+    MONGODB_URI: mongodb://mongodb:27017/app_data
     MONGO_INITDB_ROOT_USERNAME: dstairlines
     MONGO_INITDB_ROOT_PASSWORD: dstairlines
     MONGO_INITDB_DATABASE: app_data
