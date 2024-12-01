@@ -61,8 +61,9 @@ def test_predict_success(client, monkeypatch):
 
 def test_predict_missing_data(client):
     """Test de prédiction avec des données manquantes"""
-    print(app.config['API_KEY']) # debuggage
+    print(f"app.config['API_KEY']: {app.config['API_KEY']}")  # Deboggage
     client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
+    print(f"En-têtes envoyés: {client.environ_base}")  # Deboggage
 
     response = client.post('/predict', json={})
     assert response.status_code == 400
