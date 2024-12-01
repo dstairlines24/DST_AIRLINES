@@ -49,7 +49,7 @@ test:
     # MONGO_INITDB_DATABASE: app_data
     # MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
   script:
-    - pwd
+    # - pwd
     # - echo "Listing network interfaces"
     # - ip addr
     # - echo "Checking DNS configuration"
