@@ -70,7 +70,8 @@ def test_predict_missing_api_key(client):
     """Test de prédiction avec une clé API manquante"""
     response = client.post('/predict', json={'feat_1': 0.5, 'feat_2': 0.8})
     assert response.status_code == 401
-    assert "Clé API manquante ou invalide" in response.get_data(as_text=True)
+    error_message = response.json.get('error')  # Utiliser .json pour décoder la réponse JSON
+    assert error_message == 'Clé API manquante ou invalide'
 
 def test_predict_internal_error(client, monkeypatch):
     """Test de prédiction échouée avec une erreur interne"""
