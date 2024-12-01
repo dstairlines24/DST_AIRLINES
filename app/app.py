@@ -7,6 +7,7 @@ import joblib
 import pandas as pd
 from functools import wraps
 from flasgger import Swagger, swag_from
+from model.ml_data_transform import DataTransform
 
 
 app = Flask(__name__)
@@ -143,7 +144,6 @@ def predict_from_data(flight_data):
     #==========================================================
     # Appliquer les transformation avec la classe DataTransform
     #==========================================================
-    from ml_data_transform import DataTransform
     datatransform = DataTransform(df)
     df = datatransform.apply_feat_transforms()
     

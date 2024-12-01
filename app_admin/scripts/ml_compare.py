@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
+from model.ml_data_transform import DataTransform
 
 #==========================================================
 # Récupérer la collection final_flights dans MongoDB
@@ -32,7 +33,6 @@ df = pd.DataFrame(list(db['final_flights'].find()))
 #==========================================================
 # Appliquer les transformation avec la classe DataTransform
 #==========================================================
-from model.ml_data_transform import DataTransform
 datatransform = DataTransform(df)
 df = datatransform.apply_feat_transforms()
 df = datatransform.apply_target_transforms()
