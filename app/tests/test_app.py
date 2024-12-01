@@ -17,26 +17,26 @@ def client():
         # Nettoyer après les tests
         db_credentials.users.delete_many({})
 
-# def test_login_success(client):
-#     """Test de connexion réussie avec un utilisateur valide"""
-#     response = client.post('/login', data={'username': 'testuser', 'password': 'testpassword'})
-#     assert response.status_code == 302  # Redirection vers la page d'accueil
-#     assert session['username'] == 'testuser'
+def test_login_success(client):
+    """Test de connexion réussie avec un utilisateur valide"""
+    response = client.post('/login', data={'username': 'testuser', 'password': 'testpassword'})
+    assert response.status_code == 302  # Redirection vers la page d'accueil
+    assert session['username'] == 'testuser'
 
-# def test_login_failure(client):
-#     """Test de connexion échouée avec des identifiants incorrects"""
-#     response = client.post('/login', data={'username': 'testuser', 'password': 'wrongpassword'})
-#     assert response.status_code == 401  # Identifiants incorrects
-#     assert b"Identifiant ou mot de passe incorrect" in response.data
+def test_login_failure(client):
+    """Test de connexion échouée avec des identifiants incorrects"""
+    response = client.post('/login', data={'username': 'testuser', 'password': 'wrongpassword'})
+    assert response.status_code == 401  # Identifiants incorrects
+    assert b"Identifiant ou mot de passe incorrect" in response.data
 
-# def test_logout(client):
-#     """Test de déconnexion"""
-#     with client.session_transaction() as sess:
-#         sess['username'] = 'testuser'
-#         sess['role'] = 'user'
-#     response = client.get('/logout')
-#     assert response.status_code == 302  # Redirection vers la page de connexion
-#     assert 'username' not in session
+def test_logout(client):
+    """Test de déconnexion"""
+    with client.session_transaction() as sess:
+        sess['username'] = 'testuser'
+        sess['role'] = 'user'
+    response = client.get('/logout')
+    assert response.status_code == 302  # Redirection vers la page de connexion
+    assert 'username' not in session
 
 def test_index(client):
     """Test de la page d'accueil"""
