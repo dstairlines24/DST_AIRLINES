@@ -3,6 +3,7 @@ from app import app, db_credentials, predict_from_data
 from flask import session
 from werkzeug.security import generate_password_hash
 import os
+from pymongo import MongoClient
 
 
 @pytest.fixture
@@ -82,14 +83,16 @@ def test_predict_missing_data(client):
     print(f"app.config['API_KEY']: {app.config['API_KEY']}")  # Deboggage
     # client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
     # print(f"En-têtes envoyés: {client.environ_base}")  # Deboggage
-    
+
     headers = {
         'x-api-key': app.config['API_KEY']
     }
 
     response = client.post('/predict', json={}, headers=headers)
     assert response.status_code == 400
-    assert "Données de vol non fournies ou invalides" in response.get_data(as_text=True)
+    assert response.json['error'] == 'Données de vol non fournies ou invalides'
+    # error_message = response.json.get('error')  # Utiliser .json pour décoder la réponse JSON
+    # assert error_message == 'Données de vol non fournies ou invalides'
 
 def test_predict_missing_api_key(client):
     """Test de prédiction avec une clé API manquante"""
