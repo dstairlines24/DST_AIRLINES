@@ -3,6 +3,8 @@ from app import app, db_credentials, predict_from_data
 from flask import session
 from werkzeug.security import generate_password_hash
 
+app.config['API_KEY'] = os.getenv("API_KEY", "api_key_dstairlines_default")
+
 @pytest.fixture
 def client():
     with app.test_client() as client:
