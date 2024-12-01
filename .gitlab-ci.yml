@@ -36,29 +36,29 @@ stages:
     GIT_STRATEGY: fetch
     GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
 
-test:
-  stage: test
-  tags:
-    - test-mongo
-  services:
-    - name: mongo:4.4
-      # alias: mongodb
-  variables:
-    # DOCKER_NETWORK_MODE: "host"
-    # MONGO_INITDB_ROOT_USERNAME: root
-    # MONGO_INITDB_ROOT_PASSWORD: root
-    # MONGO_INITDB_DATABASE: app_data
-    MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
-  script:
-    - pwd
-    - echo "Checking DNS configuration"
-    - cat /etc/resolv.conf
-    - echo "Listing hosts"
-    - cat /etc/hosts
-    - pip install --upgrade pip
-    - apt-get update
-    - pip install -r app/requirements.txt
-    - python3 init_db2.py
+# test:
+#   stage: test
+#   tags:
+#     - test-mongo
+#   services:
+#     - name: mongo:4.4
+#       # alias: mongodb
+#   variables:
+#     # DOCKER_NETWORK_MODE: "host"
+#     # MONGO_INITDB_ROOT_USERNAME: root
+#     # MONGO_INITDB_ROOT_PASSWORD: root
+#     # MONGO_INITDB_DATABASE: app_data
+#     MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
+#   script:
+#     - pwd
+#     - echo "Checking DNS configuration"
+#     - cat /etc/resolv.conf
+#     - echo "Listing hosts"
+#     - cat /etc/hosts
+#     - pip install --upgrade pip
+#     - apt-get update
+#     - pip install -r app/requirements.txt
+#     - python3 init_db2.py
 
     # - ping -c 4 mongodb
     # - sudo chmod -R 777 data
@@ -88,7 +88,7 @@ test-app:
     FLASK_USER_PASSWORD: dstairlines
     API_KEY: api_key_dstairlines
   script:
-    - sudo chmod -R 755 data
+    # - sudo chmod -R 755 data
     # - nc -zv mongodb 27017
     # - echo "MongoDB est accessible sur $MONGO_HOST:$MONGO_PORT"
     # - >
@@ -98,8 +98,8 @@ test-app:
     #   done
     # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
     - cd app/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
+    - pip install --upgrade pip
+    - apt-get update
     - pip install -r requirements.txt
     - pip install pytest
     - pip install --upgrade pyOpenSSL
