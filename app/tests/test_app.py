@@ -2,6 +2,7 @@ import pytest
 from app import app, db_credentials, predict_from_data
 from flask import session
 from werkzeug.security import generate_password_hash
+import os
 
 
 @pytest.fixture
@@ -53,19 +54,40 @@ def test_predict_success(client, monkeypatch):
     monkeypatch.setattr('app.predict_from_data', mock_predict_from_data)
 
     # Ajout d'une clé API valide
-    client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
+    # client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
 
-    response = client.post('/predict', json={'feat_1': 0.5, 'feat_2': 0.8})
+    # Récupérer l'URI de MongoDB depuis la variable d'environnement
+    mongo_uri = os.getenv("MONGO_URI")
+
+    # Connexion à MongoDB
+    client = MongoClient(mongo_uri)
+    db = client.app_data_form
+
+    flight_data = list(db['test_col'].find({}, {"_id": 0}))
+    # --------------------------------------------------------------
+
+    print(f"Contenu de flight_data : \n{flight_data}\n") # Deboggage
+    print("\n\n")
+
+    headers = {
+        'x-api-key': app.config['API_KEY']
+    }
+
+    response = requests.post('/predict', json=flight_data, headers=headers)
     assert response.status_code == 200
     assert response.json['prediction'] == 'prediction_success'
 
 def test_predict_missing_data(client):
     """Test de prédiction avec des données manquantes"""
     print(f"app.config['API_KEY']: {app.config['API_KEY']}")  # Deboggage
-    client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
-    print(f"En-têtes envoyés: {client.environ_base}")  # Deboggage
+    # client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
+    # print(f"En-têtes envoyés: {client.environ_base}")  # Deboggage
+    
+    headers = {
+        'x-api-key': app.config['API_KEY']
+    }
 
-    response = client.post('/predict', json={})
+    response = client.post('/predict', json={}, headers=headers)
     assert response.status_code == 400
     assert "Données de vol non fournies ou invalides" in response.get_data(as_text=True)
 
