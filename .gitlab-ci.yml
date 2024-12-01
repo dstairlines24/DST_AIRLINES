@@ -41,7 +41,6 @@ test:
     - test-mongo
   services:
     - name: mongo:4.4
-      alias: mongodb
   variables:
     MONGO_INITDB_ROOT_USERNAME: root
     MONGO_INITDB_ROOT_PASSWORD: root
