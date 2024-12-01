@@ -37,23 +37,22 @@ stages:
 
 test:
   stage: test
-  # tags:
-  #   - test-mongo
+  tags:
+    - test-mongo
   services:
     - name: mongo:4.4
       alias: mongodb
   variables:
-    DOCKER_NETWORK_MODE: "host"
+    # DOCKER_NETWORK_MODE: "host"
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: root
     # MONGO_INITDB_DATABASE: app_data
     MONGO_URI: mongodb://mongodb:27017/app_data?authSource=admin
     # CI_DEBUG_TRACE: "true"
     # GIT_DEPTH: 1
-  extends: .do_strategy
   script:
-    - MONGO_IP=$(getent hosts mongodb | awk '{ print $1 }')
-    - echo "MongoDB IP= $MONGO_IP"
+    # - MONGO_IP=$(getent hosts mongodb | awk '{ print $1 }')
+    # - echo "MongoDB IP= $MONGO_IP"
     - pwd
     - echo "Listing network interfaces:"
     - ip addr
