@@ -20,7 +20,7 @@ variables:
 image:
   name: "python:3.9-slim"
   entrypoint: [""]
-  # entrypoint: ["/bin/sh", "-c"]
+  # entrypoint: ["/bin/sh", "-c"] # Pour les versions de Docker avant 17
 
 stages:
   - test
@@ -67,7 +67,9 @@ test:
 
 test-app:
   stage: test
-  extends: .do_strategy
+  tags:
+    - test-mongo
+  # extends: .do_strategy
   services:
     - name: mongo:4.4
       alias: mongodb
@@ -75,16 +77,16 @@ test-app:
     # MONGO_HOST: IP_VM
     # MONGO_PORT: 27017
     # MONGO_INITDB_DATABASE: test_db
-    MONGO_INITDB_ROOT_USERNAME: root
-    MONGO_INITDB_ROOT_PASSWORD: password
+    # MONGO_INITDB_ROOT_USERNAME: root
+    # MONGO_INITDB_ROOT_PASSWORD: password
     MONGO_ROOT_LOGIN: root
     MONGO_ROOT_PASSWORD: password
-    # MONGO_URI: mongodb://root:password@mongodb:27017/app_data?authSource=admin
-    # FLASK_ADMIN_LOGIN: admin
-    # FLASK_ADMIN_PASSWORD: admin
-    # FLASK_USER_LOGIN: dstairlines
-    # FLASK_USER_PASSWORD: dstairlines
-    # API_KEY: api_key_dstairlines
+    MONGO_URI: mongodb://root:password@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
   script:
     - sudo chmod -R 755 data
     # - nc -zv mongodb 27017
@@ -95,13 +97,13 @@ test-app:
     #     sleep 5
     #   done
     # - nc -zv mongodb 27017 || exit 1 # Attente que MongoDB soit prêt
-    - python3 init_db.py
     - cd app/
     - sudo pip install --upgrade pip
     - sudo apt-get update
     - pip install -r requirements.txt
     - pip install pytest
     - pip install --upgrade pyOpenSSL
+    - python3 init_db.py
     - python3 -m pytest tests/
     # - python3 -m unittest discover tests/
     # - python -m unittest discover -s app/tests -p "*.py"
