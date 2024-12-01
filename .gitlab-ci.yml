@@ -45,7 +45,7 @@ test:
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: root
     # MONGO_INITDB_DATABASE: app_data
-    MONGO_URI: mongodb://mongo:27017/app_data
+    MONGO_URI: mongodb://mongo/app_data
   script:
     - pwd
     - python3 init_db2.py
