@@ -25,7 +25,7 @@ if os.path.exists(model_dir) and os.path.isdir(model_dir):
 else:
     print("Le dossier 'model' n'existe pas ou n'est pas accessible.")
 # ============= END DEBOGAGE =============
-
+import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from model.ml_data_transform import DataTransform
 
