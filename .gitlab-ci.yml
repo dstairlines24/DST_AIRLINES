@@ -51,8 +51,6 @@ test:
     # MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
   script:
     - pwd
-    - echo "Listing network interfaces"
-    - ip addr
     - echo "Checking DNS configuration"
     - cat /etc/resolv.conf
     - echo "Listing hosts"
