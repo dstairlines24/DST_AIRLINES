@@ -41,13 +41,13 @@ test:
     - test-mongo
   services:
     - name: mongo:4.4
-      alias: mongodb
+      # alias: mongodb
   variables:
     # DOCKER_NETWORK_MODE: "host"
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: root
     # MONGO_INITDB_DATABASE: app_data
-    MONGO_URI: mongodb://mongodb:27017/app_data?authSource=admin
+    MONGO_URI: mongodb://mongo:27017/app_data?authSource=admin
   script:
     - set -x
     - pwd
