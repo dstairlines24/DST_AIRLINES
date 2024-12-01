@@ -258,7 +258,6 @@ deploy-dev:
   extends: 
     - .do_dind
     - .do_strategy
-    - .do_docker_logging
   variables:
     NAMESPACE: dev
   # services:
@@ -305,7 +304,6 @@ deploy-prod:
   extends: 
     - .do_dind
     - .do_strategy
-    - .do_docker_logging
   environment:
     name: prod-$CI_BUILD_REF_NAME
     url: |
