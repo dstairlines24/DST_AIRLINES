@@ -37,8 +37,8 @@ stages:
 
 test:
   stage: test
-  tags:
-    - test-mongo
+  # tags:
+  #   - test-mongo
   services:
     - name: mongo:4.4
       alias: mongodb
@@ -51,7 +51,6 @@ test:
     # GIT_DEPTH: 1
   script:
     - pwd
-    - ping -c 4 mongodb
     - python3 init_db2.py
     - echo "Listing network interfaces:"
     - ip addr
@@ -59,7 +58,7 @@ test:
     - cat /etc/resolv.conf
     - echo "Listing hosts:"
     - cat /etc/hosts
-    - ping -c 4 mongo
+    - ping -c 4 mongodb
     - python3 init_db2.py
     # - sudo chmod -R 777 data
     # - mongosh $MONGODB_URI
