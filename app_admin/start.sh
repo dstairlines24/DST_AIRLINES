@@ -10,4 +10,4 @@ jupyter notebook --no-browser --allow-root --NotebookApp.token='' &
 # python app_flask.py &
 # python app_dash.py
 
-python app_flask.py
+python app.py

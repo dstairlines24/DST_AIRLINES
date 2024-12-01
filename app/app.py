@@ -221,7 +221,6 @@ def predict():
         if not flight_data:
             return jsonify({"error": "Données de vol non fournies ou invalides"}), 400
 
-        print(f"flight_data: {flight_data}")  # Débogage
         # Appel de la fonction de prédiction directe
         prediction = predict_from_data(flight_data)
         print(f"prediction : {prediction}")

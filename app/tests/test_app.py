@@ -98,18 +98,19 @@ def test_predict_missing_api_key(client):
     """Test de prédiction avec une clé API manquante"""
     response = client.post('/predict', json={'feat_1': 0.5, 'feat_2': 0.8})
     assert response.status_code == 401
-    error_message = response.json.get('error')  # Utiliser .json pour décoder la réponse JSON
-    assert error_message == 'Clé API manquante ou invalide'
+    assert response.json['error'] == 'Clé API manquante ou invalide'
 
 def test_predict_internal_error(client, monkeypatch):
     """Test de prédiction échouée avec une erreur interne"""
 
-    def mock_predict_from_data(flight_data):
-        raise ValueError("Erreur de prédiction")
+    # def mock_predict_from_data(flight_data):
+    #     raise ValueError("Erreur de prédiction")
+    # monkeypatch.setattr('app.predict_from_data', mock_predict_from_data)
 
-    monkeypatch.setattr('app.predict_from_data', mock_predict_from_data)
-    client.environ_base['HTTP_X-API-KEY'] = app.config['API_KEY']
+    headers = {
+        'x-api-key': app.config['API_KEY']
+    }
 
-    response = client.post('/predict', json={'feat_1': 0.5, 'feat_2': 0.8})
+    response = client.post('/predict', json={'aircraft': 0, 'airline': 0}, headers=headers)
     assert response.status_code == 500
-    assert "Erreur lors de la prédiction" in response.get_data(as_text=True)
+    assert response.json['error'] == 'Erreur lors de la prédiction'
