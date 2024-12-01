@@ -61,8 +61,8 @@ def test_predict_success(client, monkeypatch):
     mongo_uri = os.getenv("MONGO_URI")
 
     # Connexion à MongoDB
-    client = MongoClient(mongo_uri)
-    db = client.app_data_form
+    clientMongo = MongoClient(mongo_uri)
+    db = clientMongo.app_data_form
 
     flight_data = list(db['test_col'].find({}, {"_id": 0}))
     # --------------------------------------------------------------
