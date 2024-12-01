@@ -43,10 +43,9 @@ test:
     - name: mongo:4.4
       alias: mongodb
   variables:
-    MONGO_INITDB_ROOT_USERNAME: dstairlines
-    MONGO_INITDB_ROOT_PASSWORD: dstairlines
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
     MONGO_INITDB_DATABASE: app_data
-    MONGODB_URI: mongodb://mongodb:27017/app_data
   script:
     - pwd
     - python3 init_db2.py
