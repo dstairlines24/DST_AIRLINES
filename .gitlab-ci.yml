@@ -51,14 +51,17 @@ test:
   #     - /data  
   variables:
     MONGO_INITDB_DATABASE: testdb
-    MONGODB_URI: mongodb://mongo:27017/testdb
+    MONGODB_URI: mongodb://127.0.0.1:27017/testdb
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: password
     # GIT_STRATEGY: fetch
     # GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
   script:
     - pwd
     # - sudo chmod -R 777 data
     # - mongosh $MONGODB_URI
-    - nc -zv mongodb 27017
+    # - nc -zv mongodb 27017
+    - python3 init_db.py
 
 test-app:
   stage: test
