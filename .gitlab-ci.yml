@@ -234,7 +234,11 @@ build-app_form:
 
 stop-dev:
   stage: deploy-dev
-  extends: .do_strategy
+  tags:
+    - deploy-volume
+  extends: 
+    - .do_dind
+    - .do_strategy
   variables:
     NAMESPACE: dev
   when: manual
@@ -248,7 +252,9 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
-  image: docker:latest
+  tags:
+    - deploy-volume
+  # timeout: 2h 
   extends: 
     - .do_dind
     - .do_strategy
@@ -293,7 +299,9 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy-prod
-  image: docker:latest
+  tags:
+    - deploy-volume
+  # timeout: 2h 
   extends: 
     - .do_dind
     - .do_strategy
