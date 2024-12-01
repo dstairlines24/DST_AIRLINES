@@ -32,7 +32,8 @@ def require_api_key(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         # Récupération de la clé API depuis les en-têtes
-        api_key = request.headers.get('x-api-key')
+        # api_key = request.headers.get('x-api-key')
+        api_key = request.headers.get('X-API-KEY')
         print(f"Clé API reçue : {api_key}")  # Débogage
         if not api_key or api_key != app.config['API_KEY']:
             return jsonify({"error": "Clé API manquante ou invalide"}), 401
