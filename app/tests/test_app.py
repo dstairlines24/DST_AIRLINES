@@ -74,7 +74,7 @@ def test_predict_success(client, monkeypatch):
         'x-api-key': app.config['API_KEY']
     }
 
-    response = requests.post('/predict', json=flight_data, headers=headers)
+    response = client.post('/predict', json=flight_data, headers=headers)
     assert response.status_code == 200
     assert response.json['prediction'] == 'prediction_success'
 
