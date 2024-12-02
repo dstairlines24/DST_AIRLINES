@@ -260,7 +260,7 @@ deploy-dev:
   image: docker:latest
   # image: docker:24.0.5
   tags:
-    - test-mongo
+    - deploy-volume
   # timeout: 2h 
   extends: 
     - .do_dind
@@ -271,9 +271,9 @@ deploy-dev:
   #     alias: docker
   variables:
     NAMESPACE: dev
+    DOCKER_HOST: unix:///var/run/docker.sock
   # variables:
   #   DOCKER_HOST: tcp://docker:2375 
-  #   DOCKER_HOST: unix:///var/run/docker.sock
   #   DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
@@ -288,8 +288,8 @@ deploy-dev:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
     - pwd
-    - docker ps
     - docker version
+    - docker ps
     - echo "Checking DNS configuration"
     - cat /etc/resolv.conf
     - echo "Listing hosts"
