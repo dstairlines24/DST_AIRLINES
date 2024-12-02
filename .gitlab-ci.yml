@@ -273,11 +273,8 @@ deploy-dev:
   # services:
   #   - name: docker:dind
   #     command: ["--host=tcp://0.0.0.0:2375"]
-  # variables:
-  #   DOCKER_HOST: unix:///var/run/docker.sock 
-  #   DOCKER_HOST: tcp://docker:2375 
-  #   DOCKER_TLS_CERTDIR: "/certs"
-  #   DOCKER_DRIVER: overlay2
+  variables:
+    DOCKER_HOST: tcp://docker:2375 
   #   DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
@@ -291,8 +288,11 @@ deploy-dev:
   script:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
-    - ls -lR
     - pwd
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
