@@ -93,6 +93,10 @@ test-app:
   services:
     - name: mongo:4.4
       alias: mongodb
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - .cache/pip/
   variables:
     MONGO_INITDB_ROOT_USERNAME: root
     MONGO_INITDB_ROOT_PASSWORD: root
@@ -107,11 +111,14 @@ test-app:
     - cp -r data_test app/data_test
     - cp -r model app/model
     - cd app/
-    - pip install --upgrade pip
-    - apt-get update
-    - pip install -r requirements.txt
-    - pip install pytest
-    - pip install --upgrade pyOpenSSL
+    # - pip install --upgrade pip
+    # - apt-get update
+    # - pip install -r requirements.txt
+    # - pip install pytest
+    # - pip install --upgrade pyOpenSSL
+    - pip install --cache-dir=.cache/pip -r requirements.txt
+    - pip install --cache-dir=.cache/pip pytest
+    - pip install --cache-dir=.cache/pip --upgrade pyOpenSSL
     - python3 ../init_db.py
     # - python3 -m pytest tests/
 
@@ -194,8 +201,6 @@ test-app_form:
 
 .do_docker_logging:
   before_script:
-    - whoami  # Affiche l'utilisateur courant
-    - id  # Affiche l'UID et le GID de l'utilisateur
     - echo "======== before_script start ========"
     - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
     - echo "Logging in to Docker..."
