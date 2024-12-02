@@ -335,6 +335,8 @@ deploy-dev-mongo:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
+    - echo "Creating network shared_net if it doesn't exist..."
+    - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker-compose -f docker-compose.mongo.yml up -d
     # - docker-compose up
@@ -389,6 +391,8 @@ deploy-dev-app:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
+    - echo "Creating network shared_net if it doesn't exist..."
+    - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker-compose -f docker-compose.app.yml up -d
     # - docker-compose up
@@ -445,6 +449,8 @@ deploy-dev-app_admin:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
+    - echo "Creating network shared_net if it doesn't exist..."
+    - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker-compose -f docker-compose.app_admin.yml up -d
     # - docker-compose up
@@ -499,6 +505,8 @@ deploy-dev-app_dash:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
+    - echo "Creating network shared_net if it doesn't exist..."
+    - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker-compose -f docker-compose.app_dash.yml up -d
     # - docker-compose up
@@ -553,6 +561,8 @@ deploy-dev-app_form:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
+    - echo "Creating network shared_net if it doesn't exist..."
+    - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker-compose -f docker-compose.app_form.yml up -d
     # - docker-compose up
