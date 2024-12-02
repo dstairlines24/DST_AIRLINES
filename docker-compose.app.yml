@@ -1,0 +1,21 @@
+# version: '3.3'
+services:      
+  flask_app:
+    image: guillaumegossmann/dst_airlines_app:latest
+    container_name: dstair_flask_app
+    ports:
+      - 5002:5002
+    depends_on:
+      - mongodb
+    volumes:
+      - ./model:/app/model  # Volume partagé avec l'hôte
+    environment:
+      - MONGO_URI=mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017/app_data?authSource=admin
+      #?authSource=admin -> on précise que l'on s'authentifie sur la base admin, car mongo créer les utilisateurs dans admin par défaut
+      - FLASK_ADMIN_LOGIN=${FLASK_ADMIN_LOGIN}
+      - FLASK_ADMIN_PASSWORD=${FLASK_ADMIN_PASSWORD}
+      - FLASK_USER_LOGIN=${FLASK_USER_LOGIN}
+      - FLASK_USER_PASSWORD=${FLASK_USER_PASSWORD}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+      - API_KEY=${API_KEY}
+    command: python app.py

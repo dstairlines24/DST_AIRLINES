@@ -1,0 +1,572 @@
+variables:
+  REGISTRY: "docker.io"
+  APP_IMAGE: "guillaumegossmann/dst_airlines_app"
+  APP_ADMIN_IMAGE: "guillaumegossmann/dst_airlines_app_admin"
+  APP_FORM_IMAGE: "guillaumegossmann/dst_airlines_app_form"
+  APP_DASH_IMAGE: "guillaumegossmann/dst_airlines_app_dash"
+  IP_VM: 127.0.0.1
+  PORT_DEV_MONGO: 27017
+  PORT_DEV_APP: 5002
+  PORT_DEV_APP_FORM: 5001
+  PORT_DEV_APP_ADMIN: 5000
+  PORT_DEV_APP_ADMIN_JUPYTER: 8888
+  PORT_DEV_APP_DASH: 8051
+  PORT_PROD_MONGO: 17017
+  PORT_PROD_APP: 15002
+  PORT_PROD_APP_FORM: 15001
+  PORT_PROD_APP_ADMIN: 15000
+  PORT_PROD_APP_ADMIN_JUPYTER: 18888
+  PORT_PROD_APP_DASH: 18051
+  # DOCKER_DRIVER: overlay2
+  
+image:
+  name: "python:3.9-slim"
+  entrypoint: [""]
+  # entrypoint: ["/bin/sh", "-c"] # Pour les versions de Docker avant 17
+
+stages:
+  - test
+  - build
+  - deploy-dev
+  - deploy-prod
+
+.do_strategy:
+  before_script:
+    - whoami  # Affiche l'utilisateur courant
+    - id  # Affiche l'UID et le GID de l'utilisateur
+  variables:
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: -ffdx -e data/ -e app_admin/scripts/.ipynb_checkpoints/ -e app_admin/__pycache__/ -e app_admin/scripts/__pycache__/ -e app/__pycache__/ -e app_dash/__pycache__/ -e app_form/__pycache__/ -e app_form/scripts/__pycache__/ -e functions/__pycache__ -e model/__pycache__
+
+.do_dind:
+  services:
+    - docker:dind
+
+.do_docker_logging:
+  before_script:
+    - echo "======== before_script start ========"
+    - if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then echo "Docker credentials not set"; exit 1; fi
+    - echo "Logging in to Docker..."
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - echo "======== before_script end ========" 
+
+
+# =====================================================================================
+# =================================== TESTING =========================================
+# =====================================================================================
+
+test-app:
+  stage: test
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app/*
+        - data_test/*
+        - model/*
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - .cache/pip/
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
+  extends: .do_strategy
+  script:
+    - cp -r data_test app/data_test
+    - cp -r model app/model
+    - cd app/
+    # - pip install --upgrade pip
+    # - apt-get update
+    # - pip install -r requirements.txt
+    # - pip install pytest
+    # - pip install --upgrade pyOpenSSL
+    - pip install --cache-dir=.cache/pip -r requirements.txt
+    - pip install --cache-dir=.cache/pip pytest
+    - pip install --cache-dir=.cache/pip --upgrade pyOpenSSL
+    - python3 ../init_db.py
+    # - python3 -m pytest tests/
+
+test-app_admin:
+  stage: test
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app_admin/*
+        - data_test/*
+        - model/*
+        - functions/*
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
+  extends: .do_strategy
+  script:
+    - cp -r data_test app_admin/data_test
+    - cp -r model app_admin/model
+    - cp -r functions app_admin/functions
+    - cd app_admin/
+    - pip install --upgrade pip
+    - apt-get update
+    - pip install -r requirements.txt
+    - pip install pytest
+    - pip install --upgrade pyOpenSSL
+    - python3 ../init_db.py
+    # - python3 -m pytest tests/
+
+test-app_form:
+  stage: test
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app_form/*
+        - data_test/*
+        - functions/*
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
+  extends: .do_strategy
+  script:
+    - cp -r data_test app_form/data_test
+    - cp -r functions app_form/functions
+    - cd app_form/
+    - pip install --upgrade pip
+    - apt-get update
+    - pip install -r requirements.txt
+    - pip install pytest
+    - pip install --upgrade pyOpenSSL
+    - pip install pandas==2.0.3
+    - python3 ../init_db.py
+    # - python3 -m pytest tests/
+
+test-app_dash:
+  stage: test
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app_dash/*
+        - data_test/*
+        - model/*
+        - functions/*
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
+  extends: .do_strategy
+  script:
+    - cp -r data_test app_dash/data_test
+    - cp -r model app_dash/model
+    - cp -r functions app_dash/functions
+    - cd app_dash/
+    - pip install --upgrade pip
+    - apt-get update
+    - pip install -r requirements.txt
+    - pip install pytest
+    - pip install --upgrade pyOpenSSL
+    - python3 ../init_db.py
+    # - python3 -m pytest tests/
+
+
+# =====================================================================================
+# =================================== BUILDING ========================================
+# =====================================================================================
+
+build-app:
+  stage: build
+  image: docker:latest
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app/*
+  extends: 
+    - .do_dind
+    - .do_strategy
+    - .do_docker_logging
+  script:
+    - cd app/
+    - docker build -f Dockerfile -t $APP_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_IMAGE:$CI_COMMIT_SHORT_SHA $APP_IMAGE:latest
+    - docker push $APP_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_IMAGE:latest
+
+build-app_admin:
+  stage: build
+  image: docker:latest
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app_admin/*
+  extends: 
+    - .do_dind
+    - .do_strategy
+    - .do_docker_logging
+  script:
+    - cd app_admin/
+    - docker build -f Dockerfile -t $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA $APP_ADMIN_IMAGE:latest
+    - docker push $APP_ADMIN_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_ADMIN_IMAGE:latest
+
+build-app_dash:
+  stage: build
+  image: docker:latest
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app_dash/*
+  extends: 
+    - .do_dind
+    - .do_strategy
+    - .do_docker_logging
+  script:
+    - cd app_dash/
+    - docker build -f Dockerfile -t $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA $APP_DASH_IMAGE:latest
+    - docker push $APP_DASH_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_DASH_IMAGE:latest
+
+build-app_form:
+  stage: build
+  image: docker:latest
+  rules:
+    - changes:
+        - .gitlab-ci.yml
+        - app_form/*
+  extends: 
+    - .do_dind
+    - .do_strategy
+    - .do_docker_logging
+  script:
+    - cd app_form/
+    - docker build -f Dockerfile -t $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker tag $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA $APP_FORM_IMAGE:latest
+    - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $APP_FORM_IMAGE:latest
+
+# =====================================================================================
+# =================================== DEPLOYING =======================================
+# =====================================================================================
+
+# =================================== STOP STAGES =====================================
+stop-dev-mongo:
+  stage: deploy-dev
+  image: docker:latest
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  when: manual
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - echo "Stopping app environment..."
+    - docker-compose -f docker-compose.mongo.yml down
+
+stop-dev-app:
+  stage: deploy-dev
+  image: docker:latest
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  when: manual
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - echo "Stopping app environment..."
+    - docker-compose -f docker-compose.app.yml down
+    
+stop-dev-app_admin:
+  stage: deploy-dev
+  image: docker:latest
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  when: manual
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - echo "Stopping app environment..."
+    - docker-compose -f docker-compose.app_admin.yml down
+    
+stop-dev-app_dash:
+  stage: deploy-dev
+  image: docker:latest
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  when: manual
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - echo "Stopping app environment..."
+    - docker-compose -f docker-compose.app_dash.yml down
+    
+stop-dev-app_form:
+  stage: deploy-dev
+  image: docker:latest
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  when: manual
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - echo "Stopping app environment..."
+    - docker-compose -f docker-compose.app_form.yml down
+
+# =================================== DEPLOY STAGES ===================================
+deploy-dev-mongo:
+  stage: deploy-dev
+  image: docker:latest
+  # timeout: 2h 
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    # url: http://$IP_VM:$PORT_DEV_MONGO
+    on_stop: stop-dev-mongo
+  script:
+    - pwd
+    - docker version
+    - docker ps
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    # - docker-compose config 
+    - echo "Démarrage des services avec docker-compose..."
+    - docker-compose -f docker-compose.mongo.yml up -d
+    # - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
+
+deploy-dev-app:
+  stage: deploy-dev
+  image: docker:latest
+  needs:
+    - deploy-dev-mongo
+  when: manual
+  # timeout: 2h 
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    url: http://$IP_VM:$PORT_DEV_APP
+    on_stop: stop-dev-app
+  script:
+    - pwd
+    - docker version
+    - docker ps
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    # - docker-compose config 
+    - echo "Démarrage des services avec docker-compose..."
+    - docker-compose -f docker-compose.app.yml up -d
+    # - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
+
+deploy-dev-app_admin:
+  stage: deploy-dev
+  image: docker:latest
+  needs:
+    - deploy-dev-mongo
+  when: manual
+  # timeout: 2h 
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    url: |
+      http://$IP_VM:$PORT_DEV_APP_ADMIN
+      http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
+    on_stop: stop-dev-app_admin
+  script:
+    - pwd
+    - docker version
+    - docker ps
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    # - docker-compose config 
+    - echo "Démarrage des services avec docker-compose..."
+    - docker-compose -f docker-compose.app_admin.yml up -d
+    # - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
+
+deploy-dev-app_dash:
+  stage: deploy-dev
+  image: docker:latest
+  needs:
+    - deploy-dev-mongo
+  when: manual
+  # timeout: 2h 
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    url: http://$IP_VM:$PORT_DEV_APP_DASH
+    on_stop: stop-dev-app_dash
+  script:
+    - pwd
+    - docker version
+    - docker ps
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    # - docker-compose config 
+    - echo "Démarrage des services avec docker-compose..."
+    - docker-compose -f docker-compose.app_dash.yml up -d
+    # - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
+
+deploy-dev-app_form:
+  stage: deploy-dev
+  image: docker:latest
+  needs:
+    - deploy-dev-mongo
+  when: manual
+  # timeout: 2h 
+  extends: 
+    - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: dev
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    url: http://$IP_VM:$PORT_DEV_APP_FORM
+    on_stop: stop-dev-app_form
+  script:
+    - pwd
+    - docker version
+    - docker ps
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    # - docker-compose config 
+    - echo "Démarrage des services avec docker-compose..."
+    - docker-compose -f docker-compose.app_form.yml up -d
+    # - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
+
+# deploy-prod:
+#   stage: deploy-prod
+#   # timeout: 2h 
+#   extends: 
+#     - .do_dind
+#     - .do_strategy
+#   variables:
+#     NAMESPACE: prod
+#   environment:
+#     name: $NAMESPACE-$CI_BUILD_REF_NAME
+#     url: |
+#       http://$IP_VM:$PORT_PROD_APP
+#       http://$IP_VM:$PORT_PROD_APP_FORM
+#       http://$IP_VM:$PORT_PROD_APP_ADMIN
+#       http://$IP_VM:$PORT_PROD_APP_ADMIN_JUPYTER
+#       http://$IP_VM:$PORT_PROD_APP_DASH
+#   when: manual
+#   only:
+#     - main
+#   script:
+#     - ssh ...

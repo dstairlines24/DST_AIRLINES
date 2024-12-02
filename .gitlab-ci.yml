@@ -323,6 +323,8 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
       http://$IP_VM:$PORT_DEV_APP_DASH
     on_stop: stop-dev
+  # ports:
+  #   - "5002:5000"  # Le port 5002 de l'hôte Docker sera mappé au port 5000 du conteneur
   script:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
