@@ -17,3 +17,9 @@ services:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
       - API_KEY=${API_KEY}
     command: python app.py
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    external: true

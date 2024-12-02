@@ -22,3 +22,9 @@ services:
       - CLIENT_ID_LH=${CLIENT_ID_LH}
       - CLIENT_SECRET_LH=${CLIENT_SECRET_LH}
     command: python app.py
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    external: true

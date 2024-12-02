@@ -9,8 +9,8 @@ services:
       # MONGO_LISTEN_IP: 127.0.0.1  # Limiter MongoDB pour qu'il écoute uniquement sur localhost
     volumes:
       - ./data:/data/db
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
     networks:
       - shared_net
 

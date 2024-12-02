@@ -309,7 +309,8 @@ stop-dev-mongo:
     action: stop
   script:
     - echo "Stopping app environment..."
-    - docker-compose -f docker-compose.mongo.yml down
+    # - docker-compose -f docker-compose.mongo.yml down --volumes
+    - docker stop dstair_mongodb
 
 deploy-dev-mongo:
   stage: deploy-dev
@@ -362,7 +363,8 @@ stop-dev-app:
     action: stop
   script:
     - echo "Stopping app environment..."
-    - docker-compose -f docker-compose.app.yml down
+    # - docker-compose -f docker-compose.app.yml down
+    - docker stop dstair_flask_app
 
 deploy-dev-app:
   stage: deploy-dev
@@ -418,7 +420,8 @@ stop-dev-app_admin:
     action: stop
   script:
     - echo "Stopping app environment..."
-    - docker-compose -f docker-compose.app_admin.yml down
+    # - docker-compose -f docker-compose.app_admin.yml down
+    - docker stop dstair_app_admin
     
 deploy-dev-app_admin:
   stage: deploy-dev
@@ -476,7 +479,8 @@ stop-dev-app_dash:
     action: stop
   script:
     - echo "Stopping app environment..."
-    - docker-compose -f docker-compose.app_dash.yml down
+    # - docker-compose -f docker-compose.app_dash.yml down
+    - docker stop dstair_app_dash
     
 deploy-dev-app_dash:
   stage: deploy-dev
@@ -532,7 +536,8 @@ stop-dev-app_form:
     action: stop
   script:
     - echo "Stopping app environment..."
-    - docker-compose -f docker-compose.app_form.yml down
+    # - docker-compose -f docker-compose.app_form.yml down
+    - docker stop dstair_flask_app_form
 
 deploy-dev-app_form:
   stage: deploy-dev
