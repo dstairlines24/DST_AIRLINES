@@ -233,27 +233,27 @@ build-app_form:
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_FORM_IMAGE:latest
 
-# stop-dev:
-#   stage: deploy-dev
-#   image: docker:latest
-#   tags:
-#     - deploy-volume
-#   extends: 
-#     - .do_dind
-#     - .do_strategy
-#   # services:
-#   #   - name: docker:dind
-#   #     privileged: true
-#   variables:
-#     NAMESPACE: dev
-#   when: manual
-#   # Don't stop the "review" for master branch or tags,
-#   # it is only for branches (so PRs (most of the time))
-#   environment:
-#     name: $NAMESPACE-$CI_BUILD_REF_NAME
-#     action: stop
-#   script:
-#     - docker-compose down
+stop-dev:
+  stage: deploy-dev
+  image: docker:latest
+  tags:
+    - deploy-volume
+  extends: 
+    - .do_dind
+    - .do_strategy
+  # services:
+  #   - name: docker:dind
+  #     privileged: true
+  variables:
+    NAMESPACE: dev
+  when: manual
+  # Don't stop the "review" for master branch or tags,
+  # it is only for branches (so PRs (most of the time))
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    action: stop
+  script:
+    - docker-compose down
 
 deploy-dev:
   stage: deploy-dev
@@ -284,13 +284,13 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN
       http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
       http://$IP_VM:$PORT_DEV_APP_DASH
-    # on_stop: stop-dev
+    on_stop: stop-dev
   script:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
     - pwd
-    - docker version
-    - docker ps
+    # - docker version
+    # - docker ps
     - echo "Checking DNS configuration"
     - cat /etc/resolv.conf
     - echo "Listing hosts"
