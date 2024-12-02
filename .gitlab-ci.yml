@@ -84,7 +84,7 @@ test-app:
   stage: test
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app/*
         - data_test/*
         - model/*
@@ -119,32 +119,73 @@ test-app_admin:
   stage: test
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app_admin/*
         - data_test/*
         - model/*
         - functions/*
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
   extends: .do_strategy
   script:
+    - cp -r data_test app_admin/data_test
+    - cp -r model app_admin/model
+    - cp -r functions app_admin/functions
     - cd app_admin/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
+    - pip install --upgrade pip
+    - apt-get update
     - pip install -r requirements.txt
+    - pip install pytest
+    - pip install --upgrade pyOpenSSL
+    - python3 ../init_db.py
+    # - python3 -m pytest tests/
 
 test-app_form:
   stage: test
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app_form/*
         - data_test/*
         - functions/*
+  tags:
+    - test-mongo
+  services:
+    - name: mongo:4.4
+      alias: mongodb
+  variables:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: root
+    MONGO_URI: mongodb://root:root@mongodb:27017/app_data?authSource=admin
+    FLASK_ADMIN_LOGIN: admin
+    FLASK_ADMIN_PASSWORD: admin
+    FLASK_USER_LOGIN: dstairlines
+    FLASK_USER_PASSWORD: dstairlines
+    API_KEY: api_key_dstairlines
   extends: .do_strategy
   script:
+    - cp -r data_test app_form/data_test
+    - cp -r functions app_form/functions
     - cd app_form/
-    - sudo pip install --upgrade pip
-    - sudo apt-get update
+    - pip install --upgrade pip
+    - apt-get update
     - pip install -r requirements.txt
+    - pip install pytest
+    - pip install --upgrade pyOpenSSL
+    - python3 ../init_db.py
+    # - python3 -m pytest tests/
 
 .do_dind:
   services:
@@ -166,7 +207,7 @@ build-app:
   image: docker:latest
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app/*
   extends: 
     - .do_dind
@@ -184,7 +225,7 @@ build-app_admin:
   image: docker:latest
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app_admin/*
   extends: 
     - .do_dind
@@ -202,7 +243,7 @@ build-app_dash:
   image: docker:latest
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app_dash/*
   extends: 
     - .do_dind
@@ -220,7 +261,7 @@ build-app_form:
   image: docker:latest
   rules:
     - changes:
-        # - .gitlab-ci.yml
+        - .gitlab-ci.yml
         - app_form/*
   extends: 
     - .do_dind
@@ -236,14 +277,9 @@ build-app_form:
 stop-dev:
   stage: deploy-dev
   image: docker:latest
-  tags:
-    - deploy-volume
   extends: 
     - .do_dind
     - .do_strategy
-  # services:
-  #   - name: docker:dind
-  #     privileged: true
   variables:
     NAMESPACE: dev
   when: manual
@@ -307,16 +343,11 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy-prod
-  image: docker:latest
   tags:
     - deploy-volume
   # timeout: 2h 
   extends: 
-    - .do_dind
     - .do_strategy
-  # services:
-  #   - name: docker:dind
-  #     privileged: true
   environment:
     name: prod-$CI_BUILD_REF_NAME
     url: |
@@ -329,14 +360,4 @@ deploy-prod:
   only:
     - main
   script:
-    - ls -R
-    - pwd
-    - echo "Vérification de docker-compose"
-    - docker-compose --version
-    - echo "Démarrage des services avec docker-compose"
-    - docker-compose up
-    - echo "Affichage des logs de docker-compose"
-    - docker-compose logs
-    - echo "Liste des conteneurs Docker"
-    - docker info
-    - docker ps
+    - ssh ...
