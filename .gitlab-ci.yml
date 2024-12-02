@@ -191,7 +191,6 @@ test-app_form:
 .do_dind:
   services:
     - docker:dind
-    
 
 .do_docker_logging:
   before_script:
