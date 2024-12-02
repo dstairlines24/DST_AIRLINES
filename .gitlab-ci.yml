@@ -95,7 +95,7 @@ test-app:
     - pip install --cache-dir=.cache/pip pytest
     - pip install --cache-dir=.cache/pip --upgrade pyOpenSSL
     - python3 ../init_db.py
-    # - python3 -m pytest tests/
+    - python3 -m pytest tests/
 
 test-app_admin:
   stage: test
@@ -585,20 +585,11 @@ deploy-dev-app_form:
 #   stage: deploy-prod
 #   # timeout: 2h 
 #   extends: 
-#     - .do_dind
 #     - .do_strategy
-#   variables:
-#     NAMESPACE: prod
-#   environment:
-#     name: $NAMESPACE-$CI_BUILD_REF_NAME
-#     url: |
-#       http://$IP_VM:$PORT_PROD_APP
-#       http://$IP_VM:$PORT_PROD_APP_FORM
-#       http://$IP_VM:$PORT_PROD_APP_ADMIN
-#       http://$IP_VM:$PORT_PROD_APP_ADMIN_JUPYTER
-#       http://$IP_VM:$PORT_PROD_APP_DASH
 #   when: manual
 #   only:
 #     - main
 #   script:
 #     - ssh ...
+#     - ssh user@production-server 'bash -s' < ./deploy-prod.sh
+#     - ssh user@dev.myapp.com "docker pull $DOCKER_IMAGE:$CI_COMMIT_SHA && docker run -d --rm --name $APP_NAME $DOCKER_IMAGE:$CI_COMMIT_SHA"
