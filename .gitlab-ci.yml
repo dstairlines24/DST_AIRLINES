@@ -264,9 +264,10 @@ deploy-dev:
   extends: 
     - .do_dind
     - .do_strategy
-  # services:
-  #   - name: docker:dind
-  #     privileged: true
+  services:
+    - name: docker:dind
+      privileged: true
+      # alias: docker
   variables:
     NAMESPACE: dev
   # services:
