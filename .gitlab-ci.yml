@@ -257,24 +257,22 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
-  image: docker:24.0.5
+  image: docker:latest
+  # image: docker:24.0.5
   tags:
     - deploy-volume
   # timeout: 2h 
   extends: 
-    # - .do_dind
+    - .do_dind
     - .do_strategy
-  services:
-    - name: docker:dind
-      privileged: true
-      # alias: docker
-  variables:
-    NAMESPACE: dev
   # services:
   #   - name: docker:dind
-  #     command: ["--host=tcp://0.0.0.0:2375"]
+  #     privileged: true
+  #     alias: docker
   variables:
-    DOCKER_HOST: tcp://docker:2375 
+    NAMESPACE: dev
+  # variables:
+  #   DOCKER_HOST: tcp://docker:2375 
   #   DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
