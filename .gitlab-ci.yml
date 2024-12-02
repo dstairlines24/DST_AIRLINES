@@ -273,10 +273,9 @@ deploy-dev:
   #     alias: docker
   variables:
     NAMESPACE: dev
-    DOCKER_HOST: unix:///var/run/docker.sock
-  # variables:
-  #   DOCKER_HOST: tcp://docker:2375 
-  #   DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375
+    # DOCKER_HOST: unix:///var/run/docker.sock
+    # DOCKER_TLS_CERTDIR: ""
   environment:
     name: $NAMESPACE-$CI_BUILD_REF_NAME
     url: |
