@@ -266,8 +266,8 @@ deploy-dev:
     - .do_strategy
   services:
     - name: docker:dind
-      alias: docker
-      # privileged: true
+      privileged: true
+      # alias: docker
   variables:
     NAMESPACE: dev
   # services:
