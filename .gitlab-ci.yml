@@ -233,27 +233,27 @@ build-app_form:
     - docker push $APP_FORM_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $APP_FORM_IMAGE:latest
 
-stop-dev:
-  stage: deploy-dev
-  image: docker:latest
-  tags:
-    - deploy-volume
-  extends: 
-    - .do_dind
-    - .do_strategy
-  # services:
-  #   - name: docker:dind
-  #     privileged: true
-  variables:
-    NAMESPACE: dev
-  when: manual
-  # Don't stop the "review" for master branch or tags,
-  # it is only for branches (so PRs (most of the time))
-  environment:
-    name: $NAMESPACE-$CI_BUILD_REF_NAME
-    action: stop
-  script:
-    - docker-compose down
+# stop-dev:
+#   stage: deploy-dev
+#   image: docker:latest
+#   tags:
+#     - deploy-volume
+#   extends: 
+#     - .do_dind
+#     - .do_strategy
+#   # services:
+#   #   - name: docker:dind
+#   #     privileged: true
+#   variables:
+#     NAMESPACE: dev
+#   when: manual
+#   # Don't stop the "review" for master branch or tags,
+#   # it is only for branches (so PRs (most of the time))
+#   environment:
+#     name: $NAMESPACE-$CI_BUILD_REF_NAME
+#     action: stop
+#   script:
+#     - docker-compose down
 
 deploy-dev:
   stage: deploy-dev
