@@ -257,7 +257,7 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
-  image: docker:latest
+  image: docker:24.0.5
   tags:
     - deploy-volume
   # timeout: 2h 
