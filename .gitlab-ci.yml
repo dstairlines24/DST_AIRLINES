@@ -284,7 +284,7 @@ deploy-dev:
       http://$IP_VM:$PORT_DEV_APP_ADMIN
       http://$IP_VM:$PORT_DEV_APP_ADMIN_JUPYTER
       http://$IP_VM:$PORT_DEV_APP_DASH
-    on_stop: stop-dev
+    # on_stop: stop-dev
   script:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
