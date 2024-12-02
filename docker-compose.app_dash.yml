@@ -3,8 +3,6 @@ services:
   app_dash:
     image: guillaumegossmann/dst_airlines_app_dash:latest
     container_name: dstair_app_dash
-    depends_on:
-      - mongodb
     ports:
       - "8051:8051"  # Port pour Dash
     volumes:

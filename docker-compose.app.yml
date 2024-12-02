@@ -5,8 +5,6 @@ services:
     container_name: dstair_flask_app
     ports:
       - 5002:5002
-    depends_on:
-      - mongodb
     volumes:
       - ./model:/app/model  # Volume partagé avec l'hôte
     environment:

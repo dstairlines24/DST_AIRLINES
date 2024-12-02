@@ -3,8 +3,6 @@ services:
   flask_app_form:
     image: guillaumegossmann/dst_airlines_app_form:latest
     container_name: dstair_flask_app_form
-    depends_on:
-      - mongodb
     ports:
       - 5001:5001
     volumes:
