@@ -257,13 +257,10 @@ stop-dev:
 
 deploy-dev:
   stage: deploy-dev
-  # image: docker:latest
-  image: docker:24.0.5
-  tags:
-    - deploy-volume
+  image: docker:latest
   # timeout: 2h 
   extends: 
-    # - .do_dind
+    - .do_dind
     - .do_strategy
   # services:
   #   - docker:24.0.5-dind
@@ -289,8 +286,8 @@ deploy-dev:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
     - pwd
-    # - docker version
-    # - docker ps
+    - docker version
+    - docker ps
     - echo "Checking DNS configuration"
     - cat /etc/resolv.conf
     - echo "Listing hosts"
