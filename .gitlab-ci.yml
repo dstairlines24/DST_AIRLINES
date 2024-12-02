@@ -262,7 +262,7 @@ deploy-dev:
     - deploy-volume
   # timeout: 2h 
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   services:
     - name: docker:dind
@@ -289,7 +289,7 @@ deploy-dev:
     # - sudo chmod -R 755 data
     # - sudo chown -R gitlab-runner:gitlab-runner .
     - pwd
-    - ip addr
+    - docker ps
     - echo "Checking DNS configuration"
     - cat /etc/resolv.conf
     - echo "Listing hosts"
