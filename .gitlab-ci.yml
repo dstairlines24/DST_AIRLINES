@@ -310,7 +310,7 @@ stop-dev-mongo:
   script:
     - echo "Stopping app environment..."
     # - docker-compose -f docker-compose.mongo.yml down --volumes
-    - docker stop dstair_mongodb
+    - docker ps -q -f name=dstair_mongodb && docker stop dstair_mongodb || echo "Le conteneur dstair_mongodb n'existe pas."
 
 deploy-dev-mongo:
   stage: deploy-dev
@@ -365,7 +365,7 @@ stop-dev-app:
   script:
     - echo "Stopping app environment..."
     # - docker-compose -f docker-compose.app.yml down
-    - docker stop dstair_flask_app
+    - docker ps -q -f name=dstair_flask_app && docker stop dstair_flask_app || echo "Le conteneur dstair_flask_app n'existe pas."
 
 deploy-dev-app:
   stage: deploy-dev
@@ -423,7 +423,7 @@ stop-dev-app_admin:
   script:
     - echo "Stopping app environment..."
     # - docker-compose -f docker-compose.app_admin.yml down
-    - docker stop dstair_app_admin
+    - docker ps -q -f name=dstair_app_admin && docker stop dstair_app_admin || echo "Le conteneur dstair_app_admin n'existe pas."
     
 deploy-dev-app_admin:
   stage: deploy-dev
@@ -483,7 +483,7 @@ stop-dev-app_dash:
   script:
     - echo "Stopping app environment..."
     # - docker-compose -f docker-compose.app_dash.yml down
-    - docker stop dstair_app_dash
+    - docker ps -q -f name=dstair_app_dash && docker stop dstair_app_dash || echo "Le conteneur dstair_app_dash n'existe pas."
     
 deploy-dev-app_dash:
   stage: deploy-dev
@@ -541,7 +541,7 @@ stop-dev-app_form:
   script:
     - echo "Stopping app environment..."
     # - docker-compose -f docker-compose.app_form.yml down
-    - docker stop dstair_flask_app_form
+    - docker ps -q -f name=dstair_flask_app_form && docker stop dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'existe pas."
 
 deploy-dev-app_form:
   stage: deploy-dev
