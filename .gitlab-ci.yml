@@ -375,7 +375,7 @@ deploy-dev-app:
   when: manual
   # timeout: 2h 
   extends: 
-    - .do_dind
+    - .do_dind # A SUPPRIMER?
     - .do_strategy
   variables:
     NAMESPACE: dev
