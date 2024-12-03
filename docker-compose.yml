@@ -8,8 +8,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - ./data:/data/db
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
+    networks:
+      - dstair_network
       
   flask_app:
     image: guillaumegossmann/dst_airlines_app:latest
@@ -30,6 +32,8 @@ services:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
       - API_KEY=${API_KEY}
     command: python app.py
+    networks:
+      - dstair_network
 
   flask_app_form:
     image: guillaumegossmann/dst_airlines_app_form:latest
@@ -55,6 +59,8 @@ services:
       - CLIENT_ID_LH=${CLIENT_ID_LH}
       - CLIENT_SECRET_LH=${CLIENT_SECRET_LH}
     command: python app.py
+    networks:
+      - dstair_network
 
   app_admin:
     image: guillaumegossmann/dst_airlines_app_admin:latest
@@ -84,6 +90,8 @@ services:
       - CLIENT_ID_LH=${CLIENT_ID_LH}
       - CLIENT_SECRET_LH=${CLIENT_SECRET_LH}
     command: ./start.sh
+    networks:
+      - dstair_network
     
   app_dash:
     image: guillaumegossmann/dst_airlines_app_dash:latest
@@ -103,3 +111,9 @@ services:
       - FLASK_USER_PASSWORD=${FLASK_USER_PASSWORD}
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
     command: python app.py
+    networks:
+      - dstair_network
+
+networks:
+  dstair_network:
+    external: true

@@ -220,13 +220,13 @@ test-app_dash:
 
 build-app:
   stage: build
-  image: docker:latest
+  # image: docker:latest
   rules:
     - changes:
         - .gitlab-ci.yml
         - app/*
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
@@ -238,13 +238,13 @@ build-app:
 
 build-app_admin:
   stage: build
-  image: docker:latest
+  # image: docker:latest
   rules:
     - changes:
         - .gitlab-ci.yml
         - app_admin/*
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
@@ -256,13 +256,13 @@ build-app_admin:
 
 build-app_dash:
   stage: build
-  image: docker:latest
+  # image: docker:latest
   rules:
     - changes:
         - .gitlab-ci.yml
         - app_dash/*
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
@@ -274,13 +274,13 @@ build-app_dash:
 
 build-app_form:
   stage: build
-  image: docker:latest
+  # image: docker:latest
   rules:
     - changes:
         - .gitlab-ci.yml
         - app_form/*
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
     - .do_docker_logging
   script:
