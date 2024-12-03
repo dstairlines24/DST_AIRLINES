@@ -32,4 +32,3 @@ services:
 networks:
   shared_net:
     external: true
-    attachable: true
