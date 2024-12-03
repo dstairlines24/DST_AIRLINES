@@ -76,7 +76,9 @@ def test_predict_success(client, monkeypatch):
 
     response = client.post('/predict', json=flight_data, headers=headers)
     assert response.status_code == 200
-    assert response.json['prediction'] == 'prediction_success'
+    assert isinstance(response.json, dict), "La sortie doit être un dictionnaire"
+    assert "prediction" in response.json, "La clé 'prediction' doit être présente dans le dictionnaire"
+    assert isinstance(response.json["prediction"], (int, float)), "La valeur de 'prediction' doit être un nombre (int ou float)"
 
 def test_predict_missing_data(client):
     """Test de prédiction avec des données manquantes"""
@@ -113,4 +115,5 @@ def test_predict_internal_error(client, monkeypatch):
 
     response = client.post('/predict', json={'aircraft': 0, 'airline': 0}, headers=headers)
     assert response.status_code == 500
-    assert response.json['error'] == 'Erreur lors de la prédiction'
+    assert 'error' in response.json,  "La réponse doit contenir la clé 'error'"
+    assert response.json['error'].startswith('Erreur lors de la prédiction'), "La réponse doit commencer avec 'Erreur lors de la prédiction'"

@@ -226,7 +226,6 @@ def predict():
         # Appel de la fonction de prédiction directe
         prediction = predict_from_data(flight_data)
         print(f"prediction : {prediction}")
-        print(f"Prediction obtenue : {prediction}")  # Débogage
         return jsonify({"prediction": prediction}), 200
 
     except Exception as e:
