@@ -398,7 +398,7 @@ deploy-dev-app:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker stop dstair_flask_app # Arrête le container si existant
-    - docker-compose -f docker-compose.app.yml up -d
+    - docker-compose -f docker-compose.app.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -458,7 +458,7 @@ deploy-dev-app_admin:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker stop dstair_app_admin # Arrête le container si existant
-    - docker-compose -f docker-compose.app_admin.yml up -d
+    - docker-compose -f docker-compose.app_admin.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -516,7 +516,7 @@ deploy-dev-app_dash:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker stop dstair_app_dash # Arrête le container si existant
-    - docker-compose -f docker-compose.app_dash.yml up -d
+    - docker-compose -f docker-compose.app_dash.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -574,7 +574,7 @@ deploy-dev-app_form:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker stop dstair_flask_app_form # Arrête le container si existant
-    - docker-compose -f docker-compose.app_form.yml up -d
+    - docker-compose -f docker-compose.app_form.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
