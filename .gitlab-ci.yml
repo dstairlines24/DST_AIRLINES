@@ -398,7 +398,7 @@ deploy-dev-app:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_flask_app && docker stop dstair_flask_app || echo "Le conteneur dstair_flask_app n'existe pas."
-    - docker-compose -f docker-compose.app.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
+    - docker-compose -f docker-compose.app.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -458,7 +458,7 @@ deploy-dev-app_admin:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_app_admin && docker stop dstair_app_admin || echo "Le conteneur dstair_app_admin n'existe pas."
-    - docker-compose -f docker-compose.app_admin.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
+    - docker-compose -f docker-compose.app_admin.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -516,7 +516,7 @@ deploy-dev-app_dash:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_app_dash && docker stop dstair_app_dash || echo "Le conteneur dstair_app_dash n'existe pas."
-    - docker-compose -f docker-compose.app_dash.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
+    - docker-compose -f docker-compose.app_dash.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
@@ -574,7 +574,7 @@ deploy-dev-app_form:
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_flask_app_form && docker stop dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'existe pas."
-    - docker-compose -f docker-compose.app_form.yml up -d --remove-orphans #--remove-orphans: nettoyer les conteneurs orphelins
+    - docker-compose -f docker-compose.app_form.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
     - docker-compose logs
