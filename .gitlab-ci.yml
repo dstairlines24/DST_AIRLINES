@@ -339,7 +339,9 @@ deploy-dev-mongo:
     - echo "Creating network shared_net if it doesn't exist..."
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
-    - docker ps -q -f name=dstair_mongodb && docker stop dstair_mongodb || echo "Le conteneur dstair_mongodb n'existe pas."
+    - docker ps -q -f name=dstair_mongodb && docker stop dstair_mongodb || echo "Le conteneur dstair_mongodb n'est pas en fonctionnement."
+    - docker ps -qa -f name=dstair_mongodb && docker rm dstair_mongodb || echo "Le conteneur dstair_mongodb n'existe pas."
+    - docker rm dstair_mongodb 2>/dev/null || echo "Le conteneur dstair_mongodb n'existe pas."
     - docker-compose -f docker-compose.mongo.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
@@ -397,7 +399,8 @@ deploy-dev-app:
     - echo "Creating network shared_net if it doesn't exist..."
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
-    - docker ps -q -f name=dstair_flask_app && docker stop dstair_flask_app || echo "Le conteneur dstair_flask_app n'existe pas."
+    - docker ps -q -f name=dstair_flask_app && docker stop dstair_flask_app || echo "Le conteneur dstair_flask_app n'est pas en fonctionnement."
+    - docker ps -qa -f name=dstair_flask_app && docker rm dstair_flask_app || echo "Le conteneur dstair_flask_app n'existe pas."
     - docker-compose -f docker-compose.app.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
@@ -457,7 +460,8 @@ deploy-dev-app_admin:
     - echo "Creating network shared_net if it doesn't exist..."
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
-    - docker ps -q -f name=dstair_app_admin && docker stop dstair_app_admin || echo "Le conteneur dstair_app_admin n'existe pas."
+    - docker ps -q -f name=dstair_app_admin && docker stop dstair_app_admin || echo "Le conteneur dstair_app_admin n'est pas en fonctionnement."
+    - docker ps -qa -f name=dstair_app_admin && docker rm dstair_app_admin || echo "Le conteneur dstair_app_admin n'existe pas."
     - docker-compose -f docker-compose.app_admin.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
@@ -515,7 +519,8 @@ deploy-dev-app_dash:
     - echo "Creating network shared_net if it doesn't exist..."
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
-    - docker ps -q -f name=dstair_app_dash && docker stop dstair_app_dash || echo "Le conteneur dstair_app_dash n'existe pas."
+    - docker ps -q -f name=dstair_app_dash && docker stop dstair_app_dash || echo "Le conteneur dstair_app_dash n'est pas en fonctionnement."
+    - docker ps -qa -f name=dstair_app_dash && docker rm dstair_app_dash || echo "Le conteneur dstair_app_dash n'existe pas."
     - docker-compose -f docker-compose.app_dash.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
@@ -573,7 +578,8 @@ deploy-dev-app_form:
     - echo "Creating network shared_net if it doesn't exist..."
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
-    - docker ps -q -f name=dstair_flask_app_form && docker stop dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'existe pas."
+    - docker ps -q -f name=dstair_flask_app_form && docker stop dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'est pas en fonctionnement."
+    - docker ps -qa -f name=dstair_flask_app_form && docker rm dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'existe pas."
     - docker-compose -f docker-compose.app_form.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"

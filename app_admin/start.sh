@@ -9,5 +9,6 @@ jupyter notebook --no-browser --allow-root --NotebookApp.token='' &
 # Lancer les app
 # python app_flask.py &
 # python app_dash.py
+./cronjob.sh &
 
 python app.py
