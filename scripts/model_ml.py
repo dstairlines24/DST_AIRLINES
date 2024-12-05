@@ -66,14 +66,14 @@ X_test = preprocessing_pipeline.transform(X_test)
 
 # Définition des hyperparamètres pour XGBoost
 xgb_params = {
-    'model__n_estimators': np.arange(100, 301, 50),  # Affiné autour des valeurs testées
-    'model__learning_rate': [0.005, 0.01, 0.05],  # Valeurs faibles pour un apprentissage plus progressif
-    'model__max_depth': [4, 6, 8],  # Restriction de la profondeur pour éviter la complexité excessive
-    'model__subsample': [0.7, 0.8, 0.9],
-    'model__colsample_bytree': [0.7, 0.8, 0.9],
-    'model__gamma': [0, 0.1, 0.2],  # Plus de valeurs fines autour des valeurs faibles
-    'model__alpha': [0, 0.1, 0.5],  # Régularisation L1
-    'model__lambda': [1, 1.5, 2]  # Régularisation L2
+    'model__n_estimators': np.arange(300, 601, 50),  # Affiné autour des valeurs testées
+    'model__learning_rate': [0.01, 0.02, 0.03, 0.05],  # Valeurs faibles pour un apprentissage plus progressif
+    'model__max_depth': [6, 8, 10],  # Restriction de la profondeur pour éviter la complexité excessive
+    'model__subsample': [0.6, 0.7, 0.8, 0.9],
+    'model__colsample_bytree': [0.7, 0.8, 0.9, 1.0],
+    'model__gamma': [0, 0.1, 0.2, 0.3],  # Plus de valeurs fines autour des valeurs faibles
+    'model__alpha': [0, 0.1, 0.5, 1],  # Régularisation L1
+    'model__lambda': [1, 1.5, 2, 3]  # Régularisation L2
 }
 
 # Pipeline avec XGBoost
