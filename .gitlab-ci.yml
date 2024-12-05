@@ -314,10 +314,10 @@ stop-dev-mongo:
 
 deploy-dev-mongo:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   # timeout: 2h 
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
