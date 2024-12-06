@@ -3,23 +3,19 @@ global:
 
 scrape_configs:
   - job_name: 'prometheus'
-    scrape_interval: 15s
     static_configs:
       - targets: ['localhost:9090']
 
   - job_name: "cadvisor"
     # Remplacez la valeur globale par défaut et récupérez les cibles de cette tâche toutes les 5 secondes.
-    scrape_interval: 15s
     static_configs:
       - targets: ["cadvisor:8080"]
 
   - job_name: 'mongodb'
-    scrape_interval: 15s
     static_configs:
       - targets: ['dstair_mongodb_exporter:9216']
 
   - job_name: 'node_exporter'
-    scrape_interval: 15s
     static_configs:
       # - targets: ['host.docker.internal:9100'] # host.docker.internal car le node explorer sera installé sur notre VM de prod
       - targets: ['localhost:9100']

@@ -115,8 +115,8 @@ services:
       - dstair_network
 
   mongodb_exporter:
-    # image: bitnami/mongodb-exporter:latest
-    image: eses/mongodb_exporter:latest
+    image: bitnami/mongodb-exporter:latest
+    # image: eses/mongodb_exporter:latest
     container_name: dstair_mongodb_exporter
     environment:
       MONGODB_URI: mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017
@@ -124,7 +124,6 @@ services:
       - 9216:9216
     depends_on:
       - mongodb
-    command: mongodb_exporter -mongodb.uri mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@localhost:27017
     networks:
       - dstair_network
     restart: always
