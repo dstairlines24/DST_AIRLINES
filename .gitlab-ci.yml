@@ -623,8 +623,9 @@ deploy-prod:
     - echo "Creating network shared_net if it doesn't exist..."
     - docker network ls | grep -q shared_net || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
-    - docker rm $(docker ps -q) # Supprimer tous les containers en marche
-    - docker container prune -f # Supprimer tous les containers arrêtés
+    - docker stop $(docker ps -q) # Arrêter tous les containers en marche
+    - docker rm $(docker ps -a -q) # Supprimer tous les containers arrêtés
+    # - docker container prune -f # Supprimer tous les containers arrêtés
     - docker-compose -f docker-compose.yml up -d
     # - docker-compose up
     - echo "Affichage des logs de docker-compose"
