@@ -1,0 +1,184 @@
+{
+    "dashboard": {
+      "id": null,
+      "uid": null,
+      "title": "MongoDB Exporter Dashboard",
+      "timezone": "browser",
+      "schemaVersion": 37,
+      "version": 1,
+      "refresh": "5s",
+      "panels": [
+        {
+          "type": "gauge",
+          "title": "MongoDB Up",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 6,
+            "h": 4
+          },
+          "targets": [
+            {
+              "expr": "mongodb_up",
+              "legendFormat": "MongoDB Status"
+            }
+          ],
+          "options": {
+            "reduceOptions": {
+              "calcs": ["lastNotNull"],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "type": "time-series",
+          "title": "Memory Allocation (Heap and Total)",
+          "gridPos": {
+            "x": 6,
+            "y": 0,
+            "w": 12,
+            "h": 6
+          },
+          "targets": [
+            {
+              "expr": "go_memstats_alloc_bytes",
+              "legendFormat": "Heap Allocated"
+            },
+            {
+              "expr": "go_memstats_sys_bytes",
+              "legendFormat": "Total Allocated"
+            }
+          ]
+        },
+        {
+          "type": "time-series",
+          "title": "Go Goroutines and Threads",
+          "gridPos": {
+            "x": 0,
+            "y": 4,
+            "w": 12,
+            "h": 6
+          },
+          "targets": [
+            {
+              "expr": "go_goroutines",
+              "legendFormat": "Goroutines"
+            },
+            {
+              "expr": "go_threads",
+              "legendFormat": "Threads"
+            }
+          ]
+        },
+        {
+          "type": "time-series",
+          "title": "Process CPU and Memory",
+          "gridPos": {
+            "x": 12,
+            "y": 4,
+            "w": 12,
+            "h": 6
+          },
+          "targets": [
+            {
+              "expr": "process_cpu_seconds_total",
+              "legendFormat": "CPU Time"
+            },
+            {
+              "expr": "process_resident_memory_bytes",
+              "legendFormat": "Resident Memory"
+            },
+            {
+              "expr": "process_virtual_memory_bytes",
+              "legendFormat": "Virtual Memory"
+            }
+          ]
+        },
+        {
+          "type": "time-series",
+          "title": "Garbage Collection Duration",
+          "gridPos": {
+            "x": 0,
+            "y": 10,
+            "w": 12,
+            "h": 6
+          },
+          "targets": [
+            {
+              "expr": "go_gc_duration_seconds",
+              "legendFormat": "GC Duration (seconds)"
+            }
+          ]
+        },
+        {
+          "type": "time-series",
+          "title": "Network Traffic",
+          "gridPos": {
+            "x": 12,
+            "y": 10,
+            "w": 12,
+            "h": 6
+          },
+          "targets": [
+            {
+              "expr": "process_network_receive_bytes_total",
+              "legendFormat": "Received Bytes"
+            },
+            {
+              "expr": "process_network_transmit_bytes_total",
+              "legendFormat": "Transmitted Bytes"
+            }
+          ]
+        }
+      ],
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-1h",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+        "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+      },
+      "schemaVersion": 37,
+      "version": 1
+    },
+    "overwrite": true
+  }
+  
