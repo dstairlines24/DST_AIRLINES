@@ -133,7 +133,7 @@ services:
     ports:
       - 9090:9090
     depends_on:
-      - mongodb_exporter
+      - dstair_mongodb_exporter
       # - cadvisor
     networks:
       - dstair_network
@@ -151,7 +151,7 @@ services:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
-      - prometheus
+      - dstair_prometheus
     networks:
       - dstair_network
     restart: always
@@ -168,8 +168,8 @@ services:
   #   networks:
   #     - dstair_network
   #   restart: always
-  #   deploy:
-  #     mode: global
+  #   # deploy:
+  #   #   mode: global
 
 volumes:
   grafana_data:
