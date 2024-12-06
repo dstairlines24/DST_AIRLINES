@@ -57,7 +57,7 @@ test-app:
   stage: test
   rules:
     - changes:
-        - .gitlab-ci.yml
+        # - .gitlab-ci.yml
         - app/*
         - data_test/*
         - model/*
@@ -99,7 +99,7 @@ test-app_admin:
   stage: test
   rules:
     - changes:
-        - .gitlab-ci.yml
+        # - .gitlab-ci.yml
         - app_admin/*
         - data_test/*
         - model/*
@@ -138,7 +138,7 @@ test-app_form:
   stage: test
   rules:
     - changes:
-        - .gitlab-ci.yml
+        # - .gitlab-ci.yml
         - app_form/*
         - data_test/*
         - functions/*
@@ -176,7 +176,7 @@ test-app_dash:
   stage: test
   rules:
     - changes:
-        - .gitlab-ci.yml
+        # - .gitlab-ci.yml
         - app_dash/*
         - data_test/*
         - model/*
