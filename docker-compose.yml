@@ -134,7 +134,7 @@ services:
       - 9090:9090
     depends_on:
       - mongodb_exporter
-      # - cadvisor
+      - cadvisor
     networks:
       - dstair_network
     restart: always
