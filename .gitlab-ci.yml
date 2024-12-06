@@ -335,7 +335,7 @@ deploy-dev-mongo:
     - docker-compose --version
     # - docker-compose config 
     - echo "Creating network shared_net if it doesn't exist..."
-    - docker network ls | grep -q shared_net || docker network create shared_net
+    - docker network ls --filter name=shared_net -q || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_mongodb && docker stop dstair_mongodb || echo "Le conteneur dstair_mongodb n'est pas en fonctionnement."
     - docker ps -qa -f name=dstair_mongodb && docker rm dstair_mongodb || echo "Le conteneur dstair_mongodb n'existe pas."
@@ -395,7 +395,7 @@ deploy-dev-app:
     - docker-compose --version
     # - docker-compose config 
     - echo "Creating network shared_net if it doesn't exist..."
-    - docker network ls | grep -q shared_net || docker network create shared_net
+    - docker network ls --filter name=shared_net -q || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_flask_app && docker stop dstair_flask_app || echo "Le conteneur dstair_flask_app n'est pas en fonctionnement."
     - docker ps -qa -f name=dstair_flask_app && docker rm dstair_flask_app || echo "Le conteneur dstair_flask_app n'existe pas."
@@ -456,7 +456,7 @@ deploy-dev-app_admin:
     - docker-compose --version
     # - docker-compose config 
     - echo "Creating network shared_net if it doesn't exist..."
-    - docker network ls | grep -q shared_net || docker network create shared_net
+    - docker network ls --filter name=shared_net -q || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_app_admin && docker stop dstair_app_admin || echo "Le conteneur dstair_app_admin n'est pas en fonctionnement."
     - docker ps -qa -f name=dstair_app_admin && docker rm dstair_app_admin || echo "Le conteneur dstair_app_admin n'existe pas."
@@ -515,7 +515,7 @@ deploy-dev-app_dash:
     - docker-compose --version
     # - docker-compose config 
     - echo "Creating network shared_net if it doesn't exist..."
-    - docker network ls | grep -q shared_net || docker network create shared_net
+    - docker network ls --filter name=shared_net -q || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_app_dash && docker stop dstair_app_dash || echo "Le conteneur dstair_app_dash n'est pas en fonctionnement."
     - docker ps -qa -f name=dstair_app_dash && docker rm dstair_app_dash || echo "Le conteneur dstair_app_dash n'existe pas."
@@ -574,7 +574,7 @@ deploy-dev-app_form:
     - docker-compose --version
     # - docker-compose config 
     - echo "Creating network shared_net if it doesn't exist..."
-    - docker network ls | grep -q shared_net || docker network create shared_net
+    - docker network ls --filter name=shared_net -q || docker network create shared_net
     - echo "Démarrage des services avec docker-compose..."
     - docker ps -q -f name=dstair_flask_app_form && docker stop dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'est pas en fonctionnement."
     - docker ps -qa -f name=dstair_flask_app_form && docker rm dstair_flask_app_form || echo "Le conteneur dstair_flask_app_form n'existe pas."
@@ -621,7 +621,7 @@ deploy-prod:
     - docker-compose --version
     # - docker-compose config 
     - echo "Creating network dstair_network if it doesn't exist..."
-    - docker network ls | grep -q dstair_network || docker network create dstair_network
+    - docker network ls --filter name=dstair_network -q || docker network create dstair_network
     - echo "Démarrage des services avec docker-compose..."
     - docker stop $(docker ps -q) # Arrêter tous les containers en marche
     - docker rm $(docker ps -a -q) # Supprimer tous les containers arrêtés
