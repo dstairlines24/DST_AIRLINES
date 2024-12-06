@@ -620,8 +620,8 @@ deploy-prod:
     - echo "Vérification de docker-compose"
     - docker-compose --version
     # - docker-compose config 
-    - echo "Creating network shared_net if it doesn't exist..."
-    - docker network ls | grep -q shared_net || docker network create shared_net
+    - echo "Creating network dstair_network if it doesn't exist..."
+    - docker network ls | grep -q dstair_network || docker network create dstair_network
     - echo "Démarrage des services avec docker-compose..."
     - docker stop $(docker ps -q) # Arrêter tous les containers en marche
     - docker rm $(docker ps -a -q) # Supprimer tous les containers arrêtés
