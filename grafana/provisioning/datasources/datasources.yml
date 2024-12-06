@@ -3,9 +3,9 @@
 apiVersion: 1
 
 # liste des sources de données qui doivent être supprimées de la base de données
-deleteDatasources:
-  - name: Prometheus
-    orgId: 1
+# deleteDatasources:
+#   - name: Prometheus
+#     orgId: 1
 
 # liste des sources de données à insérer/mettre à jour en fonction de ce qui est disponible dans la base de données
 datasources:
