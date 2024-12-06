@@ -120,7 +120,7 @@ services:
     environment:
       MONGODB_URI: mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017
     depends_on:
-      - dstair_mongodb
+      - mongodb
     networks:
       - dstair_network
     restart: always
@@ -133,7 +133,7 @@ services:
     ports:
       - 9090:9090
     depends_on:
-      - dstair_mongodb_exporter
+      - mongodb_exporter
       # - cadvisor
     networks:
       - dstair_network
@@ -151,7 +151,7 @@ services:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
-      - dstair_prometheus
+      - prometheus
     networks:
       - dstair_network
     restart: always
