@@ -146,7 +146,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana:/etc/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
     networks:
       - dstair_network
 
