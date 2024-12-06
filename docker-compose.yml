@@ -124,6 +124,7 @@ services:
       - 9216:9216
     depends_on:
       - mongodb
+    command: mongodb_exporter -mongodb.uri mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@localhost:27017
     networks:
       - dstair_network
     restart: always
