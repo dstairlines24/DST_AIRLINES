@@ -5,18 +5,16 @@ variables:
   APP_FORM_IMAGE: "guillaumegossmann/dst_airlines_app_form"
   APP_DASH_IMAGE: "guillaumegossmann/dst_airlines_app_dash"
   IP_VM: 127.0.0.1
-  # PORT_DEV_MONGO: 27017
   PORT_DEV_APP: 5002
   PORT_DEV_APP_FORM: 5001
   PORT_DEV_APP_ADMIN: 5000
   PORT_DEV_APP_ADMIN_JUPYTER: 8888
   PORT_DEV_APP_DASH: 8051
-  # PORT_PROD_MONGO: 17017
-  PORT_PROD_APP: 15002
-  PORT_PROD_APP_FORM: 15001
-  PORT_PROD_APP_ADMIN: 15000
-  PORT_PROD_APP_ADMIN_JUPYTER: 18888
-  PORT_PROD_APP_DASH: 18051
+  PORT_PROD_APP: 5002
+  PORT_PROD_APP_FORM: 5001
+  PORT_PROD_APP_ADMIN: 5000
+  PORT_PROD_APP_ADMIN_JUPYTER: 8888
+  PORT_PROD_APP_DASH: 8051
   # DOCKER_DRIVER: overlay2
   
 image:
@@ -297,9 +295,9 @@ build-app_form:
 # =================================== MONGO =====================================
 stop-dev-mongo:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -354,9 +352,9 @@ deploy-dev-mongo:
 
 stop-dev-app:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -371,13 +369,13 @@ stop-dev-app:
 
 deploy-dev-app:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   needs:
     - deploy-dev-mongo
   when: manual
   # timeout: 2h 
   extends: 
-    - .do_dind # A SUPPRIMER?
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -413,9 +411,9 @@ deploy-dev-app:
 
 stop-dev-app_admin:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -430,13 +428,13 @@ stop-dev-app_admin:
     
 deploy-dev-app_admin:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   needs:
     - deploy-dev-mongo
   when: manual
   # timeout: 2h 
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -474,9 +472,9 @@ deploy-dev-app_admin:
 
 stop-dev-app_dash:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -491,13 +489,13 @@ stop-dev-app_dash:
     
 deploy-dev-app_dash:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   needs:
     - deploy-dev-mongo
   when: manual
   # timeout: 2h 
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -533,9 +531,9 @@ deploy-dev-app_dash:
 
 stop-dev-app_form:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -550,13 +548,13 @@ stop-dev-app_form:
 
 deploy-dev-app_form:
   stage: deploy-dev
-  image: docker:latest
+  # image: docker:latest
   needs:
     - deploy-dev-mongo
   when: manual
   # timeout: 2h 
   extends: 
-    - .do_dind
+    # - .do_dind
     - .do_strategy
   variables:
     NAMESPACE: dev
@@ -591,6 +589,52 @@ deploy-dev-app_form:
 # =====================================================================================
 # ================================== PROD DEPLOYING ===================================
 # =====================================================================================
+
+
+deploy-prod:
+  stage: deploy-prod
+  # image: docker:latest
+  needs:
+    - deploy-dev-mongo
+  when: manual
+  # timeout: 2h 
+  extends: 
+    # - .do_dind
+    - .do_strategy
+  variables:
+    NAMESPACE: prod
+  environment:
+    name: $NAMESPACE-$CI_BUILD_REF_NAME
+    url: |
+      http://$IP_VM:$PORT_PROD_APP
+      http://$IP_VM:$PORT_PROD_APP_FORM
+      http://$IP_VM:$PORT_PROD_APP_ADMIN
+      http://$IP_VM:$PORT_PROD_APP_ADMIN_JUPYTER
+      http://$IP_VM:$PORT_PROD_APP_DASH
+  script:
+    - pwd
+    - docker version
+    - docker ps
+    - echo "Checking DNS configuration"
+    - cat /etc/resolv.conf
+    - echo "Listing hosts"
+    - cat /etc/hosts
+    - echo "Vérification de docker-compose"
+    - docker-compose --version
+    # - docker-compose config 
+    - echo "Creating network shared_net if it doesn't exist..."
+    - docker network ls | grep -q shared_net || docker network create shared_net
+    - echo "Démarrage des services avec docker-compose..."
+    - docker rm $(docker ps -q) # Supprimer tous les containers en marche
+    - docker container prune -f # Supprimer tous les containers arrêtés
+    - docker-compose -f docker-compose.yml up -d
+    # - docker-compose up
+    - echo "Affichage des logs de docker-compose"
+    - docker-compose logs
+    - echo "Liste des conteneurs Docker"
+    - docker info
+    - docker ps
+
 
 # deploy-prod:
 #   stage: deploy-prod

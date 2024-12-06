@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['dstair_mongodb_exporter:9216']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['host.docker.internal:9100'] # host.docker.internal car le node explorer sera installé sur notre VM de prod
+
+  - job_name: 'flask_apps'
+    static_configs:
+      - targets: ['dstair_flask_app:5002', 'dstair_flask_app_form:5001']
