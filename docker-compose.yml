@@ -116,7 +116,7 @@ services:
 
   mongodb_exporter:
     # image: bitnami/mongodb-exporter:latest
-    image: dcu/mongodb_exporter:latest
+    image: eses/mongodb_exporter:latest
     container_name: dstair_mongodb_exporter
     environment:
       MONGODB_URI: mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017
