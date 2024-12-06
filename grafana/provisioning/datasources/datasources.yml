@@ -18,7 +18,7 @@ datasources:
     # <int> identifiant de l'organisation. sera par défaut à orgId 1 s'il n'est pas spécifié
     orgId: 1
     # <string> url a utiliser , on pointe sur prometheus avec le nom du service défini dans le fichier docker-compose.yml
-    url: http://prometheus:9090
+    url: http://dstair_prometheus:9090
     # <string> mot de passe de la base de données, si utilisé
     password:
     # <string> utilisateur de la base de données, si utilisé
