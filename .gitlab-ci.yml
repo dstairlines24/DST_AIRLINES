@@ -594,8 +594,6 @@ deploy-dev-app_form:
 deploy-prod:
   stage: deploy-prod
   # image: docker:latest
-  needs:
-    - deploy-dev-mongo
   when: manual
   # timeout: 2h 
   extends: 
