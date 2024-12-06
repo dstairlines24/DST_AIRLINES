@@ -115,8 +115,8 @@ services:
       - dstair_network
 
   mongodb_exporter:
-    # image: bitnami/mongodb-exporter:latest
-    image: percona/mongodb_exporter:latest
+    image: bitnami/mongodb-exporter:latest
+    # image: percona/mongodb_exporter:latest
     container_name: dstair_mongodb_exporter
     environment:
       MONGODB_URI: mongodb://${MONGO_ROOT_LOGIN}:${MONGO_ROOT_PASSWORD}@mongodb:27017
