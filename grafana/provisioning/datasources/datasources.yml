@@ -6,3 +6,4 @@ datasources:
     url: http://dstair_prometheus:9090
     isDefault: true
     editable: true
+    
