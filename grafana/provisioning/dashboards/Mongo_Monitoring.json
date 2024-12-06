@@ -1,5 +1,4 @@
 {
-    "dashboard": {
       "id": null,
       "uid": null,
       "title": "MongoDB Exporter Dashboard",
@@ -52,7 +51,7 @@
           }
         },
         {
-          "type": "time-series",
+          "type": "timeseries",
           "title": "Memory Allocation (Heap and Total)",
           "gridPos": {
             "x": 6,
@@ -72,7 +71,7 @@
           ]
         },
         {
-          "type": "time-series",
+          "type": "timeseries",
           "title": "Go Goroutines and Threads",
           "gridPos": {
             "x": 0,
@@ -92,7 +91,7 @@
           ]
         },
         {
-          "type": "time-series",
+          "type": "timeseries",
           "title": "Process CPU and Memory",
           "gridPos": {
             "x": 12,
@@ -116,7 +115,7 @@
           ]
         },
         {
-          "type": "time-series",
+          "type": "timeseries",
           "title": "Garbage Collection Duration",
           "gridPos": {
             "x": 0,
@@ -132,7 +131,7 @@
           ]
         },
         {
-          "type": "time-series",
+          "type": "timeseries",
           "title": "Network Traffic",
           "gridPos": {
             "x": 12,
@@ -178,7 +177,5 @@
       },
       "schemaVersion": 37,
       "version": 1
-    },
-    "overwrite": true
-  }
+}
   
