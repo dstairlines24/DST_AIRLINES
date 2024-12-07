@@ -58,7 +58,7 @@ def after_request(response):
 
     return response
 
-@app.route('/metrics')
+@app.route('/prometheus_metrics')
 def metrics():
     """Expose the Prometheus metrics."""
     return Response(generate_latest(), mimetype='text/plain')

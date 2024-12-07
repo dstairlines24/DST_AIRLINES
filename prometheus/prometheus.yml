@@ -23,4 +23,4 @@ scrape_configs:
   - job_name: 'flask_apps'
     scrape_interval: 15s
     static_configs:
-      - targets: ['dstair_flask_app:5002', 'dstair_flask_app_form:5001']
+      - targets: ['dstair_flask_app:5002', 'dstair_flask_app_form:5001/prometheus_metrics']
