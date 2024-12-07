@@ -20,7 +20,7 @@ scrape_configs:
       # - targets: ['host.docker.internal:9100'] # host.docker.internal car le node explorer sera installé sur notre VM de prod
       - targets: ['172.19.0.1:9100'] # 172.19.0.1 adresse de la gateway docker du dstair_network
 
-  # - job_name: 'flask_apps'
-  #   scrape_interval: 15s
-  #   static_configs:
-  #     - targets: ['dstair_flask_app:5002', 'dstair_flask_app_form:5001/prometheus_metrics']
+  - job_name: 'flask_app_form'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['dstair_flask_app_form:5001/prometheus_metrics']
