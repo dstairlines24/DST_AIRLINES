@@ -1,0 +1,34 @@
+{
+    "panels": [
+      {
+        "type": "stat",
+        "title": "Total HTTP Requests",
+        "targets": [
+          {
+            "expr": "sum by (method, status, endpoint) (http_requests_total)",
+            "legendFormat": "{{method}} {{status}} {{endpoint}}"
+          }
+        ]
+      },
+      {
+        "type": "graph",
+        "title": "HTTP Request Duration (95th Percentile)",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le, endpoint))",
+            "legendFormat": "{{endpoint}}"
+          }
+        ]
+      },
+      {
+        "type": "gauge",
+        "title": "Resident Memory (Bytes)",
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes"
+          }
+        ]
+      }
+    ]
+  }
+  
