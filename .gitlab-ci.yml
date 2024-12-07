@@ -111,7 +111,8 @@ test-app_admin:
     - name: mongo:4.4
       alias: mongodb
   cache:
-    key: ${CI_JOB_NAME}
+    # key: ${CI_JOB_NAME}
+    key: global-cache
     paths:
       - .cache/pip/
   variables:
@@ -149,7 +150,8 @@ test-app_form:
     - name: mongo:4.4
       alias: mongodb
   cache:
-    key: ${CI_JOB_NAME}
+    # key: ${CI_JOB_NAME}
+    key: global-cache
     paths:
       - .cache/pip/
   variables:
@@ -188,7 +190,8 @@ test-app_dash:
     - name: mongo:4.4
       alias: mongodb
   cache:
-    key: ${CI_JOB_NAME}
+    # key: ${CI_JOB_NAME}
+    key: global-cache
     paths:
       - .cache/pip/
   variables:
