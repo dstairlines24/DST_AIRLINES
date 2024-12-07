@@ -59,7 +59,7 @@ def after_request(response):
     return response
 
 @app.route('/prometheus_metrics')
-def metrics():
+def prometheus_metrics():
     """Expose the Prometheus metrics."""
     return Response(generate_latest(), mimetype='text/plain')
 # ==============================================================================
@@ -455,13 +455,6 @@ def run_script(script_name):
     response = Response(stream_with_context(generate()), mimetype='text/plain')
 
     return response
-
-
-
-@app.route('/metrics')
-def metrics():
-    """Endpoint pour exposer les métriques Prometheus."""
-    return Response(generate_latest(), mimetype='text/plain')
 
 
 if __name__ == "__main__":
