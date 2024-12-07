@@ -12,7 +12,7 @@ chmod +x cronpipe.sh
 # Cela vérifie d'abord si la tâche existe déjà pour éviter les doublons
 (crontab -l 2>/dev/null | grep -v "cronpipe.sh"; echo "0 8 * * * cronpipe.sh") | crontab -
 
-# Lancer cron en arrière-plan
+# Lancer cron
 service cron start
 
 # Lancer l'app

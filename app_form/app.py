@@ -13,8 +13,56 @@ import os
 import requests
 
 
-
 app = Flask(__name__)
+
+
+# ==============================================================================
+# PROMETHEUS CLIENT
+# ==============================================================================
+import time
+from prometheus_client import Counter, Histogram, generate_latest
+
+# Prometheus metrics
+REQUEST_COUNTER = Counter(
+    'http_requests_total',
+    'Total HTTP requests',
+    ['method', 'endpoint', 'status']
+)
+
+REQUEST_LATENCY = Histogram(
+    'http_request_duration_seconds',
+    'Histogram for the duration of HTTP requests in seconds',
+    ['method', 'endpoint']
+)
+
+@app.before_request
+def before_request():
+    # Enregistrer le début du traitement
+    request.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    # Calculer la durée de la requête
+    latency = time.time() - request.start_time
+
+    # Labels pour les métriques
+    endpoint = request.endpoint if request.endpoint else "unknown"
+    method = request.method
+    status = response.status_code
+
+    # Incrémenter le compteur de requêtes
+    REQUEST_COUNTER.labels(method=method, endpoint=endpoint, status=status).inc()
+
+    # Observer la durée de la requête
+    REQUEST_LATENCY.labels(method=method, endpoint=endpoint).observe(latency)
+
+    return response
+
+@app.route('/metrics')
+def metrics():
+    """Expose the Prometheus metrics."""
+    return Response(generate_latest(), mimetype='text/plain')
+# ==============================================================================
 																			   
 
 # Ajoutez une clé secrète pour la session
@@ -407,6 +455,14 @@ def run_script(script_name):
     response = Response(stream_with_context(generate()), mimetype='text/plain')
 
     return response
+
+
+
+@app.route('/metrics')
+def metrics():
+    """Endpoint pour exposer les métriques Prometheus."""
+    return Response(generate_latest(), mimetype='text/plain')
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=5001)
