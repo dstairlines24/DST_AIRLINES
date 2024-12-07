@@ -24,6 +24,9 @@ RUN jupyter notebook --generate-config && \
     echo "c.NotebookApp.ip = '0.0.0.0'" >> ~/.jupyter/jupyter_notebook_config.py && \
     echo "c.NotebookApp.allow_root = True" >> ~/.jupyter/jupyter_notebook_config.py
 
+# Installer cron
+RUN apt-get update && apt-get install -y cron
+
 # Copier le contenu du repertoire
 COPY . /app/
 
